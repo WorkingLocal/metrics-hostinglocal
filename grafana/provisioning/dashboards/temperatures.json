@@ -1,0 +1,465 @@
+{
+  "title": "Host Temperatures",
+  "uid": "host-temperatures-hl",
+  "description": "CPU, GPU en case temperaturen van alle fysieke Hosting Local hosts",
+  "timezone": "browser",
+  "refresh": "1m",
+  "schemaVersion": 38,
+  "version": 1,
+  "time": { "from": "now-6h", "to": "now" },
+  "tags": ["temperatures", "hardware"],
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "CPU Temperaturen — actueel",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "AI-NODE-I9 — CPU",
+      "description": "Intel i9 MS-01 — Package temperatuur",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "AI-NODE-I5 — CPU",
+      "description": "Intel i5 MS-01 — Package temperatuur",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "NETWORKSERVER — CPU",
+      "description": "Proxmox i3-N305 — Package temperatuur",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"NETWORKSERVER\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "MEDIASERVER — CPU",
+      "description": "Proxmox NUC i5-8259U — Package temperatuur",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"MEDIASERVER\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "NUT-SERVER Pi — CPU",
+      "description": "Raspberry Pi 3B — CPU zone temperatuur",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 70 },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_hwmon_temp_celsius{instance=\"NUT-SERVER\", chip=\"thermal_thermal_zone0\", sensor=\"temp0\"}",
+          "legendFormat": "NUT-SERVER Pi",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "WINDOWSSERVER2025 — CPU",
+      "description": "Hyper-V host — thermalzone temperatuur (Kelvin → Celsius)",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (windows_thermalzone_temperature_kelvin{instance=\"WINDOWSSERVER2025\"}) - 273.15",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 10,
+      "type": "row",
+      "title": "CPU Temperaturen — tijdreeks",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "collapsed": false
+    },
+
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "CPU Temperaturen — Linux hosts (coretemp)",
+      "gridPos": { "h": 8, "w": 16, "x": 0, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (\n  node_hwmon_temp_celsius{\n    instance=~\"AI-NODE-I9|AI-NODE-I5|NETWORKSERVER|MEDIASERVER\",\n    chip=~\"coretemp.*\",\n    sensor=~\"Package id.*|temp1\"\n  }\n)",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "CPU Temp — Pi + Windows",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_hwmon_temp_celsius{instance=\"NUT-SERVER\", chip=\"thermal_thermal_zone0\", sensor=\"temp0\"}",
+          "legendFormat": "NUT-SERVER Pi",
+          "refId": "A"
+        },
+        {
+          "expr": "max by (instance) (windows_thermalzone_temperature_kelvin{instance=\"WINDOWSSERVER2025\"}) - 273.15",
+          "legendFormat": "WINDOWSSERVER2025",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 20,
+      "type": "row",
+      "title": "GPU Temperaturen — AI Nodes",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "collapsed": false
+    },
+
+    {
+      "id": 21,
+      "type": "stat",
+      "title": "AI-NODE-I9 — Intel GPU",
+      "description": "Intel i915/xe driver — GPU chip temperatuur",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 15 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 65 },
+              { "color": "orange", "value": 80 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "intel_gpu_temperature_celsius{instance=\"AI-NODE-I9\"}",
+          "legendFormat": "{{instance}} GPU",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 22,
+      "type": "stat",
+      "title": "AI-NODE-I5 — Intel GPU",
+      "description": "Intel i915/xe driver — GPU chip temperatuur",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 15 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 65 },
+              { "color": "orange", "value": 80 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "intel_gpu_temperature_celsius{instance=\"AI-NODE-I5\"}",
+          "legendFormat": "{{instance}} GPU",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 23,
+      "type": "timeseries",
+      "title": "Intel GPU Temperaturen — tijdreeks",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "intel_gpu_temperature_celsius{instance=~\"AI-NODE-I9|AI-NODE-I5\"}",
+          "legendFormat": "{{instance}} GPU ({{driver}})",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 30,
+      "type": "row",
+      "title": "Alle CPU cores — gedetailleerd",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 24 },
+      "collapsed": true,
+      "panels": [
+        {
+          "id": 31,
+          "type": "timeseries",
+          "title": "AI-NODE-I9 — alle cores",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 25 },
+          "options": {
+            "tooltip": { "mode": "multi", "sort": "desc" },
+            "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "max"] }
+          },
+          "fieldConfig": {
+            "defaults": { "unit": "celsius", "custom": { "lineWidth": 1, "fillOpacity": 0 } },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\"coretemp.*\"}",
+              "legendFormat": "{{sensor}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "type": "timeseries",
+          "title": "AI-NODE-I5 — alle cores",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 25 },
+          "options": {
+            "tooltip": { "mode": "multi", "sort": "desc" },
+            "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "max"] }
+          },
+          "fieldConfig": {
+            "defaults": { "unit": "celsius", "custom": { "lineWidth": 1, "fillOpacity": 0 } },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\"coretemp.*\"}",
+              "legendFormat": "{{sensor}}",
+              "refId": "A"
+            }
+          ]
+        }
+      ]
+    }
+
+  ]
+}

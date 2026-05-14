@@ -107,10 +107,31 @@ scrape_configs:
         labels:
           instance: 'NETWORKSERVER'
 
-  # VM-ADGUARD (AdGuard Home + DNS, Tailscale 100.121.177.76)
+  # VM-NPM (Nginx Proxy Manager, Tailscale 100.75.230.22)
+  - job_name: 'vm-npm'
+    static_configs:
+      - targets: ['100.75.230.22:9100']
+        labels:
+          instance: 'VM-NPM'
+
+  # VM-NETBOX (NetBox IPAM, Tailscale 100.122.166.117)
+  - job_name: 'vm-netbox'
+    static_configs:
+      - targets: ['100.122.166.117:9100']
+        labels:
+          instance: 'VM-NETBOX'
+
+  # VM-ADGUARD node_exporter (Tailscale 100.121.177.76)
   - job_name: 'vm-adguard'
     static_configs:
       - targets: ['100.121.177.76:9100']
+        labels:
+          instance: 'VM-ADGUARD'
+
+  # VM-ADGUARD AdGuard Home exporter (poort 9617)
+  - job_name: 'adguard-home'
+    static_configs:
+      - targets: ['100.121.177.76:9617']
         labels:
           instance: 'VM-ADGUARD'
 
@@ -120,6 +141,24 @@ scrape_configs:
       - targets: ['100.92.71.9:9100']
         labels:
           instance: 'VM-OPENCLAW'
+
+  # UNIFI Gateway (via SNMP Exporter op NETWORKSERVER)
+  # Vereist: snmp-exporter draait op NETWORKSERVER (100.119.137.54:9116)
+  # SNMP inschakelen op Unifi: Settings → System → Traffic Logging → SNMP Monitoring v1/2C
+  - job_name: 'unifi-snmp'
+    scrape_interval: 60s
+    metrics_path: /snmp
+    params:
+      module: [if_mib]
+    static_configs:
+      - targets: ['192.168.111.1']
+        labels:
+          instance: 'UNIFI-GATEWAY'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: '100.119.137.54:9116'
 
   # HAOS Intel NUC — via Netdata Prometheus export
   - job_name: 'haos-nuc'

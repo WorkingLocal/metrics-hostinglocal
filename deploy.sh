@@ -27,6 +27,9 @@ done
 
 scp grafana/provisioning/datasources/prometheus.yml root@"$VPS_IP":"${DEPLOY_DIR}/grafana/provisioning/datasources/prometheus.yml"
 scp grafana/provisioning/dashboards/dashboards.yml root@"$VPS_IP":"${DEPLOY_DIR}/grafana/provisioning/dashboards/dashboards.yml"
+scp grafana/provisioning/dashboards/temperatures.json root@"$VPS_IP":"${DEPLOY_DIR}/grafana/provisioning/dashboards/temperatures.json"
+scp grafana/provisioning/dashboards/ai-nodes.json root@"$VPS_IP":"${DEPLOY_DIR}/grafana/provisioning/dashboards/ai-nodes.json"
+scp grafana/provisioning/dashboards/adguard-home.json root@"$VPS_IP":"${DEPLOY_DIR}/grafana/provisioning/dashboards/adguard-home.json"
 log "Grafana provisioning gekopieerd"
 
 # SMTP wachtwoord invullen in alertmanager.yml
@@ -39,3 +42,4 @@ else
 fi
 
 log "Deploy klaar. Gebruik 'bash deploy.sh --smtp-password <wachtwoord>' om notificaties te activeren."
+warn "SNMP Exporter (Unifi) apart deployen: bash snmp/deploy.sh"

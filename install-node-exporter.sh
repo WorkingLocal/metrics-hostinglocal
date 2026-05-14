@@ -17,6 +17,10 @@ cp "node_exporter-${VERSION}.${ARCH}/node_exporter" /usr/local/bin/
 chmod +x /usr/local/bin/node_exporter
 rm -rf "node_exporter-${VERSION}.${ARCH}"*
 
+# Textfile collector directory voor custom metrics (bv. GPU temp)
+mkdir -p /var/lib/node_exporter/textfile_collector
+chown nobody:nogroup /var/lib/node_exporter/textfile_collector
+
 # Systemd service
 cat > /etc/systemd/system/node_exporter.service << EOF
 [Unit]
@@ -26,7 +30,11 @@ After=network.target
 [Service]
 Type=simple
 User=nobody
-ExecStart=/usr/local/bin/node_exporter --web.listen-address=0.0.0.0:9100
+ExecStart=/usr/local/bin/node_exporter \
+  --web.listen-address=0.0.0.0:9100 \
+  --collector.hwmon \
+  --collector.thermal_zone \
+  --collector.textfile.directory=/var/lib/node_exporter/textfile_collector
 Restart=on-failure
 
 [Install]

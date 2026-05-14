@@ -1,0 +1,601 @@
+{
+  "title": "AI Nodes — Load Monitor",
+  "uid": "2ca2c5e5-ca9a-49e7-8010-017d804f4678",
+  "description": "CPU, RAM, Network, Disk en temperatuur voor AI-NODE-I9 en AI-NODE-I5 (MS-01)",
+  "timezone": "browser",
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "version": 2,
+  "time": { "from": "now-6h", "to": "now" },
+  "tags": ["ai", "nodes", "load"],
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "CPU",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "AI-NODE-I9 — CPU %",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0, "max": 100,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 60 },
+            { "color": "red", "value": 85 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "100 - (avg(rate(node_cpu_seconds_total{instance=\"AI-NODE-I9\", mode=\"idle\"}[5m])) * 100)",
+        "legendFormat": "AI-NODE-I9", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "AI-NODE-I5 — CPU %",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0, "max": 100,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 60 },
+            { "color": "red", "value": 85 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "100 - (avg(rate(node_cpu_seconds_total{instance=\"AI-NODE-I5\", mode=\"idle\"}[5m])) * 100)",
+        "legendFormat": "AI-NODE-I5", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "CPU gebruik — beide nodes",
+      "gridPos": { "h": 8, "w": 16, "x": 8, "y": 1 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100,
+          "custom": { "lineWidth": 2, "fillOpacity": 15 },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 85 }] }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{instance=\"AI-NODE-I9\", mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "I9 — CPU", "refId": "A"
+        },
+        {
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{instance=\"AI-NODE-I5\", mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "I5 — CPU", "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "CPU per core — AI-NODE-I9",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 5 },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } },
+      "fieldConfig": {
+        "defaults": { "unit": "percent", "min": 0, "max": 100, "custom": { "lineWidth": 1, "fillOpacity": 0 } },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "rate(node_cpu_seconds_total{instance=\"AI-NODE-I9\", mode!=\"idle\"}[5m]) * 100",
+        "legendFormat": "{{cpu}} {{mode}}", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "CPU per core — AI-NODE-I5",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 5 },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } },
+      "fieldConfig": {
+        "defaults": { "unit": "percent", "min": 0, "max": 100, "custom": { "lineWidth": 1, "fillOpacity": 0 } },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "rate(node_cpu_seconds_total{instance=\"AI-NODE-I5\", mode!=\"idle\"}[5m]) * 100",
+        "legendFormat": "{{cpu}} {{mode}}", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 10,
+      "type": "row",
+      "title": "RAM",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
+      "collapsed": false
+    },
+
+    {
+      "id": 11,
+      "type": "stat",
+      "title": "AI-NODE-I9 — RAM %",
+      "gridPos": { "h": 3, "w": 4, "x": 0, "y": 10 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 70 },
+            { "color": "red", "value": 88 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "(1 - node_memory_MemAvailable_bytes{instance=\"AI-NODE-I9\"} / node_memory_MemTotal_bytes{instance=\"AI-NODE-I9\"}) * 100",
+        "legendFormat": "AI-NODE-I9", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 12,
+      "type": "stat",
+      "title": "AI-NODE-I5 — RAM %",
+      "gridPos": { "h": 3, "w": 4, "x": 4, "y": 10 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 70 },
+            { "color": "red", "value": 88 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "(1 - node_memory_MemAvailable_bytes{instance=\"AI-NODE-I5\"} / node_memory_MemTotal_bytes{instance=\"AI-NODE-I5\"}) * 100",
+        "legendFormat": "AI-NODE-I5", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "RAM gebruik — beide nodes",
+      "gridPos": { "h": 7, "w": 16, "x": 8, "y": 10 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": { "lineWidth": 2, "fillOpacity": 20 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_memory_MemTotal_bytes{instance=\"AI-NODE-I9\"} - node_memory_MemAvailable_bytes{instance=\"AI-NODE-I9\"}",
+          "legendFormat": "I9 — gebruikt", "refId": "A"
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes{instance=\"AI-NODE-I9\"}",
+          "legendFormat": "I9 — totaal", "refId": "B"
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes{instance=\"AI-NODE-I5\"} - node_memory_MemAvailable_bytes{instance=\"AI-NODE-I5\"}",
+          "legendFormat": "I5 — gebruikt", "refId": "C"
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes{instance=\"AI-NODE-I5\"}",
+          "legendFormat": "I5 — totaal", "refId": "D"
+        }
+      ]
+    },
+
+    {
+      "id": 14,
+      "type": "gauge",
+      "title": "AI-NODE-I9 — RAM detail",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 13 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "minVizWidth": 75, "minVizHeight": 75 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "min": 0,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 60000000000 }] }
+        },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "node_memory_MemAvailable_bytes{instance=\"AI-NODE-I9\"}", "legendFormat": "Vrij", "refId": "A" },
+        { "expr": "node_memory_MemTotal_bytes{instance=\"AI-NODE-I9\"} - node_memory_MemAvailable_bytes{instance=\"AI-NODE-I9\"}", "legendFormat": "Gebruikt", "refId": "B" }
+      ]
+    },
+
+    {
+      "id": 15,
+      "type": "gauge",
+      "title": "AI-NODE-I5 — RAM detail",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 13 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "minVizWidth": 75, "minVizHeight": 75 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "min": 0,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 28000000000 }] }
+        },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "node_memory_MemAvailable_bytes{instance=\"AI-NODE-I5\"}", "legendFormat": "Vrij", "refId": "A" },
+        { "expr": "node_memory_MemTotal_bytes{instance=\"AI-NODE-I5\"} - node_memory_MemAvailable_bytes{instance=\"AI-NODE-I5\"}", "legendFormat": "Gebruikt", "refId": "B" }
+      ]
+    },
+
+    {
+      "id": 20,
+      "type": "row",
+      "title": "Netwerk",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
+      "collapsed": false
+    },
+
+    {
+      "id": 21,
+      "type": "timeseries",
+      "title": "Netwerk RX — ontvangen",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 18 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": { "unit": "Bps", "custom": { "lineWidth": 2, "fillOpacity": 15 } },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "rate(node_network_receive_bytes_total{instance=\"AI-NODE-I9\", device!=\"lo\"}[5m])", "legendFormat": "I9 — {{device}}", "refId": "A" },
+        { "expr": "rate(node_network_receive_bytes_total{instance=\"AI-NODE-I5\", device!=\"lo\"}[5m])", "legendFormat": "I5 — {{device}}", "refId": "B" }
+      ]
+    },
+
+    {
+      "id": 22,
+      "type": "timeseries",
+      "title": "Netwerk TX — verstuurd",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 18 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": { "unit": "Bps", "custom": { "lineWidth": 2, "fillOpacity": 15 } },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "rate(node_network_transmit_bytes_total{instance=\"AI-NODE-I9\", device!=\"lo\"}[5m])", "legendFormat": "I9 — {{device}}", "refId": "A" },
+        { "expr": "rate(node_network_transmit_bytes_total{instance=\"AI-NODE-I5\", device!=\"lo\"}[5m])", "legendFormat": "I5 — {{device}}", "refId": "B" }
+      ]
+    },
+
+    {
+      "id": 30,
+      "type": "row",
+      "title": "Disk",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 25 },
+      "collapsed": false
+    },
+
+    {
+      "id": 31,
+      "type": "stat",
+      "title": "AI-NODE-I9 — Disk /",
+      "gridPos": { "h": 3, "w": 4, "x": 0, "y": 26 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 70 },
+            { "color": "red", "value": 85 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "(node_filesystem_size_bytes{instance=\"AI-NODE-I9\", mountpoint=\"/\", fstype!=\"tmpfs\"} - node_filesystem_avail_bytes{instance=\"AI-NODE-I9\", mountpoint=\"/\", fstype!=\"tmpfs\"}) / node_filesystem_size_bytes{instance=\"AI-NODE-I9\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100",
+        "legendFormat": "I9 /", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 32,
+      "type": "stat",
+      "title": "AI-NODE-I5 — Disk /",
+      "gridPos": { "h": 3, "w": 4, "x": 4, "y": 26 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 70 },
+            { "color": "red", "value": 85 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "(node_filesystem_size_bytes{instance=\"AI-NODE-I5\", mountpoint=\"/\", fstype!=\"tmpfs\"} - node_filesystem_avail_bytes{instance=\"AI-NODE-I5\", mountpoint=\"/\", fstype!=\"tmpfs\"}) / node_filesystem_size_bytes{instance=\"AI-NODE-I5\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100",
+        "legendFormat": "I5 /", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 33,
+      "type": "timeseries",
+      "title": "Disk I/O",
+      "gridPos": { "h": 7, "w": 16, "x": 8, "y": 26 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": { "unit": "Bps", "custom": { "lineWidth": 2, "fillOpacity": 10 } },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "rate(node_disk_read_bytes_total{instance=\"AI-NODE-I9\"}[5m])", "legendFormat": "I9 — lezen {{device}}", "refId": "A" },
+        { "expr": "rate(node_disk_written_bytes_total{instance=\"AI-NODE-I9\"}[5m])", "legendFormat": "I9 — schrijven {{device}}", "refId": "B" },
+        { "expr": "rate(node_disk_read_bytes_total{instance=\"AI-NODE-I5\"}[5m])", "legendFormat": "I5 — lezen {{device}}", "refId": "C" },
+        { "expr": "rate(node_disk_written_bytes_total{instance=\"AI-NODE-I5\"}[5m])", "legendFormat": "I5 — schrijven {{device}}", "refId": "D" }
+      ]
+    },
+
+    {
+      "id": 34,
+      "type": "timeseries",
+      "title": "Disk gebruik — alle mountpoints",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 29 },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } },
+      "fieldConfig": {
+        "defaults": { "unit": "bytes", "custom": { "lineWidth": 1, "fillOpacity": 0 } },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "node_filesystem_size_bytes{instance=\"AI-NODE-I9\", fstype!=\"tmpfs\", fstype!=\"overlay\"} - node_filesystem_avail_bytes{instance=\"AI-NODE-I9\", fstype!=\"tmpfs\", fstype!=\"overlay\"}", "legendFormat": "I9 {{mountpoint}}", "refId": "A" },
+        { "expr": "node_filesystem_size_bytes{instance=\"AI-NODE-I5\", fstype!=\"tmpfs\", fstype!=\"overlay\"} - node_filesystem_avail_bytes{instance=\"AI-NODE-I5\", fstype!=\"tmpfs\", fstype!=\"overlay\"}", "legendFormat": "I5 {{mountpoint}}", "refId": "B" }
+      ]
+    },
+
+    {
+      "id": 35,
+      "type": "timeseries",
+      "title": "Disk I/O wachttijd",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 29 },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } },
+      "fieldConfig": {
+        "defaults": { "unit": "s", "custom": { "lineWidth": 1, "fillOpacity": 0 } },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "rate(node_disk_io_time_seconds_total{instance=\"AI-NODE-I9\"}[5m])", "legendFormat": "I9 {{device}}", "refId": "A" },
+        { "expr": "rate(node_disk_io_time_seconds_total{instance=\"AI-NODE-I5\"}[5m])", "legendFormat": "I5 {{device}}", "refId": "B" }
+      ]
+    },
+
+    {
+      "id": 40,
+      "type": "row",
+      "title": "Temperaturen",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 33 },
+      "collapsed": false
+    },
+
+    {
+      "id": 41,
+      "type": "stat",
+      "title": "AI-NODE-I9 — CPU temp",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 34 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 60 },
+            { "color": "orange", "value": 75 },
+            { "color": "red", "value": 85 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})",
+        "legendFormat": "I9 CPU", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 42,
+      "type": "stat",
+      "title": "AI-NODE-I5 — CPU temp",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 34 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 60 },
+            { "color": "orange", "value": 75 },
+            { "color": "red", "value": 85 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})",
+        "legendFormat": "I5 CPU", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 43,
+      "type": "timeseries",
+      "title": "CPU temperaturen over tijd",
+      "gridPos": { "h": 8, "w": 16, "x": 8, "y": 34 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": { "unit": "celsius", "custom": { "lineWidth": 2, "fillOpacity": 10 } },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})", "legendFormat": "I9 — Package", "refId": "A" },
+        { "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})", "legendFormat": "I5 — Package", "refId": "B" },
+        { "expr": "intel_gpu_temperature_celsius{instance=\"AI-NODE-I9\"}", "legendFormat": "I9 — GPU", "refId": "C" },
+        { "expr": "intel_gpu_temperature_celsius{instance=\"AI-NODE-I5\"}", "legendFormat": "I5 — GPU", "refId": "D" }
+      ]
+    },
+
+    {
+      "id": 44,
+      "type": "stat",
+      "title": "AI-NODE-I9 — GPU temp",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 38 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 65 },
+            { "color": "orange", "value": 80 },
+            { "color": "red", "value": 90 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "intel_gpu_temperature_celsius{instance=\"AI-NODE-I9\"}",
+        "legendFormat": "I9 GPU", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 45,
+      "type": "stat",
+      "title": "AI-NODE-I5 — GPU temp",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 38 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 65 },
+            { "color": "orange", "value": 80 },
+            { "color": "red", "value": 90 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "intel_gpu_temperature_celsius{instance=\"AI-NODE-I5\"}",
+        "legendFormat": "I5 GPU", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 50,
+      "type": "row",
+      "title": "Ollama",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 42 },
+      "collapsed": false
+    },
+
+    {
+      "id": 51,
+      "type": "stat",
+      "title": "AI-NODE-I9 — Ollama bereikbaar",
+      "gridPos": { "h": 3, "w": 4, "x": 0, "y": 43 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [{ "type": "value", "options": { "1": { "text": "Online", "color": "green" }, "0": { "text": "Offline", "color": "red" } } }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "up{instance=\"AI-NODE-I9\", job=\"ai-node-i9\"}",
+        "legendFormat": "I9", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 52,
+      "type": "stat",
+      "title": "AI-NODE-I5 — Ollama bereikbaar",
+      "gridPos": { "h": 3, "w": 4, "x": 4, "y": 43 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [{ "type": "value", "options": { "1": { "text": "Online", "color": "green" }, "0": { "text": "Offline", "color": "red" } } }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "up{instance=\"AI-NODE-I5\", job=\"ai-node-i5\"}",
+        "legendFormat": "I5", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 53,
+      "type": "timeseries",
+      "title": "Uptime AI nodes",
+      "gridPos": { "h": 5, "w": 16, "x": 8, "y": 43 },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } },
+      "fieldConfig": {
+        "defaults": { "unit": "s", "custom": { "lineWidth": 2, "fillOpacity": 5 } },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "node_time_seconds{instance=\"AI-NODE-I9\"} - node_boot_time_seconds{instance=\"AI-NODE-I9\"}", "legendFormat": "I9 uptime", "refId": "A" },
+        { "expr": "node_time_seconds{instance=\"AI-NODE-I5\"} - node_boot_time_seconds{instance=\"AI-NODE-I5\"}", "legendFormat": "I5 uptime", "refId": "B" }
+      ]
+    }
+
+  ]
+}

@@ -32,7 +32,7 @@ services:
 
   # ── Grafana ────────────────────────────────────────────────────────────────
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:11.6.2
     container_name: grafana-metrics
     restart: unless-stopped
     extra_hosts:
@@ -44,7 +44,7 @@ services:
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
-      GF_SERVER_ROOT_URL: https://metrics.workinglocal.be
+      GF_SERVER_ROOT_URL: https://metrics.hostinglocal.be
       GF_SMTP_ENABLED: "true"
       GF_SMTP_HOST: smtp.hostinger.com:587
       GF_SMTP_USER: info@workinglocal.be
@@ -57,13 +57,11 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.middlewares.gzip.compress=true
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
       - traefik.http.routers.http-grafana.entryPoints=http
-      - traefik.http.routers.http-grafana.middlewares=redirect-to-https
-      - "traefik.http.routers.http-grafana.rule=Host(`metrics.workinglocal.be`)"
+      - "traefik.http.routers.http-grafana.rule=Host(`metrics.hostinglocal.be`)"
       - traefik.http.routers.https-grafana.entryPoints=https
       - traefik.http.routers.https-grafana.middlewares=gzip
-      - "traefik.http.routers.https-grafana.rule=Host(`metrics.workinglocal.be`)"
+      - "traefik.http.routers.https-grafana.rule=Host(`metrics.hostinglocal.be`)"
       - traefik.http.routers.https-grafana.tls.certresolver=letsencrypt
       - traefik.http.routers.https-grafana.tls=true
       - traefik.http.services.https-grafana.loadbalancer.server.port=3000
@@ -81,10 +79,9 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.http-uptime.entryPoints=http
-      - traefik.http.routers.http-uptime.middlewares=redirect-to-https
-      - "traefik.http.routers.http-uptime.rule=Host(`uptime.workinglocal.be`)"
+      - "traefik.http.routers.http-uptime.rule=Host(`uptime.hostinglocal.be`)"
       - traefik.http.routers.https-uptime.entryPoints=https
-      - "traefik.http.routers.https-uptime.rule=Host(`uptime.workinglocal.be`)"
+      - "traefik.http.routers.https-uptime.rule=Host(`uptime.hostinglocal.be`)"
       - traefik.http.routers.https-uptime.tls.certresolver=letsencrypt
       - traefik.http.routers.https-uptime.tls=true
       - traefik.http.services.https-uptime.loadbalancer.server.port=3001

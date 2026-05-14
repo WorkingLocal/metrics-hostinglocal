@@ -1,0 +1,12 @@
+services:
+
+  # SNMP Exporter — scrapet Unifi Gateway via SNMP
+  # Deploy op NETWORKSERVER (100.119.137.54) zodat 192.168.111.1 bereikbaar is
+  snmp-exporter:
+    image: prom/snmp-exporter:latest
+    container_name: snmp-exporter
+    restart: unless-stopped
+    ports:
+      - "9116:9116"
+    command:
+      - '--config.file=/etc/snmp_exporter/snmp.yml'

@@ -37,6 +37,8 @@ Monitoring stack voor het volledige Hosting Local homelab.
 | VM-AutoBA | node_exporter Docker :9100 | 100.107.82.21 | actief |
 | VM-AI-Engine | node_exporter :9100 | 100.80.180.55 | actief |
 | VM-ADGUARD | node_exporter :9100 | 100.121.177.76 | actief |
+| VM-NPM | node_exporter :9100 | 100.75.230.22 | actief |
+| VM-NETBOX | node_exporter :9100 | 100.122.166.117 | actief |
 | VM-PLEX | node_exporter :9100 | 100.83.181.85 | actief |
 | VM-IMMICH | node_exporter :9100 | 100.75.33.124 | actief |
 | VM-APPS | node_exporter :9100 | 100.97.124.46 | actief |
