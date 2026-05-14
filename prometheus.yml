@@ -160,6 +160,13 @@ scrape_configs:
       - target_label: __address__
         replacement: '100.119.137.54:9116'
 
+  # TRAVELSERVER (TrueNAS SCALE, Minisforum S100, Tailscale 100.83.16.76)
+  - job_name: 'travelserver'
+    static_configs:
+      - targets: ['100.83.16.76:9100']
+        labels:
+          instance: 'TRAVELSERVER'
+
   # HAOS Intel NUC — via Netdata Prometheus export
   - job_name: 'haos-nuc'
     metrics_path: /api/v1/allmetrics
