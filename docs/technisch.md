@@ -35,6 +35,7 @@ Tailscale nodes (geschraped door Prometheus)
     ├── 100.83.181.85:9100    — VM-PLEX (node_exporter systemd)
     ├── 100.75.33.124:9100    — VM-IMMICH (node_exporter systemd)
     ├── 100.97.124.46:9100    — VM-APPS (node_exporter systemd)
+    ├── 100.92.71.9:9100      — VM-OPENCLAW (node_exporter systemd)
     └── 100.109.230.93:19999  — HAOS-NUC (Netdata /api/v1/allmetrics)
 ```
 
@@ -164,5 +165,8 @@ Installeren: `bash install-lm-sensors.sh`
 | VM-PLEX | systemd service | amd64 | 100.83.181.85 | — |
 | VM-IMMICH | systemd service | amd64 | 100.75.33.124 | — |
 | VM-APPS | systemd service | amd64 | 100.97.124.46 | — |
+| VM-NPM | systemd service | amd64 | 100.75.230.22 | — |
+| VM-NETBOX | systemd service | amd64 | 100.122.166.117 | — |
+| VM-OPENCLAW | systemd service | amd64 | 100.92.71.9 | — |
 | HAOS-NUC | Netdata add-on | amd64 | 100.109.230.93 | — |
 | WINDOWSSERVER2025 | windows_exporter MSI :9182 | amd64 | 100.92.201.100 | WMI geen data |
