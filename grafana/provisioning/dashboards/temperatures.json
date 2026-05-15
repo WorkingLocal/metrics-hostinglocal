@@ -132,7 +132,7 @@
       "type": "stat",
       "title": "MEDIASERVER — CPU",
       "description": "Proxmox NUC i5-8259U — Package temperatuur",
-      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "gridPos": { "h": 4, "w": 3, "x": 12, "y": 1 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
@@ -167,7 +167,7 @@
       "type": "stat",
       "title": "NUT-SERVER Pi — CPU",
       "description": "Raspberry Pi 3B — CPU zone temperatuur",
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "gridPos": { "h": 4, "w": 3, "x": 15, "y": 1 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
@@ -202,7 +202,7 @@
       "type": "stat",
       "title": "WINDOWSSERVER2025 — CPU",
       "description": "Hyper-V host — thermalzone temperatuur (Kelvin → Celsius)",
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "gridPos": { "h": 4, "w": 3, "x": 18, "y": 1 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
@@ -226,6 +226,41 @@
       "targets": [
         {
           "expr": "max by (instance) (windows_thermalzone_temperature_kelvin{instance=\"WINDOWSSERVER2025\"}) - 273.15",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 8,
+      "type": "stat",
+      "title": "TRAVELSERVER — CPU",
+      "description": "Minisforum S100 TrueNAS SCALE — Package temperatuur",
+      "gridPos": { "h": 4, "w": 3, "x": 21, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"TRAVELSERVER\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})",
           "legendFormat": "{{instance}}",
           "refId": "A"
         }
@@ -269,7 +304,7 @@
       },
       "targets": [
         {
-          "expr": "max by (instance) (\n  node_hwmon_temp_celsius{\n    instance=~\"AI-NODE-I9|AI-NODE-I5|NETWORKSERVER|MEDIASERVER\",\n    chip=~\"coretemp.*\",\n    sensor=~\"Package id.*|temp1\"\n  }\n)",
+          "expr": "max by (instance) (\n  node_hwmon_temp_celsius{\n    instance=~\"AI-NODE-I9|AI-NODE-I5|NETWORKSERVER|MEDIASERVER|TRAVELSERVER\",\n    chip=~\"coretemp.*\",\n    sensor=~\"Package id.*|temp1\"\n  }\n)",
           "legendFormat": "{{instance}}",
           "refId": "A"
         }

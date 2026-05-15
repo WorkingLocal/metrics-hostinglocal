@@ -21,7 +21,11 @@
 └── grafana/
     └── provisioning/
         ├── datasources/prometheus.yml
-        └── dashboards/dashboards.yml
+        └── dashboards/
+            ├── dashboards.yml
+            ├── temperatures.json
+            ├── ai-nodes.json
+            └── adguard-home.json
 ```
 
 ## Credentials
@@ -38,7 +42,7 @@
 ### 1. Bestanden deployen
 
 ```bash
-# Vanuit de metrics-workinglocal repo:
+# Vanuit de metrics-hostinglocal repo:
 bash deploy.sh --smtp-password <hostinger-wachtwoord>
 ```
 
@@ -63,31 +67,83 @@ docker compose up -d
 
 ```bash
 # Als root op VPS:
-curl -sL https://raw.githubusercontent.com/WorkingLocal/metrics-workinglocal/main/install-node-exporter.sh | bash
+bash install-node-exporter.sh
 ```
 
 ### 5. Grafana dashboards importeren
 
-Geïmporteerde dashboards (via API):
+Provisioned dashboards (temperatures.json, ai-nodes.json, adguard-home.json) verschijnen automatisch.
+
+Geïmporteerde dashboards via Grafana UI (Dashboards → Import → ID invoeren):
 - **Node Exporter Full** (ID 1860) — Linux node metrics
 - **Windows Exporter Dashboard** (ID 14694) — Windows Server metrics
-
-Via Grafana UI: Dashboards → Import → ID invoeren.
 
 ## node_exporter op Linux nodes installeren
 
 ```bash
 # SSH naar de node en uitvoeren als root:
-curl -sL https://raw.githubusercontent.com/WorkingLocal/metrics-workinglocal/main/install-node-exporter.sh | bash
+bash install-node-exporter.sh
 ```
 
+Installeert node_exporter met temperatuurcollectors:
+- `--collector.hwmon` — hardware monitor temperaturen (coretemp, nvme, etc.)
+- `--collector.thermal_zone` — ACPI thermal zones
+- `--collector.textfile.directory=/var/lib/node_exporter/textfile_collector` — custom metrics
+
 Getest op: Ubuntu, Debian, Raspberry Pi OS (auto-detectie van arch: amd64/arm64/armv7).
+
+## lm-sensors installeren
+
+lm-sensors zorgt dat node_exporter de sensornamen correct weergeeft (bijv. "Package id 0" i.p.v. "temp1"):
+
+```bash
+bash install-lm-sensors.sh
+```
+
+Geïnstalleerd op: AI-NODE-I9, AI-NODE-I5, NETWORKSERVER, MEDIASERVER, NUT-SERVER.
+
+## Intel GPU temperatuur collector
+
+Intel iGPU temperatuur via textfile collector (alleen als i915/xe hwmon beschikbaar is):
+
+```bash
+# Deployen naar een AI node:
+bash scripts/deploy-intel-gpu-temp.sh <tailscale-ip>
+```
+
+**Let op:** Op de huidige hosts (AI-NODE-I9, AI-NODE-I5, MEDIASERVER) is i915/xe hwmon NIET beschikbaar. De GPU temperatuur is niet beschikbaar in Prometheus.
 
 ## windows_exporter op Windows Server
 
 1. Download MSI van https://github.com/prometheus-community/windows_exporter/releases
-2. Installeer: `msiexec /i windows_exporter-*.msi /quiet ENABLED_COLLECTORS=cpu,cs,logical_disk,net,os,service,system,memory`
+2. Installeer: `msiexec /i windows_exporter-*.msi /quiet ENABLED_COLLECTORS=cpu,cs,logical_disk,net,os,service,system,memory,thermalzone`
 3. Default luistert op poort 9182
+
+Thermalzone collector inschakelen op bestaande installatie (PowerShell als Administrator):
+```powershell
+# windows-temp/setup.ps1 uitvoeren op WINDOWSSERVER2025
+```
+
+**Let op:** WMI thermalzone geeft geen data terug op Windows Server 2025 als Hyper-V host.
+
+## Nieuwe node toevoegen
+
+1. Installeer node_exporter: `bash install-node-exporter.sh`
+2. Installeer lm-sensors: `bash install-lm-sensors.sh`
+3. Voeg toe aan `prometheus.yml`:
+   ```yaml
+   - job_name: 'nieuwe-node'
+     static_configs:
+       - targets: ['<tailscale-ip>:9100']
+         labels:
+           instance: 'NIEUWE-NODE'
+   ```
+4. Deploy en herlaad:
+   ```bash
+   bash deploy-config.sh
+   ssh root@23.94.220.181 'curl -s -X POST http://localhost:9090/-/reload'
+   ```
+5. Voeg node toe aan `temperatures.json` stat-panel en tijdreeks-query.
 
 ## Prometheus targets verifiëren
 
@@ -105,23 +161,11 @@ for t in d['data']['activeTargets']:
 
 | Record | Waarde |
 |--------|--------|
-| metrics.workinglocal.be | A → 23.94.220.181 (actief) |
-| uptime.workinglocal.be | A → 23.94.220.181 (actief, proxy uit) |
+| metrics.hostinglocal.be | A → 23.94.220.181 (Cloudflare proxy AAN) |
+| uptime.hostinglocal.be | A → 23.94.220.181 (Cloudflare proxy AAN) |
 
-## Uptime Kuma monitor namen
+## Cloudflare instellingen
 
-Consistente naamgeving: `<Host> — <Service>` voor infrastructuur, `<Naam> — <domein>` voor webapps.
-
-| ID | Naam | Type |
-|----|------|------|
-| 1 | Grafana — metrics.workinglocal.be | HTTP (intern: grafana-metrics:3000) |
-| 2 | Home Assistant — ha.hostinglocal.be | HTTP |
-| 3 | AutoBA — autoba.hostinglocal.be | HTTP |
-| 4 | Vaultwarden — vault.hostinglocal.be | HTTP |
-| 5 | Odoo — odoo.workinglocal.be | HTTP |
-| 6 | VPS-WORKINGLOCAL — SSH | PORT :22 |
-| 7 | VPS-WORKINGLOCAL — Prometheus | PORT :9090 |
-| 8 | VPS-WORKINGLOCAL — node_exporter | PORT :9100 |
-| 9 | VM-AutoBA — node_exporter | PORT :9100 |
-| 10 | HAOS-NUC — Netdata | PORT :19999 |
-| 11 | Windows Server — windows_exporter | PORT :9182 |
+- SSL/TLS mode: **Full** (niet Flexible, niet Strict)
+- **Always Use HTTPS**: Ingeschakeld (vervangt Traefik redirect-to-https middleware)
+- Geen Page Rules of Redirect Rules nodig
