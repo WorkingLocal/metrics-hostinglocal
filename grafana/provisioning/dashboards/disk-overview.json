@@ -1,0 +1,476 @@
+{
+  "title": "Disk Overview — Alle Nodes",
+  "uid": "disk-overview-hl",
+  "description": "Alle schijven en partities van het volledige Hosting Local homelab — gebruik en vrije ruimte",
+  "timezone": "browser",
+  "refresh": "5m",
+  "schemaVersion": 38,
+  "version": 1,
+  "time": { "from": "now-6h", "to": "now" },
+  "tags": ["disk", "storage", "homelab", "signage"],
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Schijfgebruik — Overzicht",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Disks boven 80%",
+      "gridPos": { "h": 4, "w": 5, "x": 0, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "text": { "valueSize": 48 }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 3 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "count((1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\"}) * 100 > 80) or vector(0)",
+          "legendFormat": "> 80%",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Disks boven 90%",
+      "gridPos": { "h": 4, "w": 5, "x": 5, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "text": { "valueSize": 48 }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "count((1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\"}) * 100 > 90) or vector(0)",
+          "legendFormat": "> 90%",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Totaal Vrij (alle Linux nodes)",
+      "gridPos": { "h": 4, "w": 6, "x": 10, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "value",
+        "graphMode": "none",
+        "text": { "valueSize": 36 }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 107374182400 },
+              { "color": "green", "value": 536870912000 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "sum(node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\", mountpoint=\"/\"})",
+          "legendFormat": "Totaal vrij",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 10,
+      "type": "row",
+      "title": "Schijfgebruik % — per Mountpoint",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "collapsed": false
+    },
+
+    {
+      "id": 11,
+      "type": "bargauge",
+      "title": "Schijfgebruik % — alle Linux nodes (alle mountpoints)",
+      "description": "Gefilterd op echte bestandssystemen. Formaat: instance — mountpoint",
+      "gridPos": { "h": 22, "w": 24, "x": 0, "y": 6 },
+      "options": {
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "displayMode": "gradient",
+        "valueMode": "color",
+        "showUnfilled": true,
+        "text": { "valueSize": 13 }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "orange", "value": 85 },
+              { "color": "red", "value": 95 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\"} * 100)",
+          "legendFormat": "{{instance}} — {{mountpoint}}",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 20,
+      "type": "row",
+      "title": "Disk Details — Tabel",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 28 },
+      "collapsed": false
+    },
+
+    {
+      "id": 21,
+      "type": "table",
+      "title": "Schijfruimte — Alle Linux Nodes",
+      "description": "Gesorteerd op gebruik % (hoogste bovenaan). Klik op kolom om te sorteren.",
+      "gridPos": { "h": 14, "w": 24, "x": 0, "y": 29 },
+      "options": {
+        "sortBy": [{ "displayName": "Gebruik %", "desc": true }],
+        "footer": { "show": false }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "left",
+            "cellOptions": { "type": "auto" },
+            "filterable": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Gebruik %" },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": { "type": "color-background", "mode": "gradient" }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "green", "value": null },
+                    { "color": "yellow", "value": 70 },
+                    { "color": "orange", "value": 85 },
+                    { "color": "red", "value": 95 }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Totaal" },
+            "properties": [{ "id": "unit", "value": "bytes" }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Gebruikt" },
+            "properties": [{ "id": "unit", "value": "bytes" }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Vrij" },
+            "properties": [{ "id": "unit", "value": "bytes" }]
+          }
+        ]
+      },
+      "transformations": [
+        { "id": "merge", "options": {} },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "instance": "Node",
+              "mountpoint": "Mountpoint",
+              "fstype": "FS Type",
+              "Value #A": "Gebruik %",
+              "Value #B": "Totaal",
+              "Value #C": "Gebruikt",
+              "Value #D": "Vrij"
+            },
+            "excludeByName": {
+              "Time": true,
+              "job": true,
+              "device": true
+            },
+            "indexByName": {
+              "Node": 0,
+              "Mountpoint": 1,
+              "FS Type": 2,
+              "Gebruik %": 3,
+              "Totaal": 4,
+              "Gebruikt": 5,
+              "Vrij": 6
+            }
+          }
+        }
+      ],
+      "targets": [
+        {
+          "expr": "100 - (node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\"} * 100)",
+          "legendFormat": "",
+          "refId": "A",
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "expr": "node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\"}",
+          "legendFormat": "",
+          "refId": "B",
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "expr": "node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\"} - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\"}",
+          "legendFormat": "",
+          "refId": "C",
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "expr": "node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|squashfs|overlay|aufs|ramfs\"}",
+          "legendFormat": "",
+          "refId": "D",
+          "instant": true,
+          "format": "table"
+        }
+      ]
+    },
+
+    {
+      "id": 30,
+      "type": "row",
+      "title": "Windows Schijven",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 43 },
+      "collapsed": false
+    },
+
+    {
+      "id": 31,
+      "type": "bargauge",
+      "title": "Schijfgebruik % — Windows Volumes",
+      "gridPos": { "h": 8, "w": 10, "x": 0, "y": 44 },
+      "options": {
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "displayMode": "gradient",
+        "valueMode": "color",
+        "showUnfilled": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (windows_logical_disk_free_bytes{instance=\"WINDOWSSERVER2025\", volume!~\"HarddiskVolume.*\"} / windows_logical_disk_size_bytes{instance=\"WINDOWSSERVER2025\", volume!~\"HarddiskVolume.*\"} * 100)",
+          "legendFormat": "{{volume}}",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 32,
+      "type": "table",
+      "title": "Windows Volumes — Detail",
+      "gridPos": { "h": 8, "w": 14, "x": 10, "y": 44 },
+      "options": {
+        "sortBy": [{ "displayName": "Gebruik %", "desc": true }],
+        "footer": { "show": false }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "align": "left" }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Gebruik %" },
+            "properties": [
+              { "id": "unit", "value": "percent" },
+              { "id": "custom.cellOptions", "value": { "type": "color-background", "mode": "gradient" } },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "green", "value": null },
+                    { "color": "yellow", "value": 70 },
+                    { "color": "red", "value": 90 }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Totaal" },
+            "properties": [{ "id": "unit", "value": "bytes" }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Vrij" },
+            "properties": [{ "id": "unit", "value": "bytes" }]
+          }
+        ]
+      },
+      "transformations": [
+        { "id": "merge", "options": {} },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "volume": "Volume",
+              "Value #A": "Gebruik %",
+              "Value #B": "Totaal",
+              "Value #C": "Vrij"
+            },
+            "excludeByName": {
+              "Time": true,
+              "instance": true,
+              "job": true
+            }
+          }
+        }
+      ],
+      "targets": [
+        {
+          "expr": "100 - (windows_logical_disk_free_bytes{instance=\"WINDOWSSERVER2025\", volume!~\"HarddiskVolume.*\"} / windows_logical_disk_size_bytes{instance=\"WINDOWSSERVER2025\", volume!~\"HarddiskVolume.*\"} * 100)",
+          "legendFormat": "",
+          "refId": "A",
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "expr": "windows_logical_disk_size_bytes{instance=\"WINDOWSSERVER2025\", volume!~\"HarddiskVolume.*\"}",
+          "legendFormat": "",
+          "refId": "B",
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "expr": "windows_logical_disk_free_bytes{instance=\"WINDOWSSERVER2025\", volume!~\"HarddiskVolume.*\"}",
+          "legendFormat": "",
+          "refId": "C",
+          "instant": true,
+          "format": "table"
+        }
+      ]
+    },
+
+    {
+      "id": 40,
+      "type": "row",
+      "title": "Disk Gebruik — Trend over Tijd",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 52 },
+      "collapsed": false
+    },
+
+    {
+      "id": 41,
+      "type": "timeseries",
+      "title": "Root / Schijfgebruik % over tijd — Linux Nodes",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 53 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": { "lineWidth": 2, "fillOpacity": 8 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (node_filesystem_avail_bytes{mountpoint=\"/\", fstype!=\"tmpfs\"} / node_filesystem_size_bytes{mountpoint=\"/\", fstype!=\"tmpfs\"} * 100)",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ]
+    }
+
+  ]
+}

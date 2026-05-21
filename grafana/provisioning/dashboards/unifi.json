@@ -1,0 +1,246 @@
+{
+  "title": "Unifi Gateway",
+  "uid": "unifi-gateway-hl",
+  "description": "Netwerk traffic en interface status van de Unifi Gateway (SNMP via if_mib)",
+  "timezone": "browser",
+  "refresh": "1m",
+  "schemaVersion": 38,
+  "version": 1,
+  "time": { "from": "now-3h", "to": "now" },
+  "tags": ["network", "unifi", "snmp"],
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Interface Status",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+
+    {
+      "id": 2,
+      "type": "table",
+      "title": "Interface Status — Unifi Gateway",
+      "description": "Operationele status van alle actieve interfaces (eth + bridge + WireGuard)",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 1 },
+      "options": {
+        "sortBy": [{ "displayName": "Interface", "desc": false }],
+        "footer": { "show": false }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "left",
+            "cellOptions": { "type": "auto" }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Status" },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": { "type": "color-background" }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  { "type": "value", "options": { "1": { "text": "UP", "color": "green" } } },
+                  { "type": "value", "options": { "2": { "text": "DOWN", "color": "red" } } }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Speed" },
+            "properties": [
+              { "id": "unit", "value": "bps" }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        { "id": "merge", "options": {} },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "ifName": "Interface",
+              "ifAlias": "Alias",
+              "Value #A": "Status",
+              "Value #B": "Speed"
+            },
+            "excludeByName": {
+              "Time": true,
+              "instance": true,
+              "job": true,
+              "ifIndex": true,
+              "ifDescr": true,
+              "__name__": true
+            }
+          }
+        }
+      ],
+      "targets": [
+        {
+          "expr": "ifOperStatus{instance=\"UNIFI-GATEWAY\", ifName=~\"eth.*|br[0-9]+|wgsrv.*\"}",
+          "legendFormat": "",
+          "refId": "A",
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "expr": "ifSpeed{instance=\"UNIFI-GATEWAY\", ifName=~\"eth.*|br[0-9]+|wgsrv.*\"}",
+          "legendFormat": "",
+          "refId": "B",
+          "instant": true,
+          "format": "table"
+        }
+      ]
+    },
+
+    {
+      "id": 10,
+      "type": "row",
+      "title": "Netwerk Traffic — Bandbreedte",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
+      "collapsed": false
+    },
+
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "WAN / Uplink Traffic (eth interfaces)",
+      "description": "Inkomend en uitgaand verkeer op de fysieke eth poorten",
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 10 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "green", "value": null }]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(ifHCInOctets{instance=\"UNIFI-GATEWAY\", ifName=~\"eth.*\"}[5m]) * 8",
+          "legendFormat": "↓ {{ifName}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(ifHCOutOctets{instance=\"UNIFI-GATEWAY\", ifName=~\"eth.*\"}[5m]) * 8",
+          "legendFormat": "↑ {{ifName}}",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "LAN / VLAN Traffic (bridge interfaces)",
+      "description": "Verkeer per VLAN bridge (br0 = default LAN, br2-br7 = overige VLANs)",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 10 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(ifHCInOctets{instance=\"UNIFI-GATEWAY\", ifName=~\"br[0-9]+\"}[5m]) * 8",
+          "legendFormat": "↓ {{ifName}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(ifHCOutOctets{instance=\"UNIFI-GATEWAY\", ifName=~\"br[0-9]+\"}[5m]) * 8",
+          "legendFormat": "↑ {{ifName}}",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 20,
+      "type": "row",
+      "title": "Pakket Statistieken",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 19 },
+      "collapsed": false
+    },
+
+    {
+      "id": 21,
+      "type": "timeseries",
+      "title": "Unicast Packets — eth interfaces",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pps",
+          "custom": { "lineWidth": 1, "fillOpacity": 5 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(ifHCInUcastPkts{instance=\"UNIFI-GATEWAY\", ifName=~\"eth.*\"}[5m])",
+          "legendFormat": "↓ {{ifName}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(ifHCOutUcastPkts{instance=\"UNIFI-GATEWAY\", ifName=~\"eth.*\"}[5m])",
+          "legendFormat": "↑ {{ifName}}",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 22,
+      "type": "timeseries",
+      "title": "Broadcast + Multicast Packets",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pps",
+          "custom": { "lineWidth": 1, "fillOpacity": 5 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(ifHCInBroadcastPkts{instance=\"UNIFI-GATEWAY\", ifName=~\"eth.*|br[0-9]+\"}[5m])",
+          "legendFormat": "↓ BC {{ifName}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(ifHCInMulticastPkts{instance=\"UNIFI-GATEWAY\", ifName=~\"eth.*|br[0-9]+\"}[5m])",
+          "legendFormat": "↓ MC {{ifName}}",
+          "refId": "B"
+        }
+      ]
+    }
+
+  ]
+}

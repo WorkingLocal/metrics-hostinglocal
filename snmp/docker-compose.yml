@@ -1,3 +1,6 @@
+## NIET GEBRUIKT — NETWORKSERVER heeft geen Docker (Proxmox bare metal)
+## Gebruik install-snmp-exporter.sh + deploy.sh in plaats hiervan
+
 services:
 
   # SNMP Exporter — scrapet Unifi Gateway via SNMP

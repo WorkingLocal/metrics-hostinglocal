@@ -50,6 +50,7 @@ Monitoring stack voor het volledige Hosting Local homelab.
 | VM-IMMICH | node_exporter :9100 | 100.75.33.124 | actief |
 | VM-APPS | node_exporter :9100 | 100.97.124.46 | actief |
 | VM-OPENCLAW | node_exporter :9100 | 100.92.71.9 | actief |
+| FILESERVER | node_exporter Docker :9100 | 100.72.50.41 | actief |
 
 ## Repository structuur
 
@@ -68,21 +69,35 @@ metrics-hostinglocal/
 │   └── deploy-intel-gpu-temp.sh    # Deployscript voor GPU-temp collector
 ├── windows-temp/
 │   └── setup.ps1                   # windows_exporter thermalzone collector inschakelen
+├── snmp/
+│   ├── docker-compose.yml          # SNMP Exporter container (op NETWORKSERVER)
+│   ├── install-snmp-exporter.sh    # Installatiescript SNMP Exporter
+│   └── deploy.sh                   # Deployscript SNMP stack
 ├── grafana/
 │   └── provisioning/
 │       ├── datasources/
 │       │   └── prometheus.yml      # Prometheus datasource
 │       └── dashboards/
 │           ├── dashboards.yml      # Dashboard provider config
+│           ├── overview.json       # Homelab Overview (CPU/RAM/disk/status alle nodes) 🖥️
+│           ├── cpu-cores.json      # CPU Cores — alle cores alle nodes op één pagina
+│           ├── disk-overview.json  # Disk Overview — alle schijven + vrije ruimte 🖥️
 │           ├── temperatures.json   # Host Temperatures dashboard (alle nodes)
 │           ├── ai-nodes.json       # AI Nodes Load Monitor dashboard
-│           └── adguard-home.json   # AdGuard Home DNS dashboard
+│           ├── adguard-home.json   # AdGuard Home DNS dashboard
+│           ├── unifi.json          # Unifi Gateway (SNMP — traffic + interface status)
+│           ├── windows-server.json # Windows Server 2025 (CPU/RAM/disk/netwerk)
+│           ├── vps.json            # VPS-WORKINGLOCAL (CPU/RAM/disk/netwerk/systeem)
+│           ├── haos.json           # HAOS Intel NUC (via Netdata Prometheus export)
+│           └── fileserver.json     # FILESERVER — Synology DS423+ (node_exporter Docker)
 └── docs/
     ├── setup.md
     ├── alerts.md
     ├── howto.md
     └── technisch.md
 ```
+
+> 🖥️ = geschikt voor signage display (Xibo / kiosk mode)
 
 ## Deployment
 
@@ -131,15 +146,43 @@ Thermalzone collector inschakelen: `bash windows-temp/setup.ps1` (PowerShell als
 
 ### Dashboards
 
-| Dashboard | UID | Methode |
-|-----------|-----|---------|
-| Node Exporter Full | (Grafana ID 1860) | Importeren via UI of API |
-| Windows Exporter | (Grafana ID 14694) | Importeren via UI of API |
-| AI Nodes Load Monitor | 2ca2c5e5-ca9a-49e7-8010-017d804f4678 | Provisioned JSON |
-| Host Temperatures | host-temperatures-hl | Provisioned JSON |
-| AdGuard Home DNS | adguard-home-hostinglocal | Provisioned JSON |
+| Dashboard | UID | Bestand | Signage |
+|-----------|-----|---------|---------|
+| Node Exporter Full | (Grafana ID 1860) | Importeren via UI of API | — |
+| AI Nodes Load Monitor | 2ca2c5e5-ca9a-49e7-8010-017d804f4678 | `ai-nodes.json` | — |
+| Host Temperatures | host-temperatures-hl | `temperatures.json` | — |
+| AdGuard Home DNS Monitor | adguard-home-hostinglocal | `adguard-home.json` | — |
+| Unifi Gateway | unifi-gateway-hl | `unifi.json` | — |
+| Windows Server 2025 | windows-server-hl | `windows-server.json` | — |
+| Homelab Overview | homelab-overview-hl | `overview.json` | ✅ |
+| CPU Cores — Alle Nodes | cpu-cores-hl | `cpu-cores.json` | — |
+| Disk Overview — Alle Nodes | disk-overview-hl | `disk-overview.json` | ✅ |
+| VPS — Workinglocal | vps-workinglocal-hl | `vps.json` | — |
+| HAOS — Intel NUC | haos-nuc-hl | `haos.json` | — |
+| NETWORKSERVER | networkserver-hl | `networkserver.json` | — |
+| FILESERVER — Synology DS423+ | fileserver-hl | `fileserver.json` | — |
 
-Bij Grafana volume-reset: zie `docs/howto.md` voor het her-importeren van Node Exporter Full en Windows Exporter via de Grafana API.
+Bij Grafana volume-reset: zie `docs/howto.md` voor het her-importeren van Node Exporter Full via de Grafana API.
+Alle andere dashboards worden automatisch provisioned uit `/etc/grafana/provisioning/dashboards/`.
+
+### Signage / Kiosk mode
+
+Dashboards geschikt voor signage display (Xibo, browser, TV):
+
+```
+# Volledig dashboard zonder navigatiebalk (kiosk mode):
+https://metrics.hostinglocal.be/d/homelab-overview-hl/homelab-overview?kiosk=tv
+https://metrics.hostinglocal.be/d/disk-overview-hl/disk-overview-alle-nodes?kiosk=tv
+
+# Enkelvoudig panel embedden (voor Xibo layout):
+https://metrics.hostinglocal.be/d-solo/homelab-overview-hl/homelab-overview?panelId=11&kiosk
+```
+
+**Grafana Playlist** (automatisch wisselen tussen dashboards):
+Grafana → Dashboards → Playlists → New playlist → voeg gewenste dashboards toe → stel interval in.
+Gebruik de playlist URL + `?kiosk=tv` voor schermloze weergave.
+
+**Xibo integratie:** voeg een "Webpage" widget toe in Xibo met de kiosk URL. Stel in Xibo de looptijd per layout in op bv. 60s. Vergeet niet om Grafana's auto-refresh (`1m`) te verifiëren via de dashboard `refresh` instelling.
 
 ## Uptime Kuma
 

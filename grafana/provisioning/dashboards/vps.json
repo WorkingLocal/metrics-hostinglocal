@@ -1,0 +1,812 @@
+{
+  "title": "VPS — Workinglocal",
+  "uid": "vps-workinglocal-hl",
+  "description": "Alle resources van VPS-WORKINGLOCAL — de host van de metrics stack zelf",
+  "timezone": "browser",
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "version": 1,
+  "time": { "from": "now-3h", "to": "now" },
+  "tags": ["vps", "system"],
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Overzicht",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "CPU Gebruik",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg(irate(node_cpu_seconds_total{instance=\"VPS-WORKINGLOCAL\", mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "CPU %",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "RAM Gebruik",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 75 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "(1 - node_memory_MemAvailable_bytes{instance=\"VPS-WORKINGLOCAL\"} / node_memory_MemTotal_bytes{instance=\"VPS-WORKINGLOCAL\"}) * 100",
+          "legendFormat": "RAM %",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "RAM Vrij",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 536870912 },
+              { "color": "green", "value": 2147483648 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_memory_MemAvailable_bytes{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Vrij",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Load Average (5m)",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 2 },
+              { "color": "red", "value": 4 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_load5{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Load 5m",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Uptime",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_time_seconds{instance=\"VPS-WORKINGLOCAL\"} - node_boot_time_seconds{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Uptime",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Actieve Processen",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_procs_running{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Running",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 10,
+      "type": "row",
+      "title": "CPU",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "collapsed": false
+    },
+
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "CPU Gebruik — Totaal",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": { "lineWidth": 2, "fillOpacity": 15 },
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg(irate(node_cpu_seconds_total{instance=\"VPS-WORKINGLOCAL\", mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "CPU totaal",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "CPU per Mode",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "avg by (mode) (irate(node_cpu_seconds_total{instance=\"VPS-WORKINGLOCAL\", mode!=\"idle\"}[5m])) * 100",
+          "legendFormat": "{{mode}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Load Average",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_load1{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "1m",
+          "refId": "A"
+        },
+        {
+          "expr": "node_load5{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "5m",
+          "refId": "B"
+        },
+        {
+          "expr": "node_load15{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "15m",
+          "refId": "C"
+        }
+      ]
+    },
+
+    {
+      "id": 14,
+      "type": "timeseries",
+      "title": "Processen — running / blocked",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": { "lineWidth": 2, "fillOpacity": 8 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_procs_running{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Running",
+          "refId": "A"
+        },
+        {
+          "expr": "node_procs_blocked{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Blocked",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 20,
+      "type": "row",
+      "title": "Geheugen",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+      "collapsed": false
+    },
+
+    {
+      "id": 21,
+      "type": "timeseries",
+      "title": "RAM — Gebruik",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 23 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": { "lineWidth": 2, "fillOpacity": 15 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_memory_MemTotal_bytes{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Totaal",
+          "refId": "A"
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes{instance=\"VPS-WORKINGLOCAL\"} - node_memory_MemAvailable_bytes{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Gebruikt",
+          "refId": "B"
+        },
+        {
+          "expr": "node_memory_MemAvailable_bytes{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Beschikbaar",
+          "refId": "C"
+        },
+        {
+          "expr": "node_memory_Cached_bytes{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Cached",
+          "refId": "D"
+        },
+        {
+          "expr": "node_memory_Buffers_bytes{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Buffers",
+          "refId": "E"
+        }
+      ]
+    },
+
+    {
+      "id": 22,
+      "type": "timeseries",
+      "title": "Swap — Gebruik",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 23 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_memory_SwapTotal_bytes{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Swap totaal",
+          "refId": "A"
+        },
+        {
+          "expr": "node_memory_SwapTotal_bytes{instance=\"VPS-WORKINGLOCAL\"} - node_memory_SwapFree_bytes{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Swap gebruikt",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 30,
+      "type": "row",
+      "title": "Schijven",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 31 },
+      "collapsed": false
+    },
+
+    {
+      "id": 31,
+      "type": "bargauge",
+      "title": "Schijfgebruik % per Mountpoint",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 32 },
+      "options": {
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "displayMode": "gradient",
+        "showUnfilled": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (node_filesystem_avail_bytes{instance=\"VPS-WORKINGLOCAL\", fstype!~\"tmpfs|devtmpfs|squashfs|overlay\"} / node_filesystem_size_bytes{instance=\"VPS-WORKINGLOCAL\", fstype!~\"tmpfs|devtmpfs|squashfs|overlay\"} * 100)",
+          "legendFormat": "{{mountpoint}}",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 32,
+      "type": "stat",
+      "title": "Schijfruimte Vrij — /",
+      "gridPos": { "h": 6, "w": 4, "x": 8, "y": 32 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 5368709120 },
+              { "color": "green", "value": 21474836480 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_filesystem_avail_bytes{instance=\"VPS-WORKINGLOCAL\", mountpoint=\"/\"}",
+          "legendFormat": "Vrij /",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 33,
+      "type": "timeseries",
+      "title": "Disk I/O — bytes/s",
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 32 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(node_disk_read_bytes_total{instance=\"VPS-WORKINGLOCAL\"}[2m])",
+          "legendFormat": "↓ Lees {{device}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(node_disk_written_bytes_total{instance=\"VPS-WORKINGLOCAL\"}[2m])",
+          "legendFormat": "↑ Schrijf {{device}}",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 34,
+      "type": "timeseries",
+      "title": "Disk I/O — IOPS",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 38 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "iops",
+          "custom": { "lineWidth": 1, "fillOpacity": 8 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(node_disk_reads_completed_total{instance=\"VPS-WORKINGLOCAL\"}[2m])",
+          "legendFormat": "↓ Reads/s {{device}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(node_disk_writes_completed_total{instance=\"VPS-WORKINGLOCAL\"}[2m])",
+          "legendFormat": "↑ Writes/s {{device}}",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 35,
+      "type": "timeseries",
+      "title": "Disk I/O — Wachttijd",
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 38 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": { "lineWidth": 1, "fillOpacity": 8 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(node_disk_read_time_seconds_total{instance=\"VPS-WORKINGLOCAL\"}[2m]) / rate(node_disk_reads_completed_total{instance=\"VPS-WORKINGLOCAL\"}[2m])",
+          "legendFormat": "Lees latency {{device}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(node_disk_write_time_seconds_total{instance=\"VPS-WORKINGLOCAL\"}[2m]) / rate(node_disk_writes_completed_total{instance=\"VPS-WORKINGLOCAL\"}[2m])",
+          "legendFormat": "Schrijf latency {{device}}",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 40,
+      "type": "row",
+      "title": "Netwerk",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 44 },
+      "collapsed": false
+    },
+
+    {
+      "id": 41,
+      "type": "timeseries",
+      "title": "Netwerk Traffic — bits/s",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 45 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(node_network_receive_bytes_total{instance=\"VPS-WORKINGLOCAL\", device!~\"lo|docker.*|veth.*|br-.*\"}[2m]) * 8",
+          "legendFormat": "↓ {{device}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(node_network_transmit_bytes_total{instance=\"VPS-WORKINGLOCAL\", device!~\"lo|docker.*|veth.*|br-.*\"}[2m]) * 8",
+          "legendFormat": "↑ {{device}}",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 42,
+      "type": "timeseries",
+      "title": "Netwerk Packets/s",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 45 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pps",
+          "custom": { "lineWidth": 1, "fillOpacity": 5 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(node_network_receive_packets_total{instance=\"VPS-WORKINGLOCAL\", device!~\"lo|docker.*|veth.*|br-.*\"}[2m])",
+          "legendFormat": "↓ {{device}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(node_network_transmit_packets_total{instance=\"VPS-WORKINGLOCAL\", device!~\"lo|docker.*|veth.*|br-.*\"}[2m])",
+          "legendFormat": "↑ {{device}}",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 43,
+      "type": "timeseries",
+      "title": "Netwerk Fouten & Drops",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 53 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pps",
+          "custom": { "lineWidth": 1, "fillOpacity": 5 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(node_network_receive_errs_total{instance=\"VPS-WORKINGLOCAL\", device!~\"lo|docker.*|veth.*\"}[2m])",
+          "legendFormat": "RX errors {{device}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(node_network_transmit_errs_total{instance=\"VPS-WORKINGLOCAL\", device!~\"lo|docker.*|veth.*\"}[2m])",
+          "legendFormat": "TX errors {{device}}",
+          "refId": "B"
+        },
+        {
+          "expr": "rate(node_network_receive_drop_total{instance=\"VPS-WORKINGLOCAL\", device!~\"lo|docker.*|veth.*\"}[2m])",
+          "legendFormat": "RX drops {{device}}",
+          "refId": "C"
+        }
+      ]
+    },
+
+    {
+      "id": 50,
+      "type": "row",
+      "title": "Systeem",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 59 },
+      "collapsed": false
+    },
+
+    {
+      "id": 51,
+      "type": "timeseries",
+      "title": "Open File Descriptors",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 60 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom", "calcs": [] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_filefd_allocated{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Gebruikt",
+          "refId": "A"
+        },
+        {
+          "expr": "node_filefd_maximum{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Maximum",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 52,
+      "type": "timeseries",
+      "title": "Context Switches / Interrupts",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 60 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops",
+          "custom": { "lineWidth": 1, "fillOpacity": 5 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(node_context_switches_total{instance=\"VPS-WORKINGLOCAL\"}[2m])",
+          "legendFormat": "Context switches/s",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(node_intr_total{instance=\"VPS-WORKINGLOCAL\"}[2m])",
+          "legendFormat": "Interrupts/s",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 53,
+      "type": "timeseries",
+      "title": "TCP Verbindingen",
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 60 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": { "lineWidth": 2, "fillOpacity": 8 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_netstat_Tcp_CurrEstab{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "ESTABLISHED",
+          "refId": "A"
+        },
+        {
+          "expr": "node_netstat_Tcp_ActiveOpens{instance=\"VPS-WORKINGLOCAL\"}",
+          "legendFormat": "Active opens/s",
+          "refId": "B"
+        }
+      ]
+    }
+
+  ]
+}

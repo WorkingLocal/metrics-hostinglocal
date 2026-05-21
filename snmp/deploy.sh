@@ -1,6 +1,7 @@
 #!/bin/bash
-# Deploy SNMP Exporter naar NETWORKSERVER (100.119.137.54)
+# Deploy SNMP Exporter naar NETWORKSERVER (100.119.137.54) als systemd binary
 # Gebruik: bash snmp/deploy.sh
+# Uitvoeren vanuit de root van de repo
 
 set -e
 
@@ -9,17 +10,30 @@ NC='\033[0m'
 log() { echo -e "${GREEN}✓${NC} $1"; }
 
 NETWORKSERVER_IP="100.119.137.54"
-DEPLOY_DIR="/opt/snmp-exporter"
+SCRIPT="snmp/install-snmp-exporter.sh"
 
 echo "=== SNMP Exporter deployen naar ${NETWORKSERVER_IP} ==="
 
-ssh root@"$NETWORKSERVER_IP" "mkdir -p ${DEPLOY_DIR}"
-
-scp snmp/docker-compose.yml root@"$NETWORKSERVER_IP":"${DEPLOY_DIR}/docker-compose.yml"
-log "docker-compose.yml gekopieerd"
-
-ssh root@"$NETWORKSERVER_IP" "cd ${DEPLOY_DIR} && docker compose up -d"
-log "SNMP Exporter gestart op poort 9116"
+# Check of snmp_exporter al draait
+if ssh root@"$NETWORKSERVER_IP" "systemctl is-active snmp_exporter" &>/dev/null; then
+  log "snmp_exporter draait al op ${NETWORKSERVER_IP} — installatie overgeslagen"
+else
+  scp "$SCRIPT" root@"$NETWORKSERVER_IP":/tmp/install-snmp-exporter.sh
+  log "install script gekopieerd"
+  ssh root@"$NETWORKSERVER_IP" "bash /tmp/install-snmp-exporter.sh"
+  log "installatie voltooid"
+fi
 
 echo ""
-echo "Test: curl 'http://${NETWORKSERVER_IP}:9116/snmp?target=192.168.111.1&module=if_mib'"
+echo "=== Test ==="
+RESULT=$(ssh root@"$NETWORKSERVER_IP" \
+  "curl -sf 'http://localhost:9116/snmp?target=192.168.111.1&module=if_mib' | head -5" 2>&1) || true
+
+if echo "$RESULT" | grep -q "^#"; then
+  log "SNMP scrape succesvol — Unifi Gateway antwoordt"
+  echo "$RESULT"
+else
+  echo "⚠ SNMP scrape geeft geen data — SNMP ingeschakeld op Unifi?"
+  echo "  Unifi UI → Settings → System → Traffic & Services → SNMP Monitoring v1/2c"
+  echo "  Dan opnieuw testen: curl 'http://${NETWORKSERVER_IP}:9116/snmp?target=192.168.111.1&module=if_mib'"
+fi

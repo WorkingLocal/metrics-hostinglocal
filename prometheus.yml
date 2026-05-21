@@ -167,6 +167,27 @@ scrape_configs:
         labels:
           instance: 'TRAVELSERVER'
 
+  # FILESERVER (Synology DS423+, node_exporter via Docker, Tailscale 100.72.50.41)
+  - job_name: 'fileserver'
+    static_configs:
+      - targets: ['100.72.50.41:9100']
+        labels:
+          instance: 'FILESERVER'
+
+  # VM-MUSIC (Ubuntu 24.04, Navidrome+Lidarr+MA, Tailscale 100.77.174.124)
+  - job_name: 'vm-music'
+    static_configs:
+      - targets: ['100.77.174.124:9100']
+        labels:
+          instance: 'VM-MUSIC'
+
+  # VM-DOCS (Ubuntu 24.04, Calibre+Paperless+BookStack, Tailscale 100.107.238.37)
+  - job_name: 'vm-docs'
+    static_configs:
+      - targets: ['100.107.238.37:9100']
+        labels:
+          instance: 'VM-DOCS'
+
   # HAOS Intel NUC — via Netdata Prometheus export
   - job_name: 'haos-nuc'
     metrics_path: /api/v1/allmetrics

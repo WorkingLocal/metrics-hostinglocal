@@ -1,0 +1,563 @@
+{
+  "title": "NETWORKSERVER",
+  "uid": "networkserver-hl",
+  "description": "NETWORKSERVER — Proxmox host i3-N305 (networking, DNS, reverse proxy)",
+  "timezone": "browser",
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "version": 1,
+  "time": { "from": "now-3h", "to": "now" },
+  "tags": ["networkserver", "proxmox", "system"],
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Overzicht",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "CPU Gebruik",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100,
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 70 },
+            { "color": "red", "value": 90 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "100 - (avg(irate(node_cpu_seconds_total{instance=\"NETWORKSERVER\", mode=\"idle\"}[5m])) * 100)",
+        "legendFormat": "CPU %", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "RAM Gebruik",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100,
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 75 },
+            { "color": "red", "value": 90 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "(1 - node_memory_MemAvailable_bytes{instance=\"NETWORKSERVER\"} / node_memory_MemTotal_bytes{instance=\"NETWORKSERVER\"}) * 100",
+        "legendFormat": "RAM %", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "CPU Temp (Package)",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "blue", "value": null },
+            { "color": "green", "value": 30 },
+            { "color": "yellow", "value": 65 },
+            { "color": "red", "value": 80 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "node_hwmon_temp_celsius{instance=\"NETWORKSERVER\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}",
+        "legendFormat": "CPU Package", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "NVMe Temp",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 60 },
+            { "color": "red", "value": 75 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "max(node_hwmon_temp_celsius{instance=\"NETWORKSERVER\", chip=\"nvme_nvme0\"})",
+        "legendFormat": "NVMe max", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Load Average (5m)",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short", "decimals": 2,
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 4 },
+            { "color": "red", "value": 8 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "node_load5{instance=\"NETWORKSERVER\"}",
+        "legendFormat": "Load 5m", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Uptime",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "node_time_seconds{instance=\"NETWORKSERVER\"} - node_boot_time_seconds{instance=\"NETWORKSERVER\"}",
+        "legendFormat": "Uptime", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 10,
+      "type": "row",
+      "title": "CPU",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "collapsed": false
+    },
+
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "CPU Gebruik — Totaal",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100,
+          "custom": { "lineWidth": 2, "fillOpacity": 15 }
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "100 - (avg(irate(node_cpu_seconds_total{instance=\"NETWORKSERVER\", mode=\"idle\"}[5m])) * 100)",
+        "legendFormat": "CPU totaal", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "CPU per Mode",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0,
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "avg by (mode) (irate(node_cpu_seconds_total{instance=\"NETWORKSERVER\", mode!=\"idle\"}[5m])) * 100",
+        "legendFormat": "{{mode}}", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Load Average",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "node_load1{instance=\"NETWORKSERVER\"}", "legendFormat": "1m", "refId": "A" },
+        { "expr": "node_load5{instance=\"NETWORKSERVER\"}", "legendFormat": "5m", "refId": "B" },
+        { "expr": "node_load15{instance=\"NETWORKSERVER\"}", "legendFormat": "15m", "refId": "C" }
+      ]
+    },
+
+    {
+      "id": 14,
+      "type": "timeseries",
+      "title": "CPU per Core (alle 8 E-cores)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100,
+          "custom": { "lineWidth": 1, "fillOpacity": 5 }
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "100 - (rate(node_cpu_seconds_total{instance=\"NETWORKSERVER\", mode=\"idle\"}[5m]) * 100)",
+        "legendFormat": "core{{cpu}}", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 20,
+      "type": "row",
+      "title": "Geheugen",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+      "collapsed": false
+    },
+
+    {
+      "id": 21,
+      "type": "timeseries",
+      "title": "RAM — Gebruik",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 23 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": { "lineWidth": 2, "fillOpacity": 15 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "node_memory_MemTotal_bytes{instance=\"NETWORKSERVER\"}", "legendFormat": "Totaal", "refId": "A" },
+        { "expr": "node_memory_MemTotal_bytes{instance=\"NETWORKSERVER\"} - node_memory_MemAvailable_bytes{instance=\"NETWORKSERVER\"}", "legendFormat": "Gebruikt", "refId": "B" },
+        { "expr": "node_memory_MemAvailable_bytes{instance=\"NETWORKSERVER\"}", "legendFormat": "Beschikbaar", "refId": "C" },
+        { "expr": "node_memory_Cached_bytes{instance=\"NETWORKSERVER\"}", "legendFormat": "Cached", "refId": "D" }
+      ]
+    },
+
+    {
+      "id": 22,
+      "type": "timeseries",
+      "title": "Swap",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 23 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "node_memory_SwapTotal_bytes{instance=\"NETWORKSERVER\"}", "legendFormat": "Swap totaal", "refId": "A" },
+        { "expr": "node_memory_SwapTotal_bytes{instance=\"NETWORKSERVER\"} - node_memory_SwapFree_bytes{instance=\"NETWORKSERVER\"}", "legendFormat": "Swap gebruikt", "refId": "B" }
+      ]
+    },
+
+    {
+      "id": 30,
+      "type": "row",
+      "title": "Schijven",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 31 },
+      "collapsed": false
+    },
+
+    {
+      "id": 31,
+      "type": "bargauge",
+      "title": "Schijfgebruik % per Mountpoint",
+      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 32 },
+      "options": {
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "displayMode": "gradient",
+        "showUnfilled": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100,
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 70 },
+            { "color": "red", "value": 90 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "100 - (node_filesystem_avail_bytes{instance=\"NETWORKSERVER\", fstype!~\"tmpfs|devtmpfs|squashfs|overlay|fuse.*\"} / node_filesystem_size_bytes{instance=\"NETWORKSERVER\", fstype!~\"tmpfs|devtmpfs|squashfs|overlay|fuse.*\"} * 100)",
+        "legendFormat": "{{mountpoint}}", "refId": "A", "instant": true
+      }]
+    },
+
+    {
+      "id": 32,
+      "type": "stat",
+      "title": "Schijf Vrij — /",
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 32 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "yellow", "value": 10737418240 },
+            { "color": "green", "value": 42949672960 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "node_filesystem_avail_bytes{instance=\"NETWORKSERVER\", mountpoint=\"/\"}",
+        "legendFormat": "Vrij /", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 33,
+      "type": "timeseries",
+      "title": "Disk I/O — bytes/s",
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 32 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "rate(node_disk_read_bytes_total{instance=\"NETWORKSERVER\"}[2m])", "legendFormat": "↓ Lees {{device}}", "refId": "A" },
+        { "expr": "rate(node_disk_written_bytes_total{instance=\"NETWORKSERVER\"}[2m])", "legendFormat": "↑ Schrijf {{device}}", "refId": "B" }
+      ]
+    },
+
+    {
+      "id": 40,
+      "type": "row",
+      "title": "Netwerk",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 37 },
+      "collapsed": false
+    },
+
+    {
+      "id": 41,
+      "type": "timeseries",
+      "title": "Netwerk Traffic — Fysieke NICs (nic0, nic1)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 38 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "rate(node_network_receive_bytes_total{instance=\"NETWORKSERVER\", device=~\"nic[0-9]+\"}[2m]) * 8", "legendFormat": "↓ {{device}}", "refId": "A" },
+        { "expr": "rate(node_network_transmit_bytes_total{instance=\"NETWORKSERVER\", device=~\"nic[0-9]+\"}[2m]) * 8", "legendFormat": "↑ {{device}}", "refId": "B" }
+      ]
+    },
+
+    {
+      "id": 42,
+      "type": "timeseries",
+      "title": "Netwerk Traffic — Bridges (vmbr0, vmbr1)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 38 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "rate(node_network_receive_bytes_total{instance=\"NETWORKSERVER\", device=~\"vmbr[0-9]+\"}[2m]) * 8", "legendFormat": "↓ {{device}}", "refId": "A" },
+        { "expr": "rate(node_network_transmit_bytes_total{instance=\"NETWORKSERVER\", device=~\"vmbr[0-9]+\"}[2m]) * 8", "legendFormat": "↑ {{device}}", "refId": "B" }
+      ]
+    },
+
+    {
+      "id": 43,
+      "type": "timeseries",
+      "title": "Tailscale Traffic",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 46 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps",
+          "custom": { "lineWidth": 2, "fillOpacity": 8 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "rate(node_network_receive_bytes_total{instance=\"NETWORKSERVER\", device=\"tailscale0\"}[2m]) * 8", "legendFormat": "↓ tailscale0", "refId": "A" },
+        { "expr": "rate(node_network_transmit_bytes_total{instance=\"NETWORKSERVER\", device=\"tailscale0\"}[2m]) * 8", "legendFormat": "↑ tailscale0", "refId": "B" }
+      ]
+    },
+
+    {
+      "id": 44,
+      "type": "stat",
+      "title": "NIC Status",
+      "description": "Operationele status van de fysieke NICs",
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 46 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "orientation": "horizontal"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "green", "value": 1 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "node_network_up{instance=\"NETWORKSERVER\", device=~\"nic[0-9]+|vmbr[0-9]+\"}",
+        "legendFormat": "{{device}}", "refId": "A", "instant": true
+      }]
+    },
+
+    {
+      "id": 50,
+      "type": "row",
+      "title": "Temperaturen",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 52 },
+      "collapsed": false
+    },
+
+    {
+      "id": 51,
+      "type": "timeseries",
+      "title": "CPU Temperatuur — i3-N305 (Package + Cores)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 53 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": { "lineWidth": 2, "fillOpacity": 8 },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "blue", "value": null },
+            { "color": "green", "value": 30 },
+            { "color": "yellow", "value": 65 },
+            { "color": "red", "value": 80 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "node_hwmon_temp_celsius{instance=\"NETWORKSERVER\", chip=\"platform_coretemp_0\"}",
+        "legendFormat": "{{sensor}}", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 52,
+      "type": "timeseries",
+      "title": "NVMe Temperatuur",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 53 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": { "lineWidth": 2, "fillOpacity": 8 },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 60 },
+            { "color": "red", "value": 75 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "node_hwmon_temp_celsius{instance=\"NETWORKSERVER\", chip=\"nvme_nvme0\"}",
+        "legendFormat": "{{sensor}}", "refId": "A"
+      }]
+    }
+
+  ]
+}

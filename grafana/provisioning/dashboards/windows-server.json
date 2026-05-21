@@ -1,0 +1,543 @@
+{
+  "title": "Windows Server 2025",
+  "uid": "windows-server-hl",
+  "description": "WINDOWSSERVER2025 — Hyper-V host monitoring via windows_exporter",
+  "timezone": "browser",
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "version": 1,
+  "time": { "from": "now-3h", "to": "now" },
+  "tags": ["windows", "hyper-v"],
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Overzicht",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "CPU Gebruik",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg by (instance) (rate(windows_cpu_time_total{instance=\"WINDOWSSERVER2025\", mode=\"idle\"}[2m])) * 100)",
+          "legendFormat": "CPU %",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Geheugen Gebruik",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 75 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (windows_os_physical_memory_free_bytes{instance=\"WINDOWSSERVER2025\"} / windows_cs_physical_memory_bytes{instance=\"WINDOWSSERVER2025\"} * 100)",
+          "legendFormat": "RAM %",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Geheugen Vrij",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 2147483648 },
+              { "color": "green", "value": 8589934592 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_os_physical_memory_free_bytes{instance=\"WINDOWSSERVER2025\"}",
+          "legendFormat": "Vrij",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Uptime",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_system_system_up_time{instance=\"WINDOWSSERVER2025\"}",
+          "legendFormat": "Uptime",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Processen",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_os_processes{instance=\"WINDOWSSERVER2025\"}",
+          "legendFormat": "Processen",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Threads",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_system_threads{instance=\"WINDOWSSERVER2025\"}",
+          "legendFormat": "Threads",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 10,
+      "type": "row",
+      "title": "CPU",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "collapsed": false
+    },
+
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "CPU Gebruik — totaal",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": { "lineWidth": 2, "fillOpacity": 15 },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg by (instance) (rate(windows_cpu_time_total{instance=\"WINDOWSSERVER2025\", mode=\"idle\"}[2m])) * 100)",
+          "legendFormat": "CPU totaal",
+          "refId": "A"
+        },
+        {
+          "expr": "avg by (instance) (rate(windows_cpu_time_total{instance=\"WINDOWSSERVER2025\", mode=\"user\"}[2m])) * 100",
+          "legendFormat": "User",
+          "refId": "B"
+        },
+        {
+          "expr": "avg by (instance) (rate(windows_cpu_time_total{instance=\"WINDOWSSERVER2025\", mode=\"privileged\"}[2m])) * 100",
+          "legendFormat": "Privileged (kernel)",
+          "refId": "C"
+        }
+      ]
+    },
+
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "CPU per Core",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": { "lineWidth": 1, "fillOpacity": 5 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (rate(windows_cpu_time_total{instance=\"WINDOWSSERVER2025\", mode=\"idle\"}[2m]) * 100)",
+          "legendFormat": "Core {{core}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 20,
+      "type": "row",
+      "title": "Geheugen",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "collapsed": false
+    },
+
+    {
+      "id": 21,
+      "type": "timeseries",
+      "title": "Geheugen Gebruik",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": { "lineWidth": 2, "fillOpacity": 15 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_cs_physical_memory_bytes{instance=\"WINDOWSSERVER2025\"}",
+          "legendFormat": "Totaal RAM",
+          "refId": "A"
+        },
+        {
+          "expr": "windows_cs_physical_memory_bytes{instance=\"WINDOWSSERVER2025\"} - windows_os_physical_memory_free_bytes{instance=\"WINDOWSSERVER2025\"}",
+          "legendFormat": "Gebruikt",
+          "refId": "B"
+        },
+        {
+          "expr": "windows_os_physical_memory_free_bytes{instance=\"WINDOWSSERVER2025\"}",
+          "legendFormat": "Vrij",
+          "refId": "C"
+        }
+      ]
+    },
+
+    {
+      "id": 22,
+      "type": "timeseries",
+      "title": "Page Faults & Swap",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops",
+          "custom": { "lineWidth": 1, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(windows_memory_page_faults_total{instance=\"WINDOWSSERVER2025\"}[2m])",
+          "legendFormat": "Page faults/s",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(windows_memory_swap_page_operations_total{instance=\"WINDOWSSERVER2025\"}[2m])",
+          "legendFormat": "Swap ops/s",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 30,
+      "type": "row",
+      "title": "Schijven",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 },
+      "collapsed": false
+    },
+
+    {
+      "id": 31,
+      "type": "bargauge",
+      "title": "Schijf Vrij per Volume",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 24 },
+      "options": {
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "displayMode": "gradient",
+        "valueMode": "color"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 10737418240 },
+              { "color": "green", "value": 53687091200 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_logical_disk_free_bytes{instance=\"WINDOWSSERVER2025\", volume!~\"HarddiskVolume.*\"}",
+          "legendFormat": "{{volume}}",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 32,
+      "type": "bargauge",
+      "title": "Schijf Gebruik % per Volume",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 24 },
+      "options": {
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "displayMode": "gradient"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 75 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (windows_logical_disk_free_bytes{instance=\"WINDOWSSERVER2025\", volume!~\"HarddiskVolume.*\"} / windows_logical_disk_size_bytes{instance=\"WINDOWSSERVER2025\", volume!~\"HarddiskVolume.*\"} * 100)",
+          "legendFormat": "{{volume}}",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 33,
+      "type": "timeseries",
+      "title": "Schijf I/O — bytes/s",
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 24 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "custom": { "lineWidth": 1, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(windows_logical_disk_read_bytes_total{instance=\"WINDOWSSERVER2025\", volume!~\"HarddiskVolume.*\"}[2m])",
+          "legendFormat": "↓ Lees {{volume}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(windows_logical_disk_write_bytes_total{instance=\"WINDOWSSERVER2025\", volume!~\"HarddiskVolume.*\"}[2m])",
+          "legendFormat": "↑ Schrijf {{volume}}",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 40,
+      "type": "row",
+      "title": "Netwerk",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 30 },
+      "collapsed": false
+    },
+
+    {
+      "id": 41,
+      "type": "timeseries",
+      "title": "Netwerk Traffic — bytes/s",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 31 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(windows_net_bytes_received_total{instance=\"WINDOWSSERVER2025\", nic!~\".*isatap.*|.*Loopback.*\"}[2m]) * 8",
+          "legendFormat": "↓ {{nic}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(windows_net_bytes_sent_total{instance=\"WINDOWSSERVER2025\", nic!~\".*isatap.*|.*Loopback.*\"}[2m]) * 8",
+          "legendFormat": "↑ {{nic}}",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 42,
+      "type": "timeseries",
+      "title": "Netwerk Packets/s",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 31 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pps",
+          "custom": { "lineWidth": 1, "fillOpacity": 5 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(windows_net_packets_received_total{instance=\"WINDOWSSERVER2025\", nic!~\".*isatap.*|.*Loopback.*\"}[2m])",
+          "legendFormat": "↓ {{nic}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(windows_net_packets_sent_total{instance=\"WINDOWSSERVER2025\", nic!~\".*isatap.*|.*Loopback.*\"}[2m])",
+          "legendFormat": "↑ {{nic}}",
+          "refId": "B"
+        }
+      ]
+    }
+
+  ]
+}
