@@ -1,0 +1,207 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    environment: hostinglocal
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['localhost:9093']
+
+rule_files:
+  - /etc/prometheus/alert.rules.yml
+
+scrape_configs:
+
+  # Prometheus zelf
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # VPS-HOSTINGLOCAL (deze server, node_exporter systemd)
+  - job_name: 'vps-hostinglocal'
+    static_configs:
+      - targets: ['localhost:9100']
+        labels:
+          instance: 'VPS-HOSTINGLOCAL'
+
+  # VPS-WORKINGLOCAL (RackNerd 8GB, Tailscale 100.107.226.24)
+  - job_name: 'vps-workinglocal'
+    static_configs:
+      - targets: ['100.107.226.24:9100']
+        labels:
+          instance: 'VPS-WORKINGLOCAL'
+
+  # Windows Server 2025 (Hyper-V host)
+  # Vereist: windows_exporter op 100.92.201.100:9182
+  - job_name: 'windows-server'
+    static_configs:
+      - targets: ['100.92.201.100:9182']
+        labels:
+          instance: 'WINDOWSSERVER2025'
+
+  # VM-AutoBA
+  # Vereist: node_exporter op 100.107.82.21:9100
+  - job_name: 'vm-autoba'
+    static_configs:
+      - targets: ['100.107.82.21:9100']
+        labels:
+          instance: 'VM-AUTOBA'
+
+  # VM-AI-Engine
+  # Vereist: node_exporter op 100.80.180.55:9100
+  - job_name: 'vm-ai-engine'
+    static_configs:
+      - targets: ['100.80.180.55:9100']
+        labels:
+          instance: 'VM-AI-ENGINE'
+
+  # NUT-SERVER (Raspberry Pi 3B)
+  # Vereist: node_exporter op 100.97.195.23:9100
+  - job_name: 'nut-server'
+    static_configs:
+      - targets: ['100.97.195.23:9100']
+        labels:
+          instance: 'NUT-SERVER'
+
+  # AI Node i9 (MS-01, bare metal, Tailscale 100.126.121.11)
+  - job_name: 'ai-node-i9'
+    static_configs:
+      - targets: ['100.126.121.11:9100']
+        labels:
+          instance: 'AI-NODE-I9'
+
+  # AI Node i5 (MS-01, bare metal, Tailscale 100.78.175.49)
+  - job_name: 'ai-node-i5'
+    static_configs:
+      - targets: ['100.78.175.49:9100']
+        labels:
+          instance: 'AI-NODE-I5'
+
+  # VM-IMMICH (Ubuntu 24.04, Tailscale 100.75.33.124)
+  - job_name: 'vm-immich'
+    static_configs:
+      - targets: ['100.75.33.124:9100']
+        labels:
+          instance: 'VM-IMMICH'
+
+  # MEDIASERVER (Proxmox host NUC i5-8259U, Tailscale 100.111.62.69)
+  - job_name: 'mediaserver'
+    static_configs:
+      - targets: ['100.111.62.69:9100']
+        labels:
+          instance: 'MEDIASERVER'
+
+  # VM-PLEX (Ubuntu 24.04, 192.168.111.50)
+  - job_name: 'vm-plex'
+    static_configs:
+      - targets: ['100.83.181.85:9100']
+        labels:
+          instance: 'VM-PLEX'
+
+  # VM-APPS (Hyper-V VM, Coolify+Vaultwarden, Tailscale 100.97.124.46)
+  - job_name: 'vm-apps'
+    static_configs:
+      - targets: ['100.97.124.46:9100']
+        labels:
+          instance: 'VM-APPS'
+
+  # NETWORKSERVER (Proxmox host i3-N305, Tailscale 100.119.137.54)
+  - job_name: 'networkserver'
+    static_configs:
+      - targets: ['100.119.137.54:9100']
+        labels:
+          instance: 'NETWORKSERVER'
+
+  # VM-NPM (Nginx Proxy Manager, Tailscale 100.75.230.22)
+  - job_name: 'vm-npm'
+    static_configs:
+      - targets: ['100.75.230.22:9100']
+        labels:
+          instance: 'VM-NPM'
+
+  # VM-NETBOX (NetBox IPAM, Tailscale 100.122.166.117)
+  - job_name: 'vm-netbox'
+    static_configs:
+      - targets: ['100.122.166.117:9100']
+        labels:
+          instance: 'VM-NETBOX'
+
+  # VM-ADGUARD node_exporter (Tailscale 100.121.177.76)
+  - job_name: 'vm-adguard'
+    static_configs:
+      - targets: ['100.121.177.76:9100']
+        labels:
+          instance: 'VM-ADGUARD'
+
+  # VM-ADGUARD AdGuard Home exporter (poort 9617)
+  - job_name: 'adguard-home'
+    static_configs:
+      - targets: ['100.121.177.76:9617']
+        labels:
+          instance: 'VM-ADGUARD'
+
+  # VM-OPENCLAW (OpenClaw AI gateway, Tailscale 100.92.71.9)
+  - job_name: 'vm-openclaw'
+    static_configs:
+      - targets: ['100.92.71.9:9100']
+        labels:
+          instance: 'VM-OPENCLAW'
+
+  # UNIFI Gateway (via SNMP Exporter op NETWORKSERVER)
+  # Vereist: snmp-exporter draait op NETWORKSERVER (100.119.137.54:9116)
+  # SNMP inschakelen op Unifi: Settings → System → Traffic Logging → SNMP Monitoring v1/2C
+  - job_name: 'unifi-snmp'
+    scrape_interval: 60s
+    metrics_path: /snmp
+    params:
+      module: [if_mib]
+    static_configs:
+      - targets: ['192.168.111.1']
+        labels:
+          instance: 'UNIFI-GATEWAY'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: '100.119.137.54:9116'
+
+  # TRAVELSERVER (TrueNAS SCALE, Minisforum S100, Tailscale 100.83.16.76)
+  - job_name: 'travelserver'
+    static_configs:
+      - targets: ['100.83.16.76:9100']
+        labels:
+          instance: 'TRAVELSERVER'
+
+  # FILESERVER (Synology DS423+, node_exporter via Docker, Tailscale 100.72.50.41)
+  - job_name: 'fileserver'
+    static_configs:
+      - targets: ['100.72.50.41:9100']
+        labels:
+          instance: 'FILESERVER'
+
+  # VM-MUSIC (Ubuntu 24.04, Navidrome+Lidarr+MA, Tailscale 100.77.174.124)
+  - job_name: 'vm-music'
+    static_configs:
+      - targets: ['100.77.174.124:9100']
+        labels:
+          instance: 'VM-MUSIC'
+
+  # VM-DOCS (Ubuntu 24.04, Calibre+Paperless+BookStack, Tailscale 100.107.238.37)
+  - job_name: 'vm-docs'
+    static_configs:
+      - targets: ['100.107.238.37:9100']
+        labels:
+          instance: 'VM-DOCS'
+
+  # HAOS Intel NUC — via Netdata Prometheus export
+  - job_name: 'haos-nuc'
+    metrics_path: /api/v1/allmetrics
+    params:
+      format: [prometheus]
+      help: ['yes']
+    static_configs:
+      - targets: ['100.109.230.93:19999']
+        labels:
+          instance: 'HAOS-NUC'
