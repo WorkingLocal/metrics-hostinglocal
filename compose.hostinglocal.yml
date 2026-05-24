@@ -27,6 +27,7 @@ services:
       - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
     networks:
       - proxy
+      - metrics_internal
 
   alertmanager-ntfy:
     build: ./alertmanager-ntfy
@@ -38,6 +39,7 @@ services:
       NTFY_TOKEN: ${NTFY_PUBLISHER_TOKEN}
     networks:
       - proxy
+      - metrics_internal
 
   grafana:
     image: grafana/grafana:11.6.2
@@ -72,6 +74,8 @@ services:
       - /root/.ssh/thermal_shutdown:/app/keys/id_ed25519:ro
     environment:
       SSH_KEY_PATH: /app/keys/id_ed25519
+    networks:
+      - metrics_internal
 
 volumes:
   prometheus_data:
@@ -82,3 +86,5 @@ volumes:
 networks:
   proxy:
     external: true
+  metrics_internal:
+    name: metrics_internal
