@@ -6,19 +6,28 @@ global:
   smtp_require_tls: true
 
 route:
-  receiver: email-warning
+  receiver: ntfy-warning
   group_by: [alertname, instance]
   group_wait: 2m
   group_interval: 10m
   repeat_interval: 12h
   routes:
-    # Thermal shutdown: eerst webhook (actie), daarna ook e-mail via continue
+    # Thermal shutdown: eerst webhook (actie), rest via continue
     - match:
         action: shutdown
       receiver: thermal-shutdown-webhook
       group_wait: 10s
       group_interval: 5m
       repeat_interval: 2h
+      continue: true
+
+    # Critical: ntfy push + e-mail
+    - match:
+        severity: critical
+      receiver: ntfy-critical
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 1h
       continue: true
 
     - match:
@@ -29,13 +38,19 @@ route:
       repeat_interval: 1h
 
 receivers:
-  - name: email-warning
-    email_configs:
-      - to: 'thomas@workinglocal.be'
+  # Warnings → ntfy push (geen e-mail, volume te hoog)
+  - name: ntfy-warning
+    webhook_configs:
+      - url: 'http://alertmanager-ntfy:9095/hook'
         send_resolved: true
-        headers:
-          Subject: '[WARNING] {{ .GroupLabels.alertname }} — {{ .GroupLabels.instance }}'
 
+  # Critical → ntfy push (urgentie via bridge)
+  - name: ntfy-critical
+    webhook_configs:
+      - url: 'http://alertmanager-ntfy:9095/hook'
+        send_resolved: true
+
+  # Critical → e-mail (blijft voor kritieke alerts)
   - name: email-critical
     email_configs:
       - to: 'thomas@workinglocal.be'

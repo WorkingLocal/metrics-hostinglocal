@@ -25,6 +25,19 @@ services:
       - "9093:9093"
     volumes:
       - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    networks:
+      - proxy
+
+  alertmanager-ntfy:
+    build: ./alertmanager-ntfy
+    container_name: alertmanager-ntfy
+    restart: unless-stopped
+    environment:
+      NTFY_URL: http://ntfy:80
+      NTFY_TOPIC: homelab
+      NTFY_TOKEN: ${NTFY_PUBLISHER_TOKEN}
+    networks:
+      - proxy
 
   grafana:
     image: grafana/grafana:11.6.2
