@@ -34,6 +34,26 @@ groups:
           summary: "KRITIEKE temperatuur op {{ $labels.instance }} — SHUTDOWN GESTART"
           description: "Temperatuur is {{ $value | humanize }}°C op {{ $labels.instance }} (drempel: 90°C) — graceful shutdown wordt uitgevoerd"
 
+      # Windows thermalzone (Hyper-V host geeft vaak geen data — rule staat klaar)
+      - alert: HighTemperatureCriticalWindows
+        expr: (windows_thermalzone_temperature_kelvin - 273.15) > 90
+        for: 2m
+        labels:
+          severity: critical
+          action: shutdown
+        annotations:
+          summary: "KRITIEKE temperatuur op {{ $labels.instance }} (Windows) — SHUTDOWN GESTART"
+          description: "Temperatuur is {{ $value | humanize }}°C op {{ $labels.instance }} (drempel: 90°C)"
+
+      - alert: HighTemperatureWarningWindows
+        expr: (windows_thermalzone_temperature_kelvin - 273.15) > 80
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Hoge temperatuur op {{ $labels.instance }} (Windows)"
+          description: "Temperatuur is {{ $value | humanize }}°C (drempel: 80°C)"
+
       # ── Overige alerts ────────────────────────────────────────────────────
 
       - alert: InstanceDown

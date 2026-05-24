@@ -42,13 +42,14 @@ def shutdown_host(instance: str) -> tuple[bool, str]:
 
     ip = host_cfg["tailscale_ip"]
     user = host_cfg["ssh_user"]
-    logger.info(f"Graceful shutdown starten: {instance} ({user}@{ip})")
+    port = host_cfg.get("ssh_port", 22)
+    cmd = host_cfg.get("shutdown_cmd", 'shutdown -h +1 "Thermal shutdown via Prometheus alert"')
+    logger.info(f"Graceful shutdown starten: {instance} ({user}@{ip}:{port})")
 
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(ip, username=user, key_filename=SSH_KEY_PATH, timeout=10)
-        cmd = 'shutdown -h +1 "Thermal shutdown via Prometheus alert"'
+        ssh.connect(ip, port=port, username=user, key_filename=SSH_KEY_PATH, timeout=10)
         _, stdout, stderr = ssh.exec_command(cmd)
         exit_code = stdout.channel.recv_exit_status()
         ssh.close()
