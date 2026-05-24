@@ -92,6 +92,35 @@ groups:
           summary: "NVMe schijf bijna vol op {{ $labels.instance }}"
           description: "{{ $labels.device }} ({{ $labels.mountpoint }}) is {{ $value | humanize }}% vol (drempel: 80%)"
 
+      # ── SMART / schijfgezondheid ──────────────────────────────────────────
+
+      - alert: SmartHealthFailed
+        expr: smartctl_device_smart_status{} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "SMART health FAILED op {{ $labels.instance }} — {{ $labels.device }}"
+          description: "Schijf {{ $labels.device }} op {{ $labels.instance }} rapporteert SMART overall health FAILED."
+
+      - alert: NvmeCriticalWarning
+        expr: smartctl_device_nvme_smart_critical_warning_total{} > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "NVMe critical warning op {{ $labels.instance }} — {{ $labels.device }}"
+          description: "NVMe schijf {{ $labels.device }} heeft een critical warning (waarde: {{ $value }})."
+
+      - alert: SmartReallocatedSectors
+        expr: smartctl_device_attribute{attribute_name="Reallocated_Sector_Ct"} > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Reallocated sectors op {{ $labels.instance }} — {{ $labels.device }}"
+          description: "{{ $value }} reallocated sectors op {{ $labels.device }}. Schijf vertoont tekenen van slijtage."
+
       - alert: NvmeDiskUsageCritical
         expr: (1 - node_filesystem_avail_bytes{fstype!~"tmpfs|overlay", device=~"/dev/nvme.*"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay", device=~"/dev/nvme.*"}) * 100 > 90
         for: 1m

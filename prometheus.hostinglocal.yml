@@ -195,6 +195,13 @@ scrape_configs:
         labels:
           instance: 'VM-DOCS'
 
+  # SMART disk health — lokale schijven METRICS-SERVER (smartctl_exporter poort 9633)
+  - job_name: 'smartctl-metricsserver'
+    static_configs:
+      - targets: ['localhost:9633']
+        labels:
+          instance: 'METRICSSERVER'
+
   # HAOS Intel NUC — via Netdata Prometheus export
   - job_name: 'haos-nuc'
     metrics_path: /api/v1/allmetrics

@@ -64,6 +64,14 @@ services:
     networks:
       - proxy
 
+  # SMART disk health monitoring (lokale schijven van de metrics server)
+  smartctl-exporter:
+    image: prometheuscommunity/smartctl-exporter:latest
+    container_name: smartctl-exporter
+    privileged: true
+    network_mode: host
+    restart: unless-stopped
+
   # Ontvangt Alertmanager webhooks en voert graceful SSH shutdown uit bij hoge temperatuur
   thermal-shutdown:
     build: ./thermal-shutdown
