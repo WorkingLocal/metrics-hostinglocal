@@ -2,6 +2,40 @@ groups:
   - name: node_alerts
     rules:
 
+      # ── Temperatuuralerts ──────────────────────────────────────────────────
+      # chip=platform_coretemp_0 = Intel CPU package temp (Linux nodes)
+      # chip=thermal_thermal_zone0 = Raspberry Pi CPU temp (NUT-SERVER)
+      # sensor=temp1 = Package-temp bij coretemp; sensor=temp0 = enige sensor bij Pi
+
+      - alert: HighTemperatureWarning
+        expr: >
+          node_hwmon_temp_celsius{
+            chip=~"platform_coretemp_0|thermal_thermal_zone0",
+            sensor=~"temp0|temp1"
+          } > 80
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Hoge temperatuur op {{ $labels.instance }}"
+          description: "Temperatuur is {{ $value | humanize }}°C op {{ $labels.instance }} (drempel: 80°C)"
+
+      - alert: HighTemperatureCritical
+        expr: >
+          node_hwmon_temp_celsius{
+            chip=~"platform_coretemp_0|thermal_thermal_zone0",
+            sensor=~"temp0|temp1"
+          } > 90
+        for: 2m
+        labels:
+          severity: critical
+          action: shutdown
+        annotations:
+          summary: "KRITIEKE temperatuur op {{ $labels.instance }} — SHUTDOWN GESTART"
+          description: "Temperatuur is {{ $value | humanize }}°C op {{ $labels.instance }} (drempel: 90°C) — graceful shutdown wordt uitgevoerd"
+
+      # ── Overige alerts ────────────────────────────────────────────────────
+
       - alert: InstanceDown
         expr: up == 0
         for: 2m

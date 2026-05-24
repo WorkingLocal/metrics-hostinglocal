@@ -49,6 +49,17 @@ services:
     networks:
       - proxy
 
+  # Ontvangt Alertmanager webhooks en voert graceful SSH shutdown uit bij hoge temperatuur
+  thermal-shutdown:
+    build: ./thermal-shutdown
+    container_name: thermal-shutdown-metrics
+    restart: unless-stopped
+    volumes:
+      - ./thermal-shutdown/hosts.yml:/app/hosts.yml:ro
+      - /root/.ssh/thermal_shutdown:/app/keys/id_ed25519:ro
+    environment:
+      SSH_KEY_PATH: /app/keys/id_ed25519
+
 volumes:
   prometheus_data:
     name: metrics_prometheus_data

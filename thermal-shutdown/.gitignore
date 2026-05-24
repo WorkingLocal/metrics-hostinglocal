@@ -1,0 +1,4 @@
+keys/
+*.pem
+id_*
+!id_*.pub

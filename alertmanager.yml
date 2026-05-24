@@ -12,6 +12,15 @@ route:
   group_interval: 10m
   repeat_interval: 12h
   routes:
+    # Thermal shutdown: eerst webhook (actie), daarna ook e-mail via continue
+    - match:
+        action: shutdown
+      receiver: thermal-shutdown-webhook
+      group_wait: 10s
+      group_interval: 5m
+      repeat_interval: 2h
+      continue: true
+
     - match:
         severity: critical
       receiver: email-critical
@@ -33,6 +42,11 @@ receivers:
         send_resolved: true
         headers:
           Subject: '[CRITICAL] {{ .GroupLabels.alertname }} — {{ .GroupLabels.instance }}'
+
+  - name: thermal-shutdown-webhook
+    webhook_configs:
+      - url: 'http://thermal-shutdown:9095/webhook'
+        send_resolved: false
 
 inhibit_rules:
   - source_match:

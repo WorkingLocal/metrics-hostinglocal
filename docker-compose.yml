@@ -66,6 +66,21 @@ services:
       - traefik.http.routers.https-grafana.tls=true
       - traefik.http.services.https-grafana.loadbalancer.server.port=3000
 
+  # ── Thermal Shutdown ───────────────────────────────────────────────────────
+  # Ontvangt Alertmanager webhooks en voert graceful SSH shutdown uit
+  # SSH key: genereer op VPS en voeg public key toe aan target hosts
+  thermal-shutdown:
+    build: ./thermal-shutdown
+    container_name: thermal-shutdown-metrics
+    restart: unless-stopped
+    volumes:
+      - ./thermal-shutdown/hosts.yml:/app/hosts.yml:ro
+      - ${THERMAL_SSH_KEY_PATH:-/root/.ssh/thermal_shutdown}:/app/keys/id_ed25519:ro
+    environment:
+      SSH_KEY_PATH: /app/keys/id_ed25519
+    networks:
+      - monitoring
+
   # ── Uptime Kuma ────────────────────────────────────────────────────────────
   uptime-kuma:
     image: louislam/uptime-kuma:2
