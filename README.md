@@ -40,7 +40,7 @@ Monitoring stack voor het volledige Hosting Local homelab.
 | AI-NODE-I5 | node_exporter :9100 | 100.78.175.49 | actief |
 | TRAVELSERVER | node_exporter :9100 | 100.83.16.76 | actief |
 | NUT-SERVER Pi | node_exporter :9100 | 100.97.195.23 | actief |
-| HAOS-NUC | Netdata Prometheus export :19999 | 100.109.230.93 | actief |
+| HAOS-NUC | Native HA Prometheus `/api/prometheus` :8123 | 192.168.111.75 (lokaal) | actief |
 | VM-AutoBA | node_exporter Docker :9100 | 100.107.82.21 | actief |
 | VM-AI-Engine | node_exporter :9100 | 100.80.180.55 | actief |
 | VM-ADGUARD | node_exporter :9100 | 100.121.177.76 | actief |
@@ -158,7 +158,7 @@ Thermalzone collector inschakelen: `bash windows-temp/setup.ps1` (PowerShell als
 | CPU Cores — Alle Nodes | cpu-cores-hl | `cpu-cores.json` | — |
 | Disk Overview — Alle Nodes | disk-overview-hl | `disk-overview.json` | ✅ |
 | VPS — Workinglocal | vps-workinglocal-hl | `vps.json` | — |
-| HAOS — Intel NUC | haos-nuc-hl | `haos.json` | — |
+| HAOS — Intel NUC | haos-nuc-hl | `haos.json` | — | Native HA Prometheus, Bearer token, 120s interval |
 | NETWORKSERVER | networkserver-hl | `networkserver.json` | — |
 | FILESERVER — Synology DS423+ | fileserver-hl | `fileserver.json` | — |
 
@@ -204,9 +204,26 @@ Grafana zit achter Cloudflare (Full SSL mode). Gebruik **geen** `redirect-to-htt
 | NvmeDiskUsageHigh | /dev/nvme* >80% gedurende 5 min | warning |
 | NvmeDiskUsageCritical | /dev/nvme* >90% gedurende 1 min | critical |
 
+## HAOS energie-monitoring
+
+HAOS exporteert via de native Prometheus-integratie alle `sensor`, `binary_sensor`, `climate`, `switch` en aanverwante domeinen naar `/api/prometheus`. Authenticatie via long-lived Bearer token (zie Vaultwarden > Home Assistant > HAOS - Long-lived API Token).
+
+**Belangrijke HAOS energie-sensoren:**
+
+| Entity | Beschrijving |
+|--------|-------------|
+| `sensor.eatonups_current_real_power` | Huidig homelab-verbruik in W |
+| `sensor.eatonups_load` | UPS belasting in % |
+| `sensor.homelab_verbruik_kwh_totaal` | Cumulatief verbruik kWh (Riemann sum) |
+| `sensor.beem_energy_thomas_vandromme_current_power` | Beem 300W productie in W |
+| `sensor.beem_energy_thomas_vandromme_monthly_energy` | Maandproductie Beem in Wh |
+| `sensor.beem_zonnepanelen_kwh_totaal` | Cumulatieve productie kWh (Riemann sum) |
+
+**Prometheus job:** `haos-nuc`, scrape_interval 120s, target `192.168.111.75:8123` (lokaal netwerk — METRICSSERVER bereikt HAOS direct).
+
 ## Gerelateerde repositories
 
 | Repo | Inhoud |
 |------|--------|
+| [infra-hostinglocal](../infra-hostinglocal) | Infra-documentatie + homelab_finance DB + haos_sync |
 | [vps-workinglocal](../vps-workinglocal) | Server setup & infrastructuur |
-| [netdata-haos-addon](../netdata-haos-addon) | Netdata HAOS add-on (Prometheus export voor HAOS-NUC) |
