@@ -213,7 +213,7 @@ scrape_configs:
   # Endpoint: /api/prometheus met Bearer token (long-lived access token)
   # METRICSSERVER bereikt HAOS via lokaal netwerk 192.168.111.75
   - job_name: 'haos-nuc'
-    scrape_interval: 60s
+    scrape_interval: 120s
     metrics_path: /api/prometheus
     bearer_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIwODlmNDViMzlmZDQ0N2I5OWExNTE0ZTRhMmRhN2Q0NiIsImlhdCI6MTc3OTUxNjAxMywiZXhwIjoyMDk0ODc2MDEzfQ.-JZIKRGCnxQieFTxOXFfEZwT2VPgbEUb4NzOmpqqa1E'
     static_configs:
