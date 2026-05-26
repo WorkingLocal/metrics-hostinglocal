@@ -34,6 +34,26 @@ groups:
           summary: "KRITIEKE temperatuur op {{ $labels.instance }} — SHUTDOWN GESTART"
           description: "Temperatuur is {{ $value | humanize }}°C op {{ $labels.instance }} (drempel: 90°C) — graceful shutdown wordt uitgevoerd"
 
+      # SMARTHOMESERVER (HAOS) temperatuur via Home Assistant System Monitor
+      # node_hwmon niet beschikbaar in HA-container; temp komt via HA entity in Prometheus
+      - alert: SmarthomeserverTemperatureWarning
+        expr: homeassistant_sensor_temperature_celsius{entity="sensor.system_monitor_processortemperatuur"} > 75
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Hoge temperatuur op SMARTHOMESERVER (HAOS)"
+          description: "NUC CPU temperatuur is {{ $value | humanize }}°C (drempel: 75°C)"
+
+      - alert: SmarthomeserverTemperatureCritical
+        expr: homeassistant_sensor_temperature_celsius{entity="sensor.system_monitor_processortemperatuur"} > 85
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "KRITIEKE temperatuur op SMARTHOMESERVER (HAOS)"
+          description: "NUC CPU temperatuur is {{ $value | humanize }}°C (drempel: 85°C)"
+
       # Windows thermalzone (Hyper-V host geeft vaak geen data — rule staat klaar)
       - alert: HighTemperatureCriticalWindows
         expr: (windows_thermalzone_temperature_kelvin - 273.15) > 90
@@ -65,23 +85,41 @@ groups:
           summary: "Node {{ $labels.instance }} niet bereikbaar"
           description: "{{ $labels.instance }} is al meer dan 2 minuten niet bereikbaar."
 
-      - alert: HighCpuUsage
-        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+      - alert: HighCpuUsageWarning
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 50
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: "Hoog CPU gebruik op {{ $labels.instance }}"
-          description: "CPU gebruik is {{ $value | humanize }}% (drempel: 80%)"
+          description: "CPU gebruik is {{ $value | humanize }}% op {{ $labels.instance }} (drempel: 50%)"
 
-      - alert: HighMemoryUsage
+      - alert: HighCpuUsageCritical
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "KRITIEK CPU gebruik op {{ $labels.instance }}"
+          description: "CPU gebruik is {{ $value | humanize }}% op {{ $labels.instance }} (drempel: 80%)"
+
+      - alert: HighMemoryUsageWarning
         expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 80
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: "Hoog geheugengebruik op {{ $labels.instance }}"
-          description: "RAM gebruik is {{ $value | humanize }}% (drempel: 80%)"
+          description: "RAM gebruik is {{ $value | humanize }}% op {{ $labels.instance }} (drempel: 80%)"
+
+      - alert: HighMemoryUsageCritical
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 95
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "KRITIEK geheugengebruik op {{ $labels.instance }}"
+          description: "RAM gebruik is {{ $value | humanize }}% op {{ $labels.instance }} (drempel: 95%)"
 
       - alert: NvmeDiskUsageHigh
         expr: (1 - node_filesystem_avail_bytes{fstype!~"tmpfs|overlay", device=~"/dev/nvme.*"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay", device=~"/dev/nvme.*"}) * 100 > 80

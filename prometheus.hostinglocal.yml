@@ -33,6 +33,38 @@ scrape_configs:
         labels:
           instance: 'METRICSSERVER'
 
+  # SMART disk health — AI-NODE-I9 (MS-01 bare metal, NVMe, Tailscale 100.126.121.11)
+  # Vereist: smartctl_exporter als systemd service op poort 9633
+  - job_name: 'smartctl-ai-node-i9'
+    static_configs:
+      - targets: ['100.126.121.11:9633']
+        labels:
+          instance: 'AI-NODE-I9'
+
+  # SMART disk health — AI-NODE-I5 (MS-01 bare metal, NVMe, Tailscale 100.78.175.49)
+  # Vereist: smartctl_exporter als systemd service op poort 9633
+  - job_name: 'smartctl-ai-node-i5'
+    static_configs:
+      - targets: ['100.78.175.49:9633']
+        labels:
+          instance: 'AI-NODE-I5'
+
+  # SMART disk health — MEDIASERVER (Proxmox NUC, Tailscale 100.111.62.69)
+  # Vereist: smartctl_exporter als systemd service op poort 9633
+  - job_name: 'smartctl-mediaserver'
+    static_configs:
+      - targets: ['100.111.62.69:9633']
+        labels:
+          instance: 'MEDIASERVER'
+
+  # SMART disk health — NETWORKSERVER (Proxmox i3-N305, Tailscale 100.119.137.54)
+  # Vereist: smartctl_exporter als systemd service op poort 9633
+  - job_name: 'smartctl-networkserver'
+    static_configs:
+      - targets: ['100.119.137.54:9633']
+        labels:
+          instance: 'NETWORKSERVER'
+
   # VPS-HOSTINGLOCAL (externe monitoring VPS, node_exporter systemd)
   - job_name: 'vps-hostinglocal'
     static_configs:
@@ -209,14 +241,32 @@ scrape_configs:
         labels:
           instance: 'VM-DOCS'
 
-  # HAOS Intel NUC — native HA Prometheus integration (alle numerieke entiteiten)
+  # VM-AUTH (Keycloak 26.2 SSO, NETWORKSERVER VM 1604, Tailscale 100.82.145.54)
+  - job_name: 'vm-auth'
+    static_configs:
+      - targets: ['100.82.145.54:9100']
+        labels:
+          instance: 'VM-AUTH'
+
+  # FANSERVER (Raspberry Pi 4 8GB, PWM fan controller, Tailscale 100.103.226.56)
+  - job_name: 'fanserver'
+    static_configs:
+      - targets: ['100.103.226.56:9100']
+        labels:
+          instance: 'FANSERVER'
+
+  # SMARTHOMESERVER (HAOS Intel NUC i3) — native HA Prometheus integration (alle numerieke entiteiten)
   # Endpoint: /api/prometheus met Bearer token (long-lived access token)
   # METRICSSERVER bereikt HAOS via lokaal netwerk 192.168.111.75
-  - job_name: 'haos-nuc'
+  - job_name: 'smarthomeserver'
     scrape_interval: 120s
     metrics_path: /api/prometheus
     bearer_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIwODlmNDViMzlmZDQ0N2I5OWExNTE0ZTRhMmRhN2Q0NiIsImlhdCI6MTc3OTUxNjAxMywiZXhwIjoyMDk0ODc2MDEzfQ.-JZIKRGCnxQieFTxOXFfEZwT2VPgbEUb4NzOmpqqa1E'
     static_configs:
       - targets: ['192.168.111.75:8123']
         labels:
-          instance: 'HAOS-NUC'
+          instance: 'SMARTHOMESERVER'
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'homeassistant_state_change_created|homeassistant_last_updated_time_seconds|homeassistant_entity_info'
+        action: drop

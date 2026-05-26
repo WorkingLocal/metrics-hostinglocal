@@ -1,0 +1,273 @@
+{
+  "title": "Energie & Zonnepanelen",
+  "uid": "energie-zonnepanelen",
+  "tags": ["energie", "solar", "beem", "ups"],
+  "timezone": "Europe/Brussels",
+  "schemaVersion": 38,
+  "refresh": "1m",
+  "time": { "from": "now-24h", "to": "now" },
+  "panels": [
+
+    { "type": "row", "id": 1, "title": "☀️ Zonnepanelen — Beem 300W", "gridPos": {"x":0,"y":0,"w":24,"h":1}, "collapsed": false },
+
+    {
+      "id": 2, "type": "stat", "title": "Huidig Vermogen",
+      "gridPos": {"x":0,"y":1,"w":4,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","colorMode":"background","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt", "decimals": 0,
+          "thresholds": {"mode":"absolute","steps":[{"color":"blue","value":null},{"color":"green","value":1},{"color":"yellow","value":150},{"color":"orange","value":250}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_power_w{entity=\"sensor.beem_energy_thomas_vandromme_current_power\"}","legendFormat":"W","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 3, "type": "stat", "title": "Vandaag Geproduceerd",
+      "gridPos": {"x":4,"y":1,"w":4,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","colorMode":"background","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth", "decimals": 2,
+          "thresholds": {"mode":"absolute","steps":[{"color":"blue","value":null},{"color":"green","value":0.1}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_energy_wh{entity=\"sensor.beem_energy_thomas_vandromme_daily_energy\"} / 1000","legendFormat":"kWh","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 4, "type": "stat", "title": "Deze Maand",
+      "gridPos": {"x":8,"y":1,"w":4,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","colorMode":"background","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth", "decimals": 1,
+          "thresholds": {"mode":"absolute","steps":[{"color":"blue","value":null},{"color":"green","value":1}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_energy_wh{entity=\"sensor.beem_energy_thomas_vandromme_monthly_energy\"} / 1000","legendFormat":"kWh","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 5, "type": "stat", "title": "Totaal Geproduceerd",
+      "gridPos": {"x":12,"y":1,"w":4,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","colorMode":"value","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth", "decimals": 2,
+          "thresholds": {"mode":"absolute","steps":[{"color":"green","value":null}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_energy_kwh{entity=\"sensor.beem_zonnepanelen_kwh_totaal\"}","legendFormat":"kWh","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 6, "type": "gauge", "title": "Vermogen vs Max (300W)",
+      "gridPos": {"x":16,"y":1,"w":4,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","showThresholdLabels":false,"showThresholdMarkers":true},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt", "decimals": 0, "min": 0, "max": 300,
+          "thresholds": {"mode":"absolute","steps":[{"color":"blue","value":null},{"color":"green","value":1},{"color":"yellow","value":200},{"color":"orange","value":270}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_power_w{entity=\"sensor.beem_energy_thomas_vandromme_current_power\"}","legendFormat":"W","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 7, "type": "stat", "title": "Signaalsterkte Invertor",
+      "gridPos": {"x":20,"y":1,"w":4,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","colorMode":"background","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "dBm", "decimals": 0,
+          "thresholds": {"mode":"absolute","steps":[{"color":"red","value":null},{"color":"orange","value":-80},{"color":"yellow","value":-70},{"color":"green","value":-60}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_signal_strength_dbm{entity=\"sensor.beem_energy_thomas_vandromme_signal_strength\"}","legendFormat":"dBm","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 8, "type": "timeseries", "title": "Zonne-vermogen over tijd",
+      "gridPos": {"x":0,"y":5,"w":24,"h":8},
+      "options": {"tooltip":{"mode":"single"},"legend":{"displayMode":"list","placement":"bottom"}},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt", "decimals": 0, "min": 0,
+          "color": {"mode":"fixed","fixedColor":"orange"},
+          "custom": {"fillOpacity": 20, "lineWidth": 2, "spanNulls": false}
+        }
+      },
+      "targets": [
+        {"expr":"homeassistant_sensor_power_w{entity=\"sensor.beem_energy_thomas_vandromme_current_power\"}","legendFormat":"Zonne-vermogen (W)","datasource":{"type":"prometheus","uid":"${datasource}"}}
+      ],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    { "type": "row", "id": 20, "title": "🔋 EatonUPS", "gridPos": {"x":0,"y":13,"w":24,"h":1}, "collapsed": false },
+
+    {
+      "id": 21, "type": "stat", "title": "UPS Belasting",
+      "gridPos": {"x":0,"y":14,"w":4,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","colorMode":"background","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt", "decimals": 0,
+          "thresholds": {"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":600},{"color":"red","value":800}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_power_w{entity=\"sensor.eatonups_current_real_power\"}","legendFormat":"W","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 22, "type": "gauge", "title": "Batterij",
+      "gridPos": {"x":4,"y":14,"w":4,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","showThresholdLabels":false,"showThresholdMarkers":true},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "decimals": 0, "min": 0, "max": 100,
+          "thresholds": {"mode":"absolute","steps":[{"color":"red","value":null},{"color":"orange","value":20},{"color":"yellow","value":50},{"color":"green","value":80}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_battery_percent{entity=\"sensor.eatonups_battery_charge\"}","legendFormat":"%","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 23, "type": "gauge", "title": "Werklast",
+      "gridPos": {"x":8,"y":14,"w":4,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","showThresholdLabels":false,"showThresholdMarkers":true},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "decimals": 0, "min": 0, "max": 100,
+          "thresholds": {"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":60},{"color":"red","value":80}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_unit_percent{entity=\"sensor.eatonups_load\"}","legendFormat":"%","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 24, "type": "stat", "title": "Batterij Runtime",
+      "gridPos": {"x":12,"y":14,"w":4,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","colorMode":"background","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s", "decimals": 0,
+          "thresholds": {"mode":"absolute","steps":[{"color":"red","value":null},{"color":"orange","value":300},{"color":"yellow","value":600},{"color":"green","value":1200}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_duration_s{entity=\"sensor.eatonups_battery_runtime\"}","legendFormat":"s","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 25, "type": "stat", "title": "Ingangsspanning",
+      "gridPos": {"x":16,"y":14,"w":4,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","colorMode":"background","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "volt", "decimals": 0,
+          "thresholds": {"mode":"absolute","steps":[{"color":"red","value":null},{"color":"orange","value":200},{"color":"green","value":210},{"color":"orange","value":240},{"color":"red","value":250}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_voltage_v{entity=\"sensor.eatonups_input_voltage\"}","legendFormat":"V","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 26, "type": "stat", "title": "Apparent Power",
+      "gridPos": {"x":20,"y":14,"w":4,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","colorMode":"value","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "voltamp", "decimals": 0,
+          "thresholds": {"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":700},{"color":"red","value":900}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_apparent_power_va{entity=\"sensor.eatonups_current_apparent_power\"}","legendFormat":"VA","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 27, "type": "timeseries", "title": "UPS Vermogen & Belasting over tijd",
+      "gridPos": {"x":0,"y":18,"w":24,"h":7},
+      "options": {"tooltip":{"mode":"multi"},"legend":{"displayMode":"list","placement":"bottom"}},
+      "fieldConfig": {
+        "defaults": {"custom":{"lineWidth":2,"fillOpacity":10,"spanNulls":false}},
+        "overrides": [
+          {"matcher":{"id":"byName","options":"Werklast (%)"},"properties":[{"id":"unit","value":"percent"},{"id":"custom.axisPlacement","value":"right"},{"id":"color","fixedColor":"orange","mode":"fixed"}]},
+          {"matcher":{"id":"byName","options":"Real Power (W)"},"properties":[{"id":"unit","value":"watt"},{"id":"color","fixedColor":"blue","mode":"fixed"}]}
+        ]
+      },
+      "targets": [
+        {"expr":"homeassistant_sensor_power_w{entity=\"sensor.eatonups_current_real_power\"}","legendFormat":"Real Power (W)","datasource":{"type":"prometheus","uid":"${datasource}"}},
+        {"expr":"homeassistant_sensor_unit_percent{entity=\"sensor.eatonups_load\"}","legendFormat":"Werklast (%)","datasource":{"type":"prometheus","uid":"${datasource}"}}
+      ],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    { "type": "row", "id": 30, "title": "🏠 Homelab Verbruik", "gridPos": {"x":0,"y":25,"w":24,"h":1}, "collapsed": false },
+
+    {
+      "id": 31, "type": "stat", "title": "Homelab Totaalverbruik",
+      "gridPos": {"x":0,"y":26,"w":6,"h":4},
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"orientation":"auto","colorMode":"value","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth", "decimals": 2,
+          "thresholds": {"mode":"absolute","steps":[{"color":"green","value":null}]},
+          "mappings": []
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_energy_kwh{entity=\"sensor.homelab_verbruik_kwh_totaal\"}","legendFormat":"kWh","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    },
+
+    {
+      "id": 32, "type": "timeseries", "title": "Homelab Verbruik over tijd",
+      "gridPos": {"x":6,"y":26,"w":18,"h":4},
+      "options": {"tooltip":{"mode":"single"},"legend":{"displayMode":"list","placement":"bottom"}},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "color": {"mode":"fixed","fixedColor":"red"},
+          "custom": {"fillOpacity":10,"lineWidth":2,"spanNulls":false}
+        }
+      },
+      "targets": [{"expr":"homeassistant_sensor_energy_kwh{entity=\"sensor.homelab_verbruik_kwh_totaal\"}","legendFormat":"Homelab kWh","datasource":{"type":"prometheus","uid":"${datasource}"}}],
+      "datasource": {"type":"prometheus","uid":"${datasource}"}
+    }
+
+  ],
+
+  "templating": {
+    "list": [
+      {
+        "name": "datasource", "type": "datasource", "pluginId": "prometheus",
+        "label": "Datasource", "hide": 0, "includeAll": false, "multi": false,
+        "current": {}
+      }
+    ]
+  }
+}
