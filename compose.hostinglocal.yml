@@ -13,7 +13,7 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=30d'
+      - '--storage.tsdb.retention.time=500d'
       - '--web.listen-address=0.0.0.0:9090'
       - '--web.enable-lifecycle'
 
@@ -47,6 +47,7 @@ services:
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
+      - "auth.hostinglocal.be:104.21.54.79"
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
@@ -61,6 +62,20 @@ services:
       GF_SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       GF_SMTP_FROM_ADDRESS: info@workinglocal.be
       GF_SMTP_FROM_NAME: "Hosting Local Metrics"
+      # Keycloak SSO
+      GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+      GF_AUTH_GENERIC_OAUTH_NAME: "Keycloak"
+      GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "grafana"
+      GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "${GRAFANA_OIDC_SECRET}"
+      GF_AUTH_GENERIC_OAUTH_SCOPES: "openid email profile groups"
+      GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://auth.hostinglocal.be/realms/hostinglocal/protocol/openid-connect/auth"
+      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://auth.hostinglocal.be/realms/hostinglocal/protocol/openid-connect/token"
+      GF_AUTH_GENERIC_OAUTH_API_URL: "https://auth.hostinglocal.be/realms/hostinglocal/protocol/openid-connect/userinfo"
+      GF_AUTH_GENERIC_OAUTH_USE_PKCE: "true"
+      GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], '/Admins') && 'Admin' || 'Viewer'"
+      GF_AUTH_SIGNOUT_REDIRECT_URL: "https://auth.hostinglocal.be/realms/hostinglocal/protocol/openid-connect/logout?post_logout_redirect_uri=https://metrics.hostinglocal.be&client_id=grafana"
+    ports:
+      - "3000:3000"
     networks:
       - proxy
 
