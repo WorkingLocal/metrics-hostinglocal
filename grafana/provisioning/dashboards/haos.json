@@ -1,19 +1,19 @@
 {
   "title": "HAOS — Intel NUC",
   "uid": "haos-nuc-hl",
-  "description": "Home Assistant OS op Intel NUC — monitoring via Netdata Prometheus export",
+  "description": "Home Assistant OS op Intel NUC — monitoring via HA native Prometheus + System Monitor integratie",
   "timezone": "browser",
-  "refresh": "30s",
+  "refresh": "2m",
   "schemaVersion": 38,
-  "version": 1,
+  "version": 2,
   "time": { "from": "now-3h", "to": "now" },
-  "tags": ["haos", "home-assistant", "netdata"],
+  "tags": ["haos", "home-assistant"],
   "panels": [
 
     {
       "id": 1,
       "type": "row",
-      "title": "Overzicht",
+      "title": "Systeem",
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
       "collapsed": false
     },
@@ -26,7 +26,8 @@
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
-        "graphMode": "area"
+        "graphMode": "area",
+        "orientation": "auto"
       },
       "fieldConfig": {
         "defaults": {
@@ -47,34 +48,36 @@
       },
       "targets": [
         {
-          "expr": "sum(netdata_system_cpu_percentage_average{instance=\"HAOS-NUC\", dimension!~\"idle|guest.*\"})",
+          "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_processor_use\", job=\"smarthomeserver\"}",
           "legendFormat": "CPU %",
-          "refId": "A"
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
         }
-      ]
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
     },
 
     {
       "id": 3,
       "type": "stat",
-      "title": "RAM Gebruik",
+      "title": "CPU Temperatuur",
       "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
-        "graphMode": "area"
+        "graphMode": "area",
+        "orientation": "auto"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "percent",
+          "unit": "celsius",
           "min": 0,
-          "max": 100,
           "color": { "mode": "thresholds" },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               { "color": "green", "value": null },
-              { "color": "yellow", "value": 75 },
+              { "color": "yellow", "value": 70 },
+              { "color": "orange", "value": 80 },
               { "color": "red", "value": 90 }
             ]
           }
@@ -83,103 +86,38 @@
       },
       "targets": [
         {
-          "expr": "sum(netdata_system_ram_MiB_average{instance=\"HAOS-NUC\", dimension=\"used\"}) / sum(netdata_system_ram_MiB_average{instance=\"HAOS-NUC\"}) * 100",
-          "legendFormat": "RAM %",
-          "refId": "A"
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.system_monitor_processortemperatuur\", job=\"smarthomeserver\"}",
+          "legendFormat": "°C",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
         }
-      ]
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
     },
 
     {
       "id": 4,
       "type": "stat",
-      "title": "RAM Vrij",
+      "title": "RAM Gebruik",
       "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
-        "colorMode": "value",
-        "graphMode": "none"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "decmbytes",
-          "color": { "mode": "thresholds" },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "red", "value": null },
-              { "color": "yellow", "value": 512 },
-              { "color": "green", "value": 2048 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "netdata_system_ram_MiB_average{instance=\"HAOS-NUC\", dimension=\"free\"} + netdata_system_ram_MiB_average{instance=\"HAOS-NUC\", dimension=\"cached\"} + netdata_system_ram_MiB_average{instance=\"HAOS-NUC\", dimension=\"buffers\"}",
-          "legendFormat": "Beschikbaar",
-          "refId": "A"
-        }
-      ]
-    },
-
-    {
-      "id": 5,
-      "type": "stat",
-      "title": "Load Average (5m)",
-      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
-      "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
-        "graphMode": "area"
+        "graphMode": "area",
+        "orientation": "auto"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
-          "decimals": 2,
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "decimals": 1,
           "color": { "mode": "thresholds" },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               { "color": "green", "value": null },
-              { "color": "yellow", "value": 4 },
-              { "color": "red", "value": 8 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "netdata_system_load_load_average{instance=\"HAOS-NUC\", dimension=\"load5\"}",
-          "legendFormat": "Load 5m",
-          "refId": "A"
-        }
-      ]
-    },
-
-    {
-      "id": 6,
-      "type": "stat",
-      "title": "CPU Temperatuur (Package)",
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
-      "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
-        "colorMode": "background",
-        "graphMode": "area"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "celsius",
-          "color": { "mode": "thresholds" },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "blue", "value": null },
-              { "color": "green", "value": 30 },
               { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 85 }
+              { "color": "red", "value": 90 }
             ]
           }
         },
@@ -187,26 +125,29 @@
       },
       "targets": [
         {
-          "expr": "netdata_system_hw_sensor_temperature_input_degrees_Celsius_average{instance=\"HAOS-NUC\", chart=\"sensors.temperature_coretemp-isa-0000_temp1_Package_id_0\"}",
-          "legendFormat": "Package",
-          "refId": "A"
+          "expr": "homeassistant_sensor_data_size_mib{entity=\"sensor.system_monitor_memory_use\", job=\"smarthomeserver\"} / (homeassistant_sensor_data_size_mib{entity=\"sensor.system_monitor_memory_use\", job=\"smarthomeserver\"} + homeassistant_sensor_data_size_mib{entity=\"sensor.system_monitor_memory_free\", job=\"smarthomeserver\"}) * 100",
+          "legendFormat": "RAM %",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
         }
-      ]
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
     },
 
     {
-      "id": 7,
+      "id": 5,
       "type": "stat",
-      "title": "Uptime",
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "title": "RAM Gebruikt",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "value",
-        "graphMode": "none"
+        "graphMode": "none",
+        "orientation": "auto"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "s",
+          "unit": "mebibytes",
+          "decimals": 0,
           "color": { "mode": "thresholds" },
           "thresholds": {
             "mode": "absolute",
@@ -217,281 +158,75 @@
       },
       "targets": [
         {
-          "expr": "netdata_system_uptime_seconds_average{instance=\"HAOS-NUC\"}",
-          "legendFormat": "Uptime",
-          "refId": "A"
+          "expr": "homeassistant_sensor_data_size_mib{entity=\"sensor.system_monitor_memory_use\", job=\"smarthomeserver\"}",
+          "legendFormat": "MiB",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
         }
-      ]
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
     },
 
     {
-      "id": 10,
-      "type": "row",
-      "title": "CPU",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
-      "collapsed": false
-    },
-
-    {
-      "id": 11,
-      "type": "timeseries",
-      "title": "CPU Gebruik — Totaal",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
-      "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "custom": { "lineWidth": 2, "fillOpacity": 15 },
-          "color": { "mode": "thresholds" },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 90 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "sum(netdata_system_cpu_percentage_average{instance=\"HAOS-NUC\", dimension!~\"idle|guest.*\"})",
-          "legendFormat": "CPU totaal",
-          "refId": "A"
-        }
-      ]
-    },
-
-    {
-      "id": 12,
-      "type": "timeseries",
-      "title": "CPU per Mode",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
-      "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "custom": { "lineWidth": 2, "fillOpacity": 8 }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "netdata_system_cpu_percentage_average{instance=\"HAOS-NUC\", dimension!~\"idle|guest.*\"}",
-          "legendFormat": "{{dimension}}",
-          "refId": "A"
-        }
-      ]
-    },
-
-    {
-      "id": 13,
-      "type": "timeseries",
-      "title": "Load Average",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
-      "options": {
-        "tooltip": { "mode": "multi", "sort": "none" },
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "custom": { "lineWidth": 2, "fillOpacity": 10 }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "netdata_system_load_load_average{instance=\"HAOS-NUC\", dimension=\"load1\"}",
-          "legendFormat": "1m",
-          "refId": "A"
-        },
-        {
-          "expr": "netdata_system_load_load_average{instance=\"HAOS-NUC\", dimension=\"load5\"}",
-          "legendFormat": "5m",
-          "refId": "B"
-        },
-        {
-          "expr": "netdata_system_load_load_average{instance=\"HAOS-NUC\", dimension=\"load15\"}",
-          "legendFormat": "15m",
-          "refId": "C"
-        }
-      ]
-    },
-
-    {
-      "id": 14,
-      "type": "timeseries",
-      "title": "Processen — Statussen",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
-      "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "custom": { "lineWidth": 2, "fillOpacity": 5 }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "netdata_system_processes_state_processes_average{instance=\"HAOS-NUC\"}",
-          "legendFormat": "{{dimension}}",
-          "refId": "A"
-        }
-      ]
-    },
-
-    {
-      "id": 20,
-      "type": "row",
-      "title": "Geheugen",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
-      "collapsed": false
-    },
-
-    {
-      "id": 21,
-      "type": "timeseries",
-      "title": "RAM — Gebruik",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 23 },
-      "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "decmbytes",
-          "custom": { "lineWidth": 2, "fillOpacity": 15 }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "netdata_system_ram_MiB_average{instance=\"HAOS-NUC\", dimension=\"used\"}",
-          "legendFormat": "Gebruikt",
-          "refId": "A"
-        },
-        {
-          "expr": "netdata_system_ram_MiB_average{instance=\"HAOS-NUC\", dimension=\"cached\"}",
-          "legendFormat": "Cached",
-          "refId": "B"
-        },
-        {
-          "expr": "netdata_system_ram_MiB_average{instance=\"HAOS-NUC\", dimension=\"buffers\"}",
-          "legendFormat": "Buffers",
-          "refId": "C"
-        },
-        {
-          "expr": "netdata_system_ram_MiB_average{instance=\"HAOS-NUC\", dimension=\"free\"}",
-          "legendFormat": "Vrij",
-          "refId": "D"
-        }
-      ]
-    },
-
-    {
-      "id": 22,
-      "type": "timeseries",
-      "title": "Swap — Gebruik",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 23 },
-      "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "decmbytes",
-          "custom": { "lineWidth": 2, "fillOpacity": 10 }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "netdata_mem_swap_MiB_average{instance=\"HAOS-NUC\"}",
-          "legendFormat": "{{dimension}}",
-          "refId": "A"
-        }
-      ]
-    },
-
-    {
-      "id": 30,
-      "type": "row",
-      "title": "Schijven",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 31 },
-      "collapsed": false
-    },
-
-    {
-      "id": 31,
-      "type": "bargauge",
-      "title": "Schijfgebruik %",
-      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 32 },
-      "options": {
-        "orientation": "horizontal",
-        "reduceOptions": { "calcs": ["lastNotNull"] },
-        "displayMode": "gradient",
-        "showUnfilled": true
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "color": { "mode": "thresholds" },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 90 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "sum by (chart) (netdata_disk_space_GiB_average{instance=\"HAOS-NUC\", dimension=\"used\"}) / sum by (chart) (netdata_disk_space_GiB_average{instance=\"HAOS-NUC\", dimension=~\"used|avail\"}) * 100",
-          "legendFormat": "{{chart}}",
-          "refId": "A",
-          "instant": true
-        }
-      ]
-    },
-
-    {
-      "id": 32,
+      "id": 6,
       "type": "stat",
-      "title": "Disk Vrij — / (root)",
-      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 32 },
+      "title": "Schijf Gebruikt",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
-        "graphMode": "none"
+        "graphMode": "none",
+        "orientation": "auto"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "decgbytes",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "decimals": 1,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_data_size_gib{entity=\"sensor.system_monitor_disk_use\", job=\"smarthomeserver\"} / (homeassistant_sensor_data_size_gib{entity=\"sensor.system_monitor_disk_use\", job=\"smarthomeserver\"} + homeassistant_sensor_data_size_gib{entity=\"sensor.system_monitor_disk_free\", job=\"smarthomeserver\"}) * 100",
+          "legendFormat": "Disk %",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        }
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+    },
+
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Schijf Vrij",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "value",
+        "graphMode": "none",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "gibibytes",
+          "decimals": 1,
           "color": { "mode": "thresholds" },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               { "color": "red", "value": null },
-              { "color": "yellow", "value": 5 },
+              { "color": "orange", "value": 5 },
+              { "color": "yellow", "value": 10 },
               { "color": "green", "value": 20 }
             ]
           }
@@ -500,33 +235,193 @@
       },
       "targets": [
         {
-          "expr": "netdata_disk_space_GiB_average{instance=\"HAOS-NUC\", chart=\"disk_space./\", dimension=\"avail\"}",
-          "legendFormat": "/ vrij",
-          "refId": "A"
+          "expr": "homeassistant_sensor_data_size_gib{entity=\"sensor.system_monitor_disk_free\", job=\"smarthomeserver\"}",
+          "legendFormat": "GiB",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
         }
-      ]
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
     },
 
     {
-      "id": 33,
-      "type": "stat",
-      "title": "Disk Vrij — /data",
-      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 32 },
+      "id": 10,
+      "type": "row",
+      "title": "CPU & Temperatuur over tijd",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "collapsed": false
+    },
+
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "CPU Gebruik & Temperatuur",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
-        "colorMode": "background",
-        "graphMode": "none"
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "decgbytes",
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "spanNulls": false }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "CPU %" },
+            "properties": [
+              { "id": "unit", "value": "percent" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Temperatuur °C" },
+            "properties": [
+              { "id": "unit", "value": "celsius" },
+              { "id": "custom.axisPlacement", "value": "right" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_processor_use\", job=\"smarthomeserver\"}",
+          "legendFormat": "CPU %",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.system_monitor_processortemperatuur\", job=\"smarthomeserver\"}",
+          "legendFormat": "Temperatuur °C",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        }
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+    },
+
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "RAM Gebruik over tijd",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "mebibytes",
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "spanNulls": false }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Vrij" },
+            "properties": [
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Gebruikt" },
+            "properties": [
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_data_size_mib{entity=\"sensor.system_monitor_memory_use\", job=\"smarthomeserver\"}",
+          "legendFormat": "Gebruikt",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        },
+        {
+          "expr": "homeassistant_sensor_data_size_mib{entity=\"sensor.system_monitor_memory_free\", job=\"smarthomeserver\"}",
+          "legendFormat": "Vrij",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        }
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+    },
+
+    {
+      "id": 20,
+      "type": "row",
+      "title": "Netwerk",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "collapsed": false
+    },
+
+    {
+      "id": 21,
+      "type": "timeseries",
+      "title": "Netwerk Doorvoer (eno1)",
+      "gridPos": { "h": 7, "w": 24, "x": 0, "y": 15 },
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "MBs",
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "spanNulls": false }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Ontvangen" },
+            "properties": [
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Verzonden" },
+            "properties": [
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_data_rate_mb_per_s{entity=\"sensor.system_monitor_network_throughput_in_eno1\", job=\"smarthomeserver\"}",
+          "legendFormat": "Ontvangen",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        },
+        {
+          "expr": "homeassistant_sensor_data_rate_mb_per_s{entity=\"sensor.system_monitor_network_throughput_out_eno1\", job=\"smarthomeserver\"}",
+          "legendFormat": "Verzonden",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        }
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+    },
+
+    {
+      "id": 30,
+      "type": "row",
+      "title": "Backup",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+      "collapsed": false
+    },
+
+    {
+      "id": 31,
+      "type": "stat",
+      "title": "Laatste HA Backup",
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 23 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "orientation": "auto",
+        "text": {}
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "dateTimeFromNow",
           "color": { "mode": "thresholds" },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               { "color": "red", "value": null },
-              { "color": "yellow", "value": 10 },
-              { "color": "green", "value": 50 }
+              { "color": "green", "value": 0 }
             ]
           }
         },
@@ -534,186 +429,28 @@
       },
       "targets": [
         {
-          "expr": "netdata_disk_space_GiB_average{instance=\"HAOS-NUC\", chart=\"disk_space./data\", dimension=\"avail\"}",
-          "legendFormat": "/data vrij",
-          "refId": "A"
+          "expr": "homeassistant_sensor_timestamp_seconds{entity=\"sensor.backup_last_attempted_automatic_backup\", job=\"smarthomeserver\"} * 1000",
+          "legendFormat": "Backup",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
         }
-      ]
-    },
-
-    {
-      "id": 34,
-      "type": "timeseries",
-      "title": "Disk I/O — totaal",
-      "gridPos": { "h": 7, "w": 6, "x": 18, "y": 32 },
-      "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "KiBs",
-          "custom": { "lineWidth": 2, "fillOpacity": 10 }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "netdata_system_io_KiB_persec_average{instance=\"HAOS-NUC\", dimension=\"reads\"}",
-          "legendFormat": "↓ Reads",
-          "refId": "A"
-        },
-        {
-          "expr": "netdata_system_io_KiB_persec_average{instance=\"HAOS-NUC\", dimension=\"writes\"}",
-          "legendFormat": "↑ Writes",
-          "refId": "B"
-        }
-      ]
-    },
-
-    {
-      "id": 40,
-      "type": "row",
-      "title": "Netwerk",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 39 },
-      "collapsed": false
-    },
-
-    {
-      "id": 41,
-      "type": "timeseries",
-      "title": "Netwerk Traffic — eno1 (bedraad)",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 40 },
-      "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bps",
-          "custom": { "lineWidth": 2, "fillOpacity": 10 }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "netdata_net_net_kilobits_persec_average{instance=\"HAOS-NUC\", chart=\"net.eno1\", dimension=\"received\"} * 1000",
-          "legendFormat": "↓ received",
-          "refId": "A"
-        },
-        {
-          "expr": "netdata_net_net_kilobits_persec_average{instance=\"HAOS-NUC\", chart=\"net.eno1\", dimension=\"sent\"} * 1000",
-          "legendFormat": "↑ sent",
-          "refId": "B"
-        }
-      ]
-    },
-
-    {
-      "id": 42,
-      "type": "timeseries",
-      "title": "Netwerk Traffic — Tailscale + HAOS bridge",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 40 },
-      "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bps",
-          "custom": { "lineWidth": 2, "fillOpacity": 8 }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "netdata_net_net_kilobits_persec_average{instance=\"HAOS-NUC\", chart=~\"net.tailscale0|net.hassio\", dimension=\"received\"} * 1000",
-          "legendFormat": "↓ {{chart}}",
-          "refId": "A"
-        },
-        {
-          "expr": "netdata_net_net_kilobits_persec_average{instance=\"HAOS-NUC\", chart=~\"net.tailscale0|net.hassio\", dimension=\"sent\"} * 1000",
-          "legendFormat": "↑ {{chart}}",
-          "refId": "B"
-        }
-      ]
-    },
-
-    {
-      "id": 50,
-      "type": "row",
-      "title": "Temperaturen",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 48 },
-      "collapsed": false
-    },
-
-    {
-      "id": 51,
-      "type": "timeseries",
-      "title": "CPU Temperatuur — Cores",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 49 },
-      "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "celsius",
-          "custom": { "lineWidth": 2, "fillOpacity": 8 },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "blue", "value": null },
-              { "color": "green", "value": 30 },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 85 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "netdata_system_hw_sensor_temperature_input_degrees_Celsius_average{instance=\"HAOS-NUC\", chart=~\"sensors.temperature_coretemp.*\"}",
-          "legendFormat": "{{chart}}",
-          "refId": "A"
-        }
-      ]
-    },
-
-    {
-      "id": 52,
-      "type": "timeseries",
-      "title": "WiFi Chip Temperatuur",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 49 },
-      "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean", "max"] }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "celsius",
-          "custom": { "lineWidth": 2, "fillOpacity": 8 },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "blue", "value": null },
-              { "color": "green", "value": 30 },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 85 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "netdata_system_hw_sensor_temperature_input_degrees_Celsius_average{instance=\"HAOS-NUC\", chart=\"sensors.temperature_iwlwifi_1-virtual-0_temp1_input\"}",
-          "legendFormat": "iwlwifi (WiFi chip)",
-          "refId": "A"
-        }
-      ]
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
     }
 
-  ]
+  ],
+
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "type": "datasource",
+        "pluginId": "prometheus",
+        "label": "Datasource",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "current": {}
+      }
+    ]
+  }
 }
