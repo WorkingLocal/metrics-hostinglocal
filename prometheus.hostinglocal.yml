@@ -255,6 +255,16 @@ scrape_configs:
         labels:
           instance: 'FANSERVER'
 
+  # VM-NETBOX applicatie metrics (django-prometheus, METRICS_ENABLED=true vereist)
+  # Exposeert netbox_object_count per model + request/latency metrics
+  - job_name: 'netbox-app'
+    scrape_interval: 60s
+    metrics_path: /api/metrics
+    static_configs:
+      - targets: ['100.122.166.117:8000']
+        labels:
+          instance: 'VM-NETBOX'
+
   # SMARTHOMESERVER (HAOS Intel NUC i3) — native HA Prometheus integration (alle numerieke entiteiten)
   # Endpoint: /api/prometheus met Bearer token (long-lived access token)
   # METRICSSERVER bereikt HAOS via lokaal netwerk 192.168.111.75
