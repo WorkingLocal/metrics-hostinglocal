@@ -259,7 +259,7 @@ scrape_configs:
   # Exposeert netbox_object_count per model + request/latency metrics
   - job_name: 'netbox-app'
     scrape_interval: 60s
-    metrics_path: /api/metrics
+    metrics_path: /metrics
     static_configs:
       - targets: ['100.122.166.117:8000']
         labels:
