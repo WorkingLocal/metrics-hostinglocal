@@ -233,10 +233,57 @@
     },
 
     {
+      "id": 40,
+      "type": "stat",
+      "title": "HAOS NUC — CPU",
+      "description": "Intel NUC i3 — Home Assistant OS, via System Monitor integratie",
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 5 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.system_monitor_processortemperatuur\", job=\"smarthomeserver\"}",
+          "legendFormat": "HAOS NUC",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 41,
+      "type": "text",
+      "title": "WINDOWSSERVER2025 — CPU",
+      "description": "Temperatuur niet beschikbaar",
+      "gridPos": { "h": 4, "w": 16, "x": 8, "y": 5 },
+      "options": {
+        "mode": "markdown",
+        "content": "### ⚠️ Windows Server 2025 — temperatuur niet beschikbaar\n\nDe `thermalzone` WMI-provider werkt niet op Windows Server OS (enkel voor laptop/desktop ACPI). De windows_exporter gebruikt deze collector niet meer.\n\nAlternatief: gebruik **LibreHardwareMonitor** of **IPMI** voor servertoepassingen."
+      }
+    },
+
+    {
       "id": 10,
       "type": "row",
       "title": "CPU Temperaturen — tijdreeks",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
       "collapsed": false
     },
 
@@ -244,7 +291,7 @@
       "id": 11,
       "type": "timeseries",
       "title": "CPU Temperaturen — alle hosts",
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 6 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 10 },
       "options": {
         "tooltip": { "mode": "multi", "sort": "desc" },
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
@@ -277,6 +324,11 @@
           "expr": "node_hwmon_temp_celsius{instance=\"NUT-SERVER\", chip=\"thermal_thermal_zone0\", sensor=\"temp0\"}",
           "legendFormat": "NUT-SERVER Pi CPU",
           "refId": "B"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.system_monitor_processortemperatuur\", job=\"smarthomeserver\"}",
+          "legendFormat": "HAOS NUC CPU",
+          "refId": "C"
         }
       ]
     },
@@ -285,7 +337,7 @@
       "id": 20,
       "type": "row",
       "title": "NVMe Temperaturen",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
       "collapsed": false
     },
 
@@ -294,7 +346,7 @@
       "type": "stat",
       "title": "AI-NODE-I9 — NVMe",
       "description": "Composite temperatuur (hoogste NVMe)",
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 15 },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 19 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
@@ -329,7 +381,7 @@
       "type": "stat",
       "title": "AI-NODE-I5 — NVMe",
       "description": "Composite temperatuur (hoogste NVMe)",
-      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 15 },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 19 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
@@ -364,7 +416,7 @@
       "type": "stat",
       "title": "NETWORKSERVER — NVMe",
       "description": "Composite temperatuur",
-      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 15 },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 19 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
@@ -399,7 +451,7 @@
       "type": "stat",
       "title": "MEDIASERVER — NVMe",
       "description": "Composite temperatuur",
-      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 15 },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 19 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
@@ -433,7 +485,7 @@
       "id": 25,
       "type": "timeseries",
       "title": "NVMe Temperaturen — tijdreeks",
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 19 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 23 },
       "options": {
         "tooltip": { "mode": "multi", "sort": "desc" },
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
@@ -466,14 +518,14 @@
       "id": 30,
       "type": "row",
       "title": "Alle CPU cores — gedetailleerd",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 31 },
       "collapsed": true,
       "panels": [
         {
           "id": 31,
           "type": "timeseries",
           "title": "AI-NODE-I9 — alle cores",
-          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 32 },
           "options": {
             "tooltip": { "mode": "multi", "sort": "desc" },
             "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "max"] }
@@ -494,7 +546,7 @@
           "id": 32,
           "type": "timeseries",
           "title": "AI-NODE-I5 — alle cores",
-          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 28 },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 32 },
           "options": {
             "tooltip": { "mode": "multi", "sort": "desc" },
             "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "max"] }
