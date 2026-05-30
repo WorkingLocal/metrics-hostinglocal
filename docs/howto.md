@@ -1,141 +1,175 @@
-# Hoe gebruik ik de monitoring stack?
+# Operationele handleiding — Metrics Stack
 
-## Dashboards bekijken
+## Grafana openen
 
-**Grafana:** https://metrics.hostinglocal.be
-- Login: `admin` / zie `.env` op VPS
-- Beschikbare dashboards:
-  - **Node Exporter Full** — gedetailleerde Linux metrics per node
-  - **Windows Exporter** — Windows Server 2025 metrics
-  - **AI Nodes Load Monitor** — CPU/RAM/Netwerk/Disk/Temps voor AI-NODE-I9 + I5
-  - **Host Temperatures** — CPU-temperaturen alle fysieke hosts
-
-**Uptime Kuma:** https://uptime.hostinglocal.be
-- Login: `admin` / zelfde wachtwoord als Grafana
-- Publieke status page: https://uptime.hostinglocal.be/status/hosting-local
+- Extern: https://metrics.hostinglocal.be (DNS pending → tijdelijk via container IP)
+- Login: `admin` / zie Vaultwarden → Homelab - Infrastructure → "METRICSSERVER — Grafana"
 
 ---
 
-## E-mailmeldingen
+## Prometheus targets controleren
 
-Alerts komen van `info@workinglocal.be` naar `thomas@workinglocal.be`.
+```bash
+curl -s http://192.168.111.18:9090/api/v1/targets | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+for t in d['data']['activeTargets']:
+    print(t['health'], t['labels']['job'], t['labels'].get('instance',''))
+"
+```
 
-**Subject formaat:**
-- `[WARNING] HighCpuUsage — VM-AUTOBA`
-- `[CRITICAL] InstanceDown — NUT-SERVER`
-
-Warnings herhalen elke **12 uur** zolang het probleem aanhoudt.
-Criticals herhalen elke **1 uur**.
+Of via Prometheus UI: http://192.168.111.18:9090/targets
 
 ---
 
-## node_exporter installeren op een nieuwe Linux node
+## Prometheus config bijwerken (hot reload)
 
 ```bash
-# SSH naar de node als root:
-bash install-node-exporter.sh
-```
-
-Daarna toevoegen in `prometheus.yml`:
-
-```yaml
-- job_name: 'nieuwe-node'
-  static_configs:
-    - targets: ['<tailscale-ip>:9100']
-      labels:
-        instance: 'NIEUWE-NODE'
-```
-
-Deploy en herlaad:
-
-```bash
-bash deploy-config.sh
-ssh root@23.94.220.181 'curl -s -X POST http://localhost:9090/-/reload'
+# 1. Wijzig prometheus.hostinglocal.yml lokaal
+# 2. Upload naar METRICSSERVER
+python C:\Temp\deploy_sftp.py
+# OF handmatig via SFTP:
+#   sftp.put("prometheus.hostinglocal.yml", "/opt/metrics-hostinglocal/prometheus.yml")
+# 3. Hot reload (geen herstart nodig):
+curl -s -X POST http://192.168.111.18:9090/-/reload
 ```
 
 ---
 
-## windows_exporter installeren op Windows
+## Alertmanager herstarten (na config-wijziging)
 
-1. Download MSI: https://github.com/prometheus-community/windows_exporter/releases
-2. Installeer: `msiexec /i windows_exporter-*.msi /quiet ENABLED_COLLECTORS=cpu,cs,logical_disk,net,os,service,system,memory,thermalzone`
-3. Poort 9182, bereikbaar via Tailscale
-4. Voeg toe aan `prometheus.yml` met poort 9182
+Alertmanager ondersteunt geen hot reload:
+```bash
+ssh metrics@192.168.111.18
+echo 'metrics' | sudo -S docker restart alertmanager-metrics
+```
 
 ---
 
-## Grafana dashboards importeren na volume-reset
+## ntfy notificaties
 
-Als het Grafana volume gereset is (na downgrade of herstel), moeten Node Exporter Full en Windows Exporter opnieuw geïmporteerd worden. Provisioned dashboards (temperatures, ai-nodes, adguard-home) verschijnen automatisch.
+Push-notificaties komen op het `homelab` topic via `https://ntfy.hostinglocal.be`.
+
+Handmatig bericht sturen (test):
+```bash
+curl -X POST https://ntfy.hostinglocal.be/homelab \
+  -H "Authorization: Bearer tk_okm65mem9fj8by2w2w48uoz14j630" \
+  -d "Test notificatie van METRICSSERVER"
+```
+
+Zie `docs/ntfy-integrations.md` voor integraties met Uptime Kuma, HAOS, FILESERVER en UniFi.
+
+---
+
+## Grafana dashboard toevoegen
+
+1. Maak of download een dashboard JSON
+2. Sla op in `grafana/provisioning/dashboards/<naam>.json`
+3. Upload naar METRICSSERVER:
+   ```bash
+   python C:\Temp\deploy_sftp.py
+   # of handmatig:
+   # sftp.put("grafana/provisioning/dashboards/naam.json",
+   #          "/opt/metrics-hostinglocal/grafana/provisioning/dashboards/naam.json")
+   ```
+4. Herstart Grafana:
+   ```bash
+   ssh metrics@192.168.111.18
+   echo '<pw>' | sudo -S docker restart grafana-metrics
+   ```
+
+---
+
+## Grafana volume resetten (noodprocedure)
+
+Nodig bij schema-incompatibiliteit (bv. na image upgrade):
+```bash
+ssh metrics@192.168.111.18
+cd /opt/metrics-hostinglocal
+echo '<pw>' | sudo -S bash -c "
+  docker compose -f compose.hostinglocal.yml stop grafana-metrics
+  docker rm grafana-metrics
+  docker volume rm metrics_grafana_data
+  docker compose -f compose.hostinglocal.yml up -d grafana-metrics
+"
+```
+Provisioned dashboards (alle `*.json` in provisioning) verschijnen automatisch.
+
+---
+
+## Stack herstarten (volledig)
 
 ```bash
-# Haal datasource UID op:
-ssh root@23.94.220.181
-GRAFANA_PASS=$(grep GRAFANA_ADMIN_PASSWORD /data/coolify/services/metrics-stack/.env | cut -d= -f2)
-DS_UID=$(curl -s -u admin:$GRAFANA_PASS http://localhost:3000/api/datasources | python3 -c "import json,sys; print(json.load(sys.stdin)[0]['uid'])")
+ssh metrics@192.168.111.18
+cd /opt/metrics-hostinglocal
+echo '<pw>' | sudo -S docker compose -f compose.hostinglocal.yml restart
+```
 
-# Importeer via API (vervang DS_UID):
-cat > /tmp/import.py << 'EOF'
-import requests, json
-base = "http://localhost:3000"
-auth = ("admin", "GRAFANA_PASS_HIER")
-ds_uid = "DS_UID_HIER"
+Of selectief:
+```bash
+# Alleen Grafana
+echo '<pw>' | sudo -S docker restart grafana-metrics
+# Alleen Alertmanager
+echo '<pw>' | sudo -S docker restart alertmanager-metrics
+```
 
-for gf_id in [1860, 14694]:
-    dash = requests.get(f"https://grafana.com/api/dashboards/{gf_id}/revisions/latest/download").json()
-    for panel in dash.get("panels", []) + [p for row in dash.get("panels",[]) if row.get("panels") for p in row["panels"]]:
-        for t in panel.get("targets", []):
-            if "datasource" in t:
-                t["datasource"] = {"type": "prometheus", "uid": ds_uid}
-    payload = {"dashboard": dash, "overwrite": True, "inputs": [{"name": "DS_PROMETHEUS", "type": "datasource", "pluginId": "prometheus", "value": ds_uid}]}
-    r = requests.post(f"{base}/api/dashboards/import", json=payload, auth=auth)
-    print(gf_id, r.status_code, r.json().get("status",""))
-EOF
-python3 /tmp/import.py
+---
+
+## Stack updaten (nieuwe images)
+
+```bash
+ssh metrics@192.168.111.18
+cd /opt/metrics-hostinglocal
+echo '<pw>' | sudo -S bash -c "
+  docker compose -f compose.hostinglocal.yml pull
+  docker compose -f compose.hostinglocal.yml up -d
+"
+```
+
+**Let op:** Grafana is vastgepind op `11.6.2` in de compose — `pull` zal het niet upgraden.
+
+---
+
+## Container logs bekijken
+
+```bash
+ssh metrics@192.168.111.18
+echo '<pw>' | sudo -S docker logs grafana-metrics --tail 50
+echo '<pw>' | sudo -S docker logs prometheus-metrics --tail 50
+echo '<pw>' | sudo -S docker logs alertmanager-metrics --tail 50
+echo '<pw>' | sudo -S docker logs alertmanager-ntfy --tail 50
+echo '<pw>' | sudo -S docker logs thermal-shutdown-metrics --tail 50
+```
+
+---
+
+## VPS-HOSTINGLOCAL stack beheren
+
+```bash
+ssh root@100.125.153.71
+cd /opt/vps-hostinglocal
+docker compose logs ntfy --tail 30
+docker compose logs uptime-kuma --tail 30
+docker compose restart
 ```
 
 ---
 
 ## Drempelwaarden aanpassen
 
-Bewerk `alert.rules.yml` in de repo en deploy:
-
+Bewerk `alert.rules.yml` en deploy + reload:
 ```bash
-scp alert.rules.yml root@23.94.220.181:/data/coolify/services/metrics-stack/
-ssh root@23.94.220.181 'curl -s -X POST http://localhost:9090/-/reload'
-```
-
-Zie [alerts.md](alerts.md) voor een overzicht van alle regels.
-
----
-
-## Alertmanager routing aanpassen
-
-Bewerk `alertmanager.yml` en herstart:
-
-```bash
-scp alertmanager.yml root@23.94.220.181:/data/coolify/services/metrics-stack/
-ssh root@23.94.220.181 'docker restart alertmanager-metrics'
-```
-
-Of gebruik het deploy script:
-
-```bash
-bash deploy-config.sh --smtp-password <wachtwoord>
+python C:\Temp\deploy_sftp.py
+curl -s -X POST http://192.168.111.18:9090/-/reload
 ```
 
 ---
 
 ## Temperaturen bekijken
 
-Open het **Host Temperatures** dashboard in Grafana. Toont:
-- CPU Package-temperatuur van alle fysieke hosts (stat-panels + tijdreeks)
-- GPU-temperatuur (Intel iGPU — momenteel geen data, i915 hwmon niet beschikbaar)
-
-Temperatuur per host opvragen via Prometheus:
+Open het **Host Temperatures** dashboard in Grafana, of via Prometheus:
 ```bash
-ssh root@23.94.220.181
-curl -s 'http://localhost:9090/api/v1/query?query=max+by+%28instance%29+%28node_hwmon_temp_celsius%7Bchip%3D~%22coretemp.*%22%2Csensor%3D%22temp1%22%7D%29'
+curl -s 'http://192.168.111.18:9090/api/v1/query?query=max+by(instance)(node_hwmon_temp_celsius%7Bchip%3D~"coretemp.*"%2Csensor%3D"temp1"%7D)'
 ```
 
 ---
@@ -144,10 +178,12 @@ curl -s 'http://localhost:9090/api/v1/query?query=max+by+%28instance%29+%28node_
 
 | Probleem | Oplossing |
 |----------|-----------|
-| Host staat op "down" in Prometheus | `curl http://<tailscale-ip>:9100/metrics` — draait node_exporter? |
-| Geen e-mailmeldingen | `docker logs alertmanager-metrics` — SMTP fout? |
-| Grafana 504 fout | Uptime Kuma mag niet de publieke URL gebruiken (hairpin NAT) — gebruik `http://grafana-metrics:3000/api/health` |
-| Prometheus regels niet geladen | `curl -s http://localhost:9090/api/v1/rules` op VPS |
-| Grafana redirect loop (ERR_TOO_MANY_REDIRECTS) | Verwijder redirect-to-https middleware uit Traefik labels. Gebruik Cloudflare "Always Use HTTPS". Controleer of Grafana image niet `latest` is (pin op 11.6.2). |
-| Grafana N/A na downgrade | Grafana 13→11 schema-incompatibiliteit: volume resetten (zie howto hierboven) |
-| Geen temperatuurdata | Controleer node_exporter flags: `--collector.hwmon` en `--collector.thermal_zone` aanwezig? |
+| Host staat "down" in Prometheus | `curl http://<tailscale-ip>:9100/metrics` — draait node_exporter? |
+| Geen ntfy notificaties | `docker logs alertmanager-ntfy` — NTFY_URL correct? Token geldig? |
+| Geen e-mailmeldingen | `docker logs alertmanager-metrics` — SMTP configuratie correct in alertmanager.yml? |
+| Grafana niet bereikbaar | Container in proxy network? `docker inspect grafana-metrics` → IP, dan `curl http://<ip>:3000` |
+| Prometheus regels niet geladen | `curl -s http://192.168.111.18:9090/api/v1/rules` |
+| Grafana redirect loop (ERR_TOO_MANY_REDIRECTS) | Cloudflare Redirect Rules controleren. Grafana image = 11.6.2 (niet latest). |
+| HAOS target down | Bearer token vervallen? Controleer via `curl -H "Authorization: Bearer <token>" http://192.168.111.75:8123/api/prometheus` |
+| Geen temperatuurdata op node | node_exporter flags controleren: `--collector.hwmon` + `--collector.thermal_zone` aanwezig? |
+| thermal-shutdown verbindt niet | SSH key `thermal_shutdown.pub` toegevoegd aan `~/.ssh/authorized_keys` op doelnode? |

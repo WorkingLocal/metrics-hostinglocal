@@ -54,6 +54,26 @@ groups:
           summary: "KRITIEKE temperatuur op SMARTHOMESERVER (HAOS)"
           description: "NUC CPU temperatuur is {{ $value | humanize }}°C (drempel: 85°C)"
 
+      # WINDOWSSERVER2025 temperatuur via LibreHardwareMonitor textfile exporter
+      # Xeon Silver 4114 dual-socket — max over beide sockets
+      - alert: WindowsServerTemperatureWarning
+        expr: max(windows_hardware_temperature_celsius{instance="WINDOWSSERVER2025", sensor="CPU_Package"}) > 75
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Hoge temperatuur op WINDOWSSERVER2025"
+          description: "Xeon CPU Package temperatuur is {{ $value | humanize }}°C (drempel: 75°C)"
+
+      - alert: WindowsServerTemperatureCritical
+        expr: max(windows_hardware_temperature_celsius{instance="WINDOWSSERVER2025", sensor="CPU_Package"}) > 85
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "KRITIEKE temperatuur op WINDOWSSERVER2025"
+          description: "Xeon CPU Package temperatuur is {{ $value | humanize }}°C (drempel: 85°C)"
+
       # ── Overige alerts ────────────────────────────────────────────────────
 
       - alert: InstanceDown

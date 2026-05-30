@@ -1,7 +1,7 @@
 {
-  "title": "NetBox — Applicatie Gezondheid",
+  "title": "NetBox — Inventaris & Gezondheid",
   "uid": "netbox-hl",
-  "description": "NetBox 4.x applicatie metrics via django-prometheus: requests, latency, DB queries, REST & GraphQL API",
+  "description": "NetBox 4.x inventaris via REST API (Infinity) + applicatie metrics via django-prometheus",
   "timezone": "browser",
   "refresh": "2m",
   "schemaVersion": 38,
@@ -11,10 +11,132 @@
   "panels": [
 
     {
+      "id": 50,
+      "type": "row",
+      "title": "Inventaris (live via NetBox API)",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+
+    {
+      "id": 51,
+      "type": "stat",
+      "title": "Devices",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "blue" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] } }, "overrides": [] },
+      "targets": [{
+        "refId": "A",
+        "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity-netbox" },
+        "type": "json", "source": "url", "format": "dataframe",
+        "url": "/api/dcim/devices/?limit=1&format=json",
+        "method": "GET",
+        "root_selector": "",
+        "columns": [{ "selector": "count", "text": "Devices", "type": "number" }]
+      }],
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity-netbox" }
+    },
+
+    {
+      "id": 52,
+      "type": "stat",
+      "title": "IP Adressen",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "green" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
+      "targets": [{
+        "refId": "A",
+        "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity-netbox" },
+        "type": "json", "source": "url", "format": "dataframe",
+        "url": "/api/ipam/ip-addresses/?limit=1&format=json",
+        "method": "GET",
+        "root_selector": "",
+        "columns": [{ "selector": "count", "text": "IP Adressen", "type": "number" }]
+      }],
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity-netbox" }
+    },
+
+    {
+      "id": 53,
+      "type": "stat",
+      "title": "Prefixes",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "purple" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "purple", "value": null }] } }, "overrides": [] },
+      "targets": [{
+        "refId": "A",
+        "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity-netbox" },
+        "type": "json", "source": "url", "format": "dataframe",
+        "url": "/api/ipam/prefixes/?limit=1&format=json",
+        "method": "GET",
+        "root_selector": "",
+        "columns": [{ "selector": "count", "text": "Prefixes", "type": "number" }]
+      }],
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity-netbox" }
+    },
+
+    {
+      "id": 54,
+      "type": "stat",
+      "title": "Virtual Machines",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "orange" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "orange", "value": null }] } }, "overrides": [] },
+      "targets": [{
+        "refId": "A",
+        "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity-netbox" },
+        "type": "json", "source": "url", "format": "dataframe",
+        "url": "/api/virtualization/virtual-machines/?limit=1&format=json",
+        "method": "GET",
+        "root_selector": "",
+        "columns": [{ "selector": "count", "text": "VMs", "type": "number" }]
+      }],
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity-netbox" }
+    },
+
+    {
+      "id": 55,
+      "type": "stat",
+      "title": "Cables",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "semi-dark-blue" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "semi-dark-blue", "value": null }] } }, "overrides": [] },
+      "targets": [{
+        "refId": "A",
+        "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity-netbox" },
+        "type": "json", "source": "url", "format": "dataframe",
+        "url": "/api/dcim/cables/?limit=1&format=json",
+        "method": "GET",
+        "root_selector": "",
+        "columns": [{ "selector": "count", "text": "Cables", "type": "number" }]
+      }],
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity-netbox" }
+    },
+
+    {
+      "id": 56,
+      "type": "stat",
+      "title": "Services",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "yellow" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "yellow", "value": null }] } }, "overrides": [] },
+      "targets": [{
+        "refId": "A",
+        "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity-netbox" },
+        "type": "json", "source": "url", "format": "dataframe",
+        "url": "/api/ipam/services/?limit=1&format=json",
+        "method": "GET",
+        "root_selector": "",
+        "columns": [{ "selector": "count", "text": "Services", "type": "number" }]
+      }],
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity-netbox" }
+    },
+
+    {
       "id": 1,
       "type": "row",
       "title": "Actueel",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
       "collapsed": false
     },
 

@@ -1,8 +1,8 @@
 # ntfy integraties — Homelab
 
-ntfy server: `https://ntfy.hostinglocal.be` (na DNS update)  
+ntfy server: `https://ntfy.hostinglocal.be` (VPS-HOSTINGLOCAL 100.125.153.71)  
 Topic: `homelab`  
-Publisher token: zie Vaultwarden → "VPS-HOSTINGLOCAL — ntfy"  
+Publisher token: `tk_okm65mem9fj8by2w2w48uoz14j630` — zie Vaultwarden → Homelab - Infrastructure → "ntfy — publisher token homelab"  
 Admin: `thomas` / zie Vaultwarden
 
 ## Alertmanager → ntfy ✅ (automatisch via bridge)
@@ -20,7 +20,7 @@ Warnings → ntfy only. Critical → ntfy + email.
 2. Notification Type: **ntfy**
 3. Server URL: `http://ntfy:80` (intern Docker netwerk)
 4. Topic: `homelab`
-5. Token: `tk_y53hf22ahj046z85mod20uixysue3`
+5. Token: `tk_okm65mem9fj8by2w2w48uoz14j630`
 6. Priority: **High** (4) voor down, **Low** (2) voor recovered
 7. Sla op → koppel aan alle monitors
 
@@ -37,7 +37,7 @@ notify:
     resource: http://ntfy.hostinglocal.be/homelab
     method: POST_JSON
     headers:
-      Authorization: Bearer tk_y53hf22ahj046z85mod20uixysue3
+      Authorization: Bearer tk_okm65mem9fj8by2w2w48uoz14j630
     title_param_name: title
     message_param_name: message
 ```
@@ -55,7 +55,7 @@ Of via de officiële [ntfy HACS integratie](https://github.com/ivanstepachev/ha_
 
 1. HACS → Integrations → zoek "ntfy"
 2. Server URL: `https://ntfy.hostinglocal.be`
-3. Token: `tk_y53hf22ahj046z85mod20uixysue3`
+3. Token: `tk_okm65mem9fj8by2w2w48uoz14j630`
 4. Topic: `homelab`
 
 ---
@@ -68,7 +68,7 @@ UniFi heeft geen native ntfy support maar ondersteunt webhooks:
 2. Add Webhook:
    - URL: `https://ntfy.hostinglocal.be/homelab`
    - Method: POST
-   - Header `Authorization`: `Bearer tk_y53hf22ahj046z85mod20uixysue3`
+   - Header `Authorization`: `Bearer tk_okm65mem9fj8by2w2w48uoz14j630`
    - Header `Content-Type`: `text/plain`
 3. Body: laat leeg → ntfy toont de ruwe UniFi JSON als bericht
 
@@ -85,7 +85,7 @@ UniFi heeft geen native ntfy support maar ondersteunt webhooks:
 5. HTTP Method: POST
 6. HTTP Header:
    ```
-   Authorization: Bearer tk_y53hf22ahj046z85mod20uixysue3
+   Authorization: Bearer tk_okm65mem9fj8by2w2w48uoz14j630
    Content-Type: application/json
    ```
 7. Body:
@@ -104,7 +104,7 @@ Upload `/usr/local/bin/ntfy-notify.sh` naar FILESERVER via SSH:
 TITLE="${1:-FILESERVER}"
 MSG="${2:-Geen bericht}"
 PRIO="${3:-3}"
-NTFY_TOKEN="tk_y53hf22ahj046z85mod20uixysue3"
+NTFY_TOKEN="tk_okm65mem9fj8by2w2w48uoz14j630"
 NTFY_URL="https://ntfy.hostinglocal.be/homelab"
 
 curl -s -X POST "$NTFY_URL" \
@@ -140,5 +140,5 @@ DSM Task Scheduler → Triggered Task → koppel aan DSM events (backup voltooid
 | Server URL (intern) | `http://ntfy:80` |
 | Server URL (extern, na DNS) | `https://ntfy.hostinglocal.be` |
 | Topic | `homelab` |
-| Publisher token | `tk_y53hf22ahj046z85mod20uixysue3` |
+| Publisher token | `tk_okm65mem9fj8by2w2w48uoz14j630` |
 | Admin login | `thomas` / zie Vaultwarden |

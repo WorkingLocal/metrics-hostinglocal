@@ -1,136 +1,126 @@
 # Setup handleiding — Metrics Stack
 
-## Stack overzicht
+## Architectuur overzicht
 
-| Container | Rol | Netwerk |
-|-----------|-----|---------|
-| `prometheus-metrics` | Metrics scrapen van alle nodes | `host` (voor Tailscale toegang) |
-| `grafana-metrics` | Dashboards | `monitoring` + Traefik netwerk |
-| `alertmanager-metrics` | E-mail alerts | `monitoring` |
-| `uptime-kuma-metrics` | URL/port uptime | `monitoring` + Traefik netwerk |
+De metrics stack bestaat uit twee onderdelen:
 
-## VPS locatie
+1. **METRICSSERVER** (192.168.111.18) — Prometheus + Grafana + Alertmanager + thermal-shutdown
+2. **VPS-HOSTINGLOCAL** (100.125.153.71 / 172.245.52.210) — ntfy + Uptime Kuma + Caddy
+
+---
+
+## METRICSSERVER setup
+
+### Hardware
+
+| Component | Waarde |
+|-----------|--------|
+| Model | Dell OptiPlex 3050 SFF |
+| CPU | Intel i5-7500 |
+| RAM | 16GB DDR4 |
+| Opslag | 256GB NVMe |
+| OS | Ubuntu (bare metal) |
+| Lokaal IP | 192.168.111.18 |
+| Tailscale IP | 100.67.19.40 |
+| SSH user | `metrics` |
+
+### Stack locatie op server
 
 ```
-/data/coolify/services/metrics-stack/
-├── docker-compose.yml
-├── prometheus.yml
+/opt/metrics-hostinglocal/
+├── compose.hostinglocal.yml
+├── prometheus.yml          ← geüpload vanuit prometheus.hostinglocal.yml
 ├── alert.rules.yml
 ├── alertmanager.yml
-├── .env                    # GRAFANA_ADMIN_PASSWORD + SMTP_PASSWORD
+├── .env
+├── alertmanager-ntfy/
+├── thermal-shutdown/
+├── snmp/
 └── grafana/
     └── provisioning/
-        ├── datasources/prometheus.yml
+        ├── datasources/
         └── dashboards/
-            ├── dashboards.yml
-            ├── temperatures.json
-            ├── ai-nodes.json
-            └── adguard-home.json
 ```
 
-## Credentials
+### .env op METRICSSERVER
 
-| Service | Gebruiker | Wachtwoord |
-|---------|-----------|-----------|
-| Grafana | admin | zie `.env` op VPS |
-| Uptime Kuma | admin | zelfde als Grafana |
-| Prometheus | — | geen auth (intern) |
-| Alertmanager | — | geen auth (intern) |
+```
+GRAFANA_ADMIN_PASSWORD=<zie Vaultwarden>
+SMTP_PASSWORD=<Hostinger SMTP>
+NTFY_PUBLISHER_TOKEN=<zie Vaultwarden → ntfy token>
+NTFY_URL=http://100.125.153.71:2586
+```
 
-## Eerste installatie
+### Deploy (Windows)
 
-### 1. Bestanden deployen
+Gebruik het Python deploy script:
+
+```
+C:\Temp\deploy_sftp.py
+```
+
+Dit script:
+- Verbindt via paramiko SSH/SFTP naar 192.168.111.18
+- Uploadt alle bestanden (inclusief `prometheus.hostinglocal.yml` → `prometheus.yml`)
+- Maakt `.env` aan
+- Maakt Docker netwerken `proxy` en `metrics_internal` aan
+- Start de stack met `docker compose -f compose.hostinglocal.yml up -d`
 
 ```bash
-# Vanuit de metrics-hostinglocal repo:
-bash deploy.sh --smtp-password <hostinger-wachtwoord>
+python C:\Temp\deploy_sftp.py
 ```
 
-### 2. .env aanmaken op VPS
+### Alleen config bijwerken (zonder volledige deploy)
+
+1. Bestand lokaal aanpassen in de repo
+2. Via SFTP uploaden:
+   ```python
+   sftp.put("prometheus.hostinglocal.yml", "/opt/metrics-hostinglocal/prometheus.yml")
+   ```
+3. Prometheus hot-reload:
+   ```bash
+   curl -s -X POST http://192.168.111.18:9090/-/reload
+   ```
+
+### Docker netwerken
+
+| Netwerk | Type | Doel |
+|---------|------|------|
+| `host` | host | Prometheus bereikt Tailscale nodes |
+| `proxy` | external bridge | Grafana + Alertmanager bereikbaar voor reverse proxy |
+| `metrics_internal` | intern | Interne communicatie Alertmanager ↔ alertmanager-ntfy ↔ thermal-shutdown |
+
+`proxy` network aanmaken (eenmalig):
+```bash
+docker network create proxy
+```
+
+### Grafana toegang
+
+Grafana is niet direct op een poort gekoppeld — alleen via het `proxy` Docker netwerk.
+Tijdelijke directe toegang via de container IP:
+```bash
+docker inspect grafana-metrics | grep IPAddress
+# → http://<container-ip>:3000
+```
+
+Externe toegang via reverse proxy: `metrics.hostinglocal.be` (Cloudflare → METRICSSERVER, DNS pending).
+
+### Prometheus targets verifiëren
 
 ```bash
-ssh root@23.94.220.181
-cat > /data/coolify/services/metrics-stack/.env << EOF
-GRAFANA_ADMIN_PASSWORD=<sterk-wachtwoord>
-SMTP_PASSWORD=<hostinger-smtp-wachtwoord>
-EOF
+curl -s http://192.168.111.18:9090/api/v1/targets | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+for t in d['data']['activeTargets']:
+    print(t['health'], t['labels']['job'], t['labels'].get('instance',''))
+"
 ```
 
-### 3. Stack starten
+### Nieuwe node toevoegen
 
-```bash
-cd /data/coolify/services/metrics-stack
-docker compose up -d
-```
-
-### 4. node_exporter op VPS installeren
-
-```bash
-# Als root op VPS:
-bash install-node-exporter.sh
-```
-
-### 5. Grafana dashboards importeren
-
-Provisioned dashboards (temperatures.json, ai-nodes.json, adguard-home.json) verschijnen automatisch.
-
-Geïmporteerde dashboards via Grafana UI (Dashboards → Import → ID invoeren):
-- **Node Exporter Full** (ID 1860) — Linux node metrics
-- **Windows Exporter Dashboard** (ID 14694) — Windows Server metrics
-
-## node_exporter op Linux nodes installeren
-
-```bash
-# SSH naar de node en uitvoeren als root:
-bash install-node-exporter.sh
-```
-
-Installeert node_exporter met temperatuurcollectors:
-- `--collector.hwmon` — hardware monitor temperaturen (coretemp, nvme, etc.)
-- `--collector.thermal_zone` — ACPI thermal zones
-- `--collector.textfile.directory=/var/lib/node_exporter/textfile_collector` — custom metrics
-
-Getest op: Ubuntu, Debian, Raspberry Pi OS (auto-detectie van arch: amd64/arm64/armv7).
-
-## lm-sensors installeren
-
-lm-sensors zorgt dat node_exporter de sensornamen correct weergeeft (bijv. "Package id 0" i.p.v. "temp1"):
-
-```bash
-bash install-lm-sensors.sh
-```
-
-Geïnstalleerd op: AI-NODE-I9, AI-NODE-I5, NETWORKSERVER, MEDIASERVER, NUT-SERVER.
-
-## Intel GPU temperatuur collector
-
-Intel iGPU temperatuur via textfile collector (alleen als i915/xe hwmon beschikbaar is):
-
-```bash
-# Deployen naar een AI node:
-bash scripts/deploy-intel-gpu-temp.sh <tailscale-ip>
-```
-
-**Let op:** Op de huidige hosts (AI-NODE-I9, AI-NODE-I5, MEDIASERVER) is i915/xe hwmon NIET beschikbaar. De GPU temperatuur is niet beschikbaar in Prometheus.
-
-## windows_exporter op Windows Server
-
-1. Download MSI van https://github.com/prometheus-community/windows_exporter/releases
-2. Installeer: `msiexec /i windows_exporter-*.msi /quiet ENABLED_COLLECTORS=cpu,cs,logical_disk,net,os,service,system,memory,thermalzone`
-3. Default luistert op poort 9182
-
-Thermalzone collector inschakelen op bestaande installatie (PowerShell als Administrator):
-```powershell
-# windows-temp/setup.ps1 uitvoeren op WINDOWSSERVER2025
-```
-
-**Let op:** WMI thermalzone geeft geen data terug op Windows Server 2025 als Hyper-V host.
-
-## Nieuwe node toevoegen
-
-1. Installeer node_exporter: `bash install-node-exporter.sh`
-2. Installeer lm-sensors: `bash install-lm-sensors.sh`
-3. Voeg toe aan `prometheus.yml`:
+1. Installeer node_exporter op de node: `bash install-node-exporter.sh`
+2. Voeg toe aan `prometheus.hostinglocal.yml`:
    ```yaml
    - job_name: 'nieuwe-node'
      static_configs:
@@ -138,34 +128,171 @@ Thermalzone collector inschakelen op bestaande installatie (PowerShell als Admin
          labels:
            instance: 'NIEUWE-NODE'
    ```
-4. Deploy en herlaad:
-   ```bash
-   bash deploy-config.sh
-   ssh root@23.94.220.181 'curl -s -X POST http://localhost:9090/-/reload'
+3. Upload en hot-reload:
+   ```python
+   sftp.put("prometheus.hostinglocal.yml", "/opt/metrics-hostinglocal/prometheus.yml")
+   # daarna:
+   curl -s -X POST http://192.168.111.18:9090/-/reload
    ```
-5. Voeg node toe aan `temperatures.json` stat-panel en tijdreeks-query.
+4. Voeg toe aan het temperatures-dashboard als fysieke host.
 
-## Prometheus targets verifiëren
+---
 
-```bash
-ssh root@23.94.220.181
-curl -s http://localhost:9090/api/v1/targets | python3 -c "
-import json,sys
-d=json.load(sys.stdin)
-for t in d['data']['activeTargets']:
-    print(t['health'], t['labels']['job'], t['labels']['instance'])
-"
+## VPS-HOSTINGLOCAL setup
+
+### Server info
+
+| Component | Waarde |
+|-----------|--------|
+| Provider | Linode |
+| Publiek IP | 172.245.52.210 |
+| Tailscale IP | 100.125.153.71 |
+| OS | Ubuntu (heropgezet mei 2026) |
+| Stack locatie | `/opt/vps-hostinglocal/` |
+
+### Geïnstalleerde services
+
+- **Docker** (handmatig geïnstalleerd)
+- **Tailscale** (handmatig geïnstalleerd, gekoppeld aan tailnet)
+- **node_exporter** (systemd service op poort 9100)
+- **ntfy + Uptime Kuma + Caddy** (Docker Compose stack)
+
+### Stack locatie
+
+```
+/opt/vps-hostinglocal/
+├── compose.yml         # ntfy + uptime-kuma + caddy
+├── Caddyfile           # ntfy.hostinglocal.be + uptime.hostinglocal.be
+└── (ntfy auth/cache DB → Docker volumes)
 ```
 
-## DNS vereisten
+### compose.yml (VPS-HOSTINGLOCAL)
 
-| Record | Waarde |
-|--------|--------|
-| metrics.hostinglocal.be | A → 23.94.220.181 (Cloudflare proxy AAN) |
-| uptime.hostinglocal.be | A → 23.94.220.181 (Cloudflare proxy AAN) |
+```yaml
+services:
+  ntfy:
+    image: binwiederhier/ntfy:latest
+    command: serve
+    environment:
+      - NTFY_BASE_URL=https://ntfy.hostinglocal.be
+      - NTFY_AUTH_DEFAULT_ACCESS=deny-all
+      - NTFY_BEHIND_PROXY=true
+    volumes:
+      - ntfy_data:/var/lib/ntfy
+    ports:
+      - "2586:80"
 
-## Cloudflare instellingen
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    volumes:
+      - uptime_kuma_data:/app/data
+    ports:
+      - "127.0.0.1:3001:3001"
 
-- SSL/TLS mode: **Full** (niet Flexible, niet Strict)
-- **Always Use HTTPS**: Ingeschakeld (vervangt Traefik redirect-to-https middleware)
-- Geen Page Rules of Redirect Rules nodig
+  caddy:
+    image: caddy:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+```
+
+### Caddyfile
+
+```
+ntfy.hostinglocal.be {
+    reverse_proxy ntfy:80
+}
+uptime.hostinglocal.be {
+    reverse_proxy uptime-kuma:3001
+}
+```
+
+### ntfy user & token
+
+- Admin user: `thomas`
+- Topic: `homelab`
+- Publisher token: zie Vaultwarden → Homelab - Infrastructure → "ntfy — publisher token homelab"
+
+### DNS (Cloudflare — pending)
+
+| Record | Type | Waarde |
+|--------|------|--------|
+| ntfy.hostinglocal.be | A | 172.245.52.210 |
+| uptime.hostinglocal.be | A | 172.245.52.210 |
+
+---
+
+## HAOS Prometheus integratie
+
+HAOS exporteert alle numerieke entiteiten naar `/api/prometheus` (native HA integratie).
+
+`configuration.yaml` op HAOS (192.168.111.75):
+```yaml
+prometheus:
+  namespace: homeassistant
+```
+
+Prometheus job in `prometheus.hostinglocal.yml`:
+```yaml
+- job_name: 'haos-nuc'
+  scrape_interval: 120s
+  metrics_path: /api/prometheus
+  bearer_token: '<long-lived token — zie Vaultwarden → Home Assistant>'
+  static_configs:
+    - targets: ['192.168.111.75:8123']
+      labels:
+        instance: 'HAOS-NUC'
+```
+
+METRICSSERVER bereikt HAOS via lokaal netwerk (geen Tailscale nodig).
+
+---
+
+## node_exporter installeren op Linux node
+
+```bash
+# SSH naar de node als root:
+bash install-node-exporter.sh
+```
+
+Installeert node_exporter met:
+- `--collector.hwmon` — hardware temperaturen
+- `--collector.thermal_zone` — ACPI thermal zones
+- `--collector.textfile.directory` — custom metrics
+
+Auto-detectie van architectuur: amd64 / arm64 / armv7.
+
+## lm-sensors installeren
+
+```bash
+bash install-lm-sensors.sh
+```
+
+Geïnstalleerd op: AI-NODE-I9, AI-NODE-I5, NETWORKSERVER, MEDIASERVER, NUT-SERVER.
+
+## windows_exporter op Windows Server
+
+Download en installeer de MSI:
+```
+msiexec /i windows_exporter-*.msi /quiet ENABLED_COLLECTORS=cpu,cs,logical_disk,net,os,service,system,memory,thermalzone
+```
+Luistert standaard op poort 9182.
+
+## Thermal shutdown SSH key distribueren
+
+Publieke sleutel (van `/root/.ssh/thermal_shutdown.pub` op METRICSSERVER):
+```
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAr/tovxf6AYTHL4hxe7vT/zcGgly/BKKP0laOE1Odhj thermal-shutdown@metricsserver
+```
+
+Op elke node toevoegen:
+```bash
+echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAr/tovxf6AYTHL4hxe7vT/zcGgly/BKKP0laOE1Odhj thermal-shutdown@metricsserver" >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+```
+
+Status (mei 2026): gedistribueerd naar AI-NODE-I9 ✅, AI-NODE-I5 ✅, NETWORKSERVER ✅, MEDIASERVER ✅, NUT-SERVER ✅, HAOS-NUC ✅, WINDOWSSERVER2025 ✅, FILESERVER ⏳, TRAVELSERVER ⏳

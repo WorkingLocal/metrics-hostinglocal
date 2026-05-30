@@ -233,11 +233,47 @@
     },
 
     {
+      "id": 43,
+      "type": "stat",
+      "title": "METRICSSERVER — CPU",
+      "description": "Dell OptiPlex 3050 SFF — Intel i5-7500 Package temperatuur",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 5 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"METRICSSERVER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "legendFormat": "METRICSSERVER",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
       "id": 40,
       "type": "stat",
       "title": "HAOS NUC — CPU",
       "description": "Intel NUC i3 — Home Assistant OS, via System Monitor integratie",
-      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 5 },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 5 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
@@ -268,15 +304,147 @@
     },
 
     {
-      "id": 41,
-      "type": "text",
-      "title": "WINDOWSSERVER2025 — CPU",
-      "description": "Temperatuur niet beschikbaar",
-      "gridPos": { "h": 4, "w": 16, "x": 8, "y": 5 },
+      "id": 44,
+      "type": "stat",
+      "title": "PROXMOXMANAGER — CPU",
+      "description": "NUC Celeron — Package temperatuur",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 5 },
       "options": {
-        "mode": "markdown",
-        "content": "### ⚠️ Windows Server 2025 — temperatuur niet beschikbaar\n\nDe `thermalzone` WMI-provider werkt niet op Windows Server OS (enkel voor laptop/desktop ACPI). De windows_exporter gebruikt deze collector niet meer.\n\nAlternatief: gebruik **LibreHardwareMonitor** of **IPMI** voor servertoepassingen."
-      }
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"PROXMOXMANAGER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "legendFormat": "PROXMOXMANAGER",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 45,
+      "type": "stat",
+      "title": "FANSERVER — CPU",
+      "description": "Raspberry Pi 4 8GB — PWM fan controller netwerkkast",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 5 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 70 },
+              { "color": "red", "value": 80 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_hwmon_temp_celsius{instance=\"FANSERVER\", chip=\"thermal_thermal_zone0\", sensor=\"temp0\"}",
+          "legendFormat": "FANSERVER Pi4",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 41,
+      "type": "stat",
+      "title": "WINDOWSSERVER2025 — CPU Socket 0",
+      "description": "Intel Xeon Silver 4114 Socket 0 — Package temperatuur (LibreHardwareMonitor)",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 5 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", hardware=\"Intel_Xeon_Silver_4114\", sensor=\"CPU_Package\"}",
+          "legendFormat": "Socket 0",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 42,
+      "type": "stat",
+      "title": "WINDOWSSERVER2025 — CPU Socket 1",
+      "description": "Intel Xeon Silver 4114 Socket 1 — Package temperatuur (LibreHardwareMonitor)",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 5 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", hardware=\"Intel_Xeon_Silver_4114_1\", sensor=\"CPU_Package\"}",
+          "legendFormat": "Socket 1",
+          "refId": "A"
+        }
+      ]
     },
 
     {
@@ -316,19 +484,24 @@
       },
       "targets": [
         {
-          "expr": "max by (instance) (\n  node_hwmon_temp_celsius{\n    instance=~\"AI-NODE-I9|AI-NODE-I5|NETWORKSERVER|MEDIASERVER|TRAVELSERVER\",\n    chip=~\".*coretemp.*\",\n    sensor=\"temp1\"\n  }\n)",
+          "expr": "max by (instance) (\n  node_hwmon_temp_celsius{\n    instance=~\"AI-NODE-I9|AI-NODE-I5|NETWORKSERVER|MEDIASERVER|TRAVELSERVER|METRICSSERVER|PROXMOXMANAGER\",\n    chip=~\".*coretemp.*\",\n    sensor=\"temp1\"\n  }\n)",
           "legendFormat": "{{instance}} CPU",
           "refId": "A"
         },
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"NUT-SERVER\", chip=\"thermal_thermal_zone0\", sensor=\"temp0\"}",
-          "legendFormat": "NUT-SERVER Pi CPU",
+          "expr": "node_hwmon_temp_celsius{instance=~\"NUT-SERVER|FANSERVER\", chip=\"thermal_thermal_zone0\", sensor=\"temp0\"}",
+          "legendFormat": "{{instance}} CPU",
           "refId": "B"
         },
         {
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.system_monitor_processortemperatuur\", job=\"smarthomeserver\"}",
           "legendFormat": "HAOS NUC CPU",
           "refId": "C"
+        },
+        {
+          "expr": "max(windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", sensor=\"CPU_Package\"})",
+          "legendFormat": "WINDOWSSERVER2025 CPU",
+          "refId": "D"
         }
       ]
     },

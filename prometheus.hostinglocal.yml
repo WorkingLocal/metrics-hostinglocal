@@ -265,6 +265,22 @@ scrape_configs:
         labels:
           instance: 'VM-NETBOX'
 
+  # PROXMOXMANAGER (NUC Celeron, 192.168.111.11, node_exporter systemd)
+  # Vereist: node_exporter geïnstalleerd als systemd service op poort 9100
+  - job_name: 'proxmoxmanager'
+    static_configs:
+      - targets: ['192.168.111.11:9100']
+        labels:
+          instance: 'PROXMOXMANAGER'
+
+  # KIOSK-TOUCH-MELE (Windows 10 Enterprise, 192.168.111.120)
+  # Vereist: windows_exporter geïnstalleerd op poort 9182
+  - job_name: 'kiosk-touch'
+    static_configs:
+      - targets: ['192.168.111.120:9182']
+        labels:
+          instance: 'KIOSK-TOUCH'
+
   # SMARTHOMESERVER (HAOS Intel NUC i3) — native HA Prometheus integration (alle numerieke entiteiten)
   # Endpoint: /api/prometheus met Bearer token (long-lived access token)
   # METRICSSERVER bereikt HAOS via lokaal netwerk 192.168.111.75

@@ -1,38 +1,69 @@
 # Metrics — Hosting Local
 
-Monitoring stack voor het volledige Hosting Local homelab.
+Monitoring stack voor het volledige Hosting Local homelab.  
+Stack draait op **METRICSSERVER** (Dell OptiPlex 3050 SFF, 192.168.111.18).
 
 ## Wat het doet
 
-- **Systeemmonitoring** — CPU, RAM, disk, netwerk, **temperaturen** via Prometheus + Node Exporter
-- **Live dashboards** — Grafana met Node Exporter Full, Windows Exporter, AI Nodes Load Monitor en Host Temperatures dashboards
-- **Alerting** — Alertmanager stuurt e-mailmeldingen bij drempeloverschrijdingen
-- **Uptime monitoring** — Uptime Kuma bewaakt alle webapplicaties en services
+- **Systeemmonitoring** — CPU, RAM, disk, netwerk, temperaturen via Prometheus + Node Exporter
+- **Live dashboards** — Grafana 11.6.2 met provisioned dashboards per node en domein
+- **Energie-monitoring** — Beem 300W zonnepanelen, EatonUPS en homelab-verbruik via HAOS
+- **Alerting** — Alertmanager stuurt push-notificaties (ntfy) en e-mail bij drempeloverschrijdingen
+- **Thermische beveiliging** — thermal-shutdown container voert graceful SSH-shutdown uit bij overkitting
+- **Disk health** — smartctl_exporter bewaakt NVMe SMART-status van METRICSSERVER
+- **Uptime monitoring** — Uptime Kuma op VPS-HOSTINGLOCAL (apart stack)
 
 ## URLs
 
-| Service | URL |
-|---------|-----|
-| Grafana dashboards | https://metrics.hostinglocal.be |
-| Uptime Kuma status | https://uptime.hostinglocal.be |
-| Prometheus (intern) | http://VPS:9090 |
+| Service | URL | Host |
+|---------|-----|------|
+| Grafana dashboards | https://metrics.hostinglocal.be | METRICSSERVER (via proxy) |
+| Uptime Kuma | https://uptime.hostinglocal.be | VPS-HOSTINGLOCAL |
+| ntfy notificaties | https://ntfy.hostinglocal.be | VPS-HOSTINGLOCAL |
+| Prometheus (intern) | http://192.168.111.18:9090 | METRICSSERVER |
+| Alertmanager (intern) | http://192.168.111.18:9093 | METRICSSERVER |
 
-## Stack
+## Stack — METRICSSERVER
 
-| Onderdeel | Technologie | Versie | Poort |
+| Container | Technologie | Versie | Poort | Netwerk |
+|-----------|-------------|--------|-------|---------|
+| `prometheus-metrics` | Prometheus | latest | 9090 (host) | host |
+| `grafana-metrics` | Grafana | **11.6.2** (vastgepind) | via proxy | proxy |
+| `alertmanager-metrics` | Alertmanager | latest | 9093 | proxy + metrics_internal |
+| `alertmanager-ntfy` | Flask ntfy bridge | custom | intern | proxy + metrics_internal |
+| `thermal-shutdown` | Python SSH | custom | intern | metrics_internal |
+| `smartctl-exporter` | smartctl_exporter | latest | 9633 (host) | host |
+
+> **Let op:** Grafana is vastgepind op `11.6.2`. Nooit `latest` gebruiken — Grafana 13 had een 307 redirect loop bug en is schema-incompatibel met 11.x.
+
+## Stack — VPS-HOSTINGLOCAL (apart)
+
+| Container | Technologie | Versie | Poort |
 |-----------|-------------|--------|-------|
-| Metrics scraping | Prometheus | latest | 9090 (host) |
-| Dashboards | Grafana | **11.6.2** (vastgepind) | 3000 (via Traefik) |
-| Alerting | Alertmanager | latest | 9093 |
-| Uptime monitoring | Uptime Kuma | 2 | 3001 (via Traefik) |
+| `ntfy` | ntfy | latest | 2586 → Caddy |
+| `uptime-kuma` | Uptime Kuma | 1 | 3001 (intern) |
+| `caddy` | Caddy | alpine | 80/443 |
 
-> **Let op:** Grafana is vastgepind op `11.6.2`. Gebruik nooit `latest` — Grafana 13 had een 307 redirect loop bug en is incompatibel met het databaseschema van 11.x.
+VPS-HOSTINGLOCAL repo: `/opt/vps-hostinglocal/compose.yml` (beheerd separaat).
+
+## METRICSSERVER hardware
+
+| Component | Waarde |
+|-----------|--------|
+| Model | Dell OptiPlex 3050 SFF |
+| CPU | Intel i5-7500 |
+| RAM | 16GB DDR4 |
+| Opslag | 256GB NVMe |
+| Lokaal IP | 192.168.111.18 |
+| Tailscale IP | 100.67.19.40 |
+| SSH user | `metrics` (wachtwoord in Vaultwarden → Homelab - Infrastructure) |
 
 ## Gemonitorde nodes
 
 | Node | Methode | Tailscale IP | Status |
 |------|---------|-------------|--------|
-| VPS-WORKINGLOCAL | node_exporter :9100 | 100.107.226.24 | actief |
+| METRICSSERVER | node_exporter :9100 (host) | localhost | actief |
+| VPS-HOSTINGLOCAL | node_exporter :9100 | 100.125.153.71 | actief |
 | WINDOWSSERVER2025 | windows_exporter :9182 | 100.92.201.100 | actief |
 | NETWORKSERVER | node_exporter :9100 | 100.119.137.54 | actief |
 | MEDIASERVER | node_exporter :9100 | 100.111.62.69 | actief |
@@ -40,8 +71,8 @@ Monitoring stack voor het volledige Hosting Local homelab.
 | AI-NODE-I5 | node_exporter :9100 | 100.78.175.49 | actief |
 | TRAVELSERVER | node_exporter :9100 | 100.83.16.76 | actief |
 | NUT-SERVER Pi | node_exporter :9100 | 100.97.195.23 | actief |
-| HAOS-NUC | Native HA Prometheus `/api/prometheus` :8123 | 192.168.111.75 (lokaal) | actief |
-| VM-AutoBA | node_exporter Docker :9100 | 100.107.82.21 | actief |
+| HAOS-NUC | Native HA Prometheus `/api/prometheus` :8123 | 192.168.111.75 (LAN) | actief |
+| VM-AutoBA | node_exporter :9100 | 100.107.82.21 | actief |
 | VM-AI-Engine | node_exporter :9100 | 100.80.180.55 | actief |
 | VM-ADGUARD | node_exporter :9100 | 100.121.177.76 | actief |
 | VM-NPM | node_exporter :9100 | 100.75.230.22 | actief |
@@ -51,179 +82,145 @@ Monitoring stack voor het volledige Hosting Local homelab.
 | VM-APPS | node_exporter :9100 | 100.97.124.46 | actief |
 | VM-OPENCLAW | node_exporter :9100 | 100.92.71.9 | actief |
 | FILESERVER | node_exporter Docker :9100 | 100.72.50.41 | actief |
+| UNIFI-GATEWAY | SNMP via snmp-exporter (NETWORKSERVER :9116) | 192.168.111.1 | actief |
 
 ## Repository structuur
 
 ```
 metrics-hostinglocal/
-├── docker-compose.yml              # Grafana 11.6.2 + Prometheus + Alertmanager + Uptime Kuma
-├── prometheus.yml                  # Scrape targets (alle Tailscale nodes)
-├── alert.rules.yml                 # Alerting regels (CPU, RAM, disk, uptime)
-├── alertmanager.yml                # E-mail notificaties via Hostinger SMTP
-├── deploy.sh                       # Volledige deploy naar VPS
-├── deploy-config.sh                # Alleen config bijwerken (zonder redeploy)
-├── install-node-exporter.sh        # Installatiescript voor Linux nodes (hwmon/thermal/textfile flags)
-├── install-lm-sensors.sh           # lm-sensors installeren voor CPU-sensornamen
-├── scripts/
-│   ├── intel-gpu-temp-collector.sh # Textfile collector voor Intel i915/xe GPU-temp
-│   └── deploy-intel-gpu-temp.sh    # Deployscript voor GPU-temp collector
-├── windows-temp/
-│   └── setup.ps1                   # windows_exporter thermalzone collector inschakelen
-├── snmp/
-│   ├── docker-compose.yml          # SNMP Exporter container (op NETWORKSERVER)
-│   ├── install-snmp-exporter.sh    # Installatiescript SNMP Exporter
-│   └── deploy.sh                   # Deployscript SNMP stack
+├── compose.hostinglocal.yml        # Hoofdstack: Prometheus + Grafana + Alertmanager + ntfy + thermal-shutdown
+├── prometheus.hostinglocal.yml     # Scrape targets — wordt geüpload als prometheus.yml op METRICSSERVER
+├── alert.rules.yml                 # Alerting regels (CPU, RAM, disk, InstanceDown)
+├── alertmanager.yml                # ntfy + e-mail routing
+├── alertmanager-ntfy/              # Flask bridge: Alertmanager webhook → ntfy push
+│   ├── Dockerfile
+│   ├── app.py
+│   └── requirements.txt
+├── thermal-shutdown/               # Python SSH-shutdown service bij hoge temperatuur
+│   ├── Dockerfile
+│   ├── app.py
+│   ├── hosts.yml                   # SSH targets (Tailscale IP + user per node)
+│   └── requirements.txt
+├── snmp/                           # SNMP Exporter voor Unifi Gateway
+│   └── snmp-exporter.yml
 ├── grafana/
 │   └── provisioning/
 │       ├── datasources/
-│       │   └── prometheus.yml      # Prometheus datasource
+│       │   └── prometheus.yml      # Prometheus datasource (via host.docker.internal)
 │       └── dashboards/
 │           ├── dashboards.yml      # Dashboard provider config
-│           ├── overview.json       # Homelab Overview (CPU/RAM/disk/status alle nodes) 🖥️
-│           ├── cpu-cores.json      # CPU Cores — alle cores alle nodes op één pagina
-│           ├── disk-overview.json  # Disk Overview — alle schijven + vrije ruimte 🖥️
-│           ├── temperatures.json   # Host Temperatures dashboard (alle nodes)
-│           ├── ai-nodes.json       # AI Nodes Load Monitor dashboard
+│           ├── energie.json        # Energie & Zonnepanelen (Beem + UPS + Homelab) ☀️
+│           ├── overview.json       # Homelab Overview (alle nodes) 🖥️
+│           ├── disk-overview.json  # Disk Overview — alle schijven 🖥️
+│           ├── temperatures.json   # Host Temperatures (alle nodes)
+│           ├── ai-nodes.json       # AI Nodes Load Monitor
 │           ├── adguard-home.json   # AdGuard Home DNS dashboard
-│           ├── unifi.json          # Unifi Gateway (SNMP — traffic + interface status)
-│           ├── windows-server.json # Windows Server 2025 (CPU/RAM/disk/netwerk)
-│           ├── vps.json            # VPS-WORKINGLOCAL (CPU/RAM/disk/netwerk/systeem)
-│           ├── haos.json           # HAOS Intel NUC (via Netdata Prometheus export)
-│           └── fileserver.json     # FILESERVER — Synology DS423+ (node_exporter Docker)
+│           ├── unifi.json          # Unifi Gateway (SNMP)
+│           ├── windows-server.json # Windows Server 2025
+│           ├── vps.json            # VPS-WORKINGLOCAL
+│           ├── haos.json           # HAOS Intel NUC (native HA Prometheus)
+│           ├── fileserver.json     # FILESERVER Synology DS423+
+│           └── ...
 └── docs/
-    ├── setup.md
-    ├── alerts.md
-    ├── howto.md
-    └── technisch.md
+    ├── setup.md                    # Installatie & deploy handleiding
+    ├── technisch.md                # Architectuur & configuratie details
+    ├── howto.md                    # Operationele handleiding
+    ├── alerts.md                   # Alert regels & drempelwaarden
+    └── ntfy-integrations.md        # ntfy configuratie per service
 ```
 
 > 🖥️ = geschikt voor signage display (Xibo / kiosk mode)
 
-## Deployment
+## Deploy
 
-### Eerste installatie op VPS
+Gebruik het deploy script (Windows, Python + paramiko):
 
-```bash
-# Volledige deploy (kopieert alle bestanden naar VPS)
-bash deploy.sh --smtp-password <wachtwoord>
-
-# Op VPS: stack starten
-cd /data/coolify/services/metrics-stack
-docker compose up -d
+```
+C:\Temp\deploy_sftp.py
 ```
 
-### Config bijwerken
+Verbindt via SSH/SFTP naar 192.168.111.18, uploadt alle bestanden (incl. `prometheus.hostinglocal.yml` als `prometheus.yml`), en start de stack.
 
-```bash
-bash deploy-config.sh --smtp-password <wachtwoord>
+```python
+python C:\Temp\deploy_sftp.py
 ```
 
-### node_exporter installeren op Linux node
+Prometheus hot-reload na config-wijziging:
 
 ```bash
-# SSH naar de node en uitvoeren als root:
-bash install-node-exporter.sh
+curl -s -X POST http://192.168.111.18:9090/-/reload
 ```
-
-Installeert node_exporter met `--collector.hwmon`, `--collector.thermal_zone` en `--collector.textfile.directory` voor temperatuurmonitoring.
-
-### lm-sensors installeren (voor CPU-sensornamen)
-
-```bash
-bash install-lm-sensors.sh
-```
-
-### windows_exporter op Windows Server
-
-Download en installeer de MSI van [windows_exporter releases](https://github.com/prometheus-community/windows_exporter/releases).
-Thermalzone collector inschakelen: `bash windows-temp/setup.ps1` (PowerShell als Administrator).
 
 ## Grafana
 
-- URL: https://metrics.hostinglocal.be
+- URL: https://metrics.hostinglocal.be (of http://192.168.111.18:3000 intern)
 - Gebruiker: `admin`
-- Wachtwoord: zie `.env` op VPS (`/data/coolify/services/metrics-stack/.env`)
+- Wachtwoord: zie Vaultwarden → Homelab - Infrastructure → "METRICSSERVER — Grafana"
 
 ### Dashboards
 
 | Dashboard | UID | Bestand | Signage |
 |-----------|-----|---------|---------|
-| Node Exporter Full | (Grafana ID 1860) | Importeren via UI of API | — |
-| AI Nodes Load Monitor | 2ca2c5e5-ca9a-49e7-8010-017d804f4678 | `ai-nodes.json` | — |
+| Energie & Zonnepanelen | energie-zonnepanelen | `energie.json` | — |
+| Homelab Overview | homelab-overview-hl | `overview.json` | ✅ |
+| Disk Overview | disk-overview-hl | `disk-overview.json` | ✅ |
 | Host Temperatures | host-temperatures-hl | `temperatures.json` | — |
-| AdGuard Home DNS Monitor | adguard-home-hostinglocal | `adguard-home.json` | — |
+| AI Nodes Load Monitor | 2ca2c5e5-... | `ai-nodes.json` | — |
+| AdGuard Home DNS | adguard-home-hostinglocal | `adguard-home.json` | — |
 | Unifi Gateway | unifi-gateway-hl | `unifi.json` | — |
 | Windows Server 2025 | windows-server-hl | `windows-server.json` | — |
-| Homelab Overview | homelab-overview-hl | `overview.json` | ✅ |
-| CPU Cores — Alle Nodes | cpu-cores-hl | `cpu-cores.json` | — |
-| Disk Overview — Alle Nodes | disk-overview-hl | `disk-overview.json` | ✅ |
 | VPS — Workinglocal | vps-workinglocal-hl | `vps.json` | — |
-| HAOS — Intel NUC | haos-nuc-hl | `haos.json` | — | Native HA Prometheus, Bearer token, 120s interval |
-| NETWORKSERVER | networkserver-hl | `networkserver.json` | — |
-| FILESERVER — Synology DS423+ | fileserver-hl | `fileserver.json` | — |
+| HAOS — Intel NUC | haos-nuc-hl | `haos.json` | — |
+| FILESERVER Synology | fileserver-hl | `fileserver.json` | — |
 
-Bij Grafana volume-reset: zie `docs/howto.md` voor het her-importeren van Node Exporter Full via de Grafana API.
-Alle andere dashboards worden automatisch provisioned uit `/etc/grafana/provisioning/dashboards/`.
+Alle dashboards worden automatisch provisioned vanuit `grafana/provisioning/dashboards/`.
 
-### Signage / Kiosk mode
+## Energie-monitoring (HAOS)
 
-Dashboards geschikt voor signage display (Xibo, browser, TV):
-
-```
-# Volledig dashboard zonder navigatiebalk (kiosk mode):
-https://metrics.hostinglocal.be/d/homelab-overview-hl/homelab-overview?kiosk=tv
-https://metrics.hostinglocal.be/d/disk-overview-hl/disk-overview-alle-nodes?kiosk=tv
-
-# Enkelvoudig panel embedden (voor Xibo layout):
-https://metrics.hostinglocal.be/d-solo/homelab-overview-hl/homelab-overview?panelId=11&kiosk
-```
-
-**Grafana Playlist** (automatisch wisselen tussen dashboards):
-Grafana → Dashboards → Playlists → New playlist → voeg gewenste dashboards toe → stel interval in.
-Gebruik de playlist URL + `?kiosk=tv` voor schermloze weergave.
-
-**Xibo integratie:** voeg een "Webpage" widget toe in Xibo met de kiosk URL. Stel in Xibo de looptijd per layout in op bv. 60s. Vergeet niet om Grafana's auto-refresh (`1m`) te verifiëren via de dashboard `refresh` instelling.
-
-## Uptime Kuma
-
-- URL: https://uptime.hostinglocal.be
-- Gebruiker: `admin`
-- Wachtwoord: zelfde als Grafana
-
-## Cloudflare + Traefik
-
-Grafana zit achter Cloudflare (Full SSL mode). Gebruik **geen** `redirect-to-https` middleware in Traefik — dit veroorzaakt een 307 redirect loop. Cloudflare "Always Use HTTPS" handelt de HTTP→HTTPS redirect af op de edge.
-
-## Alerts
-
-| Alert | Drempel | Ernst |
-|-------|---------|-------|
-| InstanceDown | 2 minuten offline | critical |
-| HighCpuUsage | >80% gedurende 5 min | warning |
-| HighMemoryUsage | >80% gedurende 5 min | warning |
-| NvmeDiskUsageHigh | /dev/nvme* >80% gedurende 5 min | warning |
-| NvmeDiskUsageCritical | /dev/nvme* >90% gedurende 1 min | critical |
-
-## HAOS energie-monitoring
-
-HAOS exporteert via de native Prometheus-integratie alle `sensor`, `binary_sensor`, `climate`, `switch` en aanverwante domeinen naar `/api/prometheus`. Authenticatie via long-lived Bearer token (zie Vaultwarden > Home Assistant > HAOS - Long-lived API Token).
-
-**Belangrijke HAOS energie-sensoren:**
+HAOS exporteert alle numerieke entiteiten via de native Prometheus-integratie naar `/api/prometheus`.
+Prometheus scrapet HAOS-NUC elke 120s via lokaal netwerk (192.168.111.75:8123).
+Bearer token: Vaultwarden → Home Assistant → "HAOS - Long-lived API Token".
 
 | Entity | Beschrijving |
 |--------|-------------|
-| `sensor.eatonups_current_real_power` | Huidig homelab-verbruik in W |
-| `sensor.eatonups_load` | UPS belasting in % |
-| `sensor.homelab_verbruik_kwh_totaal` | Cumulatief verbruik kWh (Riemann sum) |
 | `sensor.beem_energy_thomas_vandromme_current_power` | Beem 300W productie in W |
-| `sensor.beem_energy_thomas_vandromme_monthly_energy` | Maandproductie Beem in Wh |
-| `sensor.beem_zonnepanelen_kwh_totaal` | Cumulatieve productie kWh (Riemann sum) |
+| `sensor.beem_energy_thomas_vandromme_daily_energy` | Dagproductie in Wh |
+| `sensor.beem_energy_thomas_vandromme_monthly_energy` | Maandproductie in Wh |
+| `sensor.beem_zonnepanelen_kwh_totaal` | Cumulatieve productie kWh |
+| `sensor.eatonups_current_real_power` | UPS real power in W |
+| `sensor.eatonups_battery_charge` | Batterijlading in % |
+| `sensor.eatonups_load` | UPS belasting in % |
+| `sensor.homelab_verbruik_kwh_totaal` | Cumulatief homelab-verbruik kWh |
 
-**Prometheus job:** `haos-nuc`, scrape_interval 120s, target `192.168.111.75:8123` (lokaal netwerk — METRICSSERVER bereikt HAOS direct).
+## Thermal Shutdown
+
+De `thermal-shutdown` container reageert op Alertmanager webhooks en voert SSH-shutdown uit op fysieke nodes bij kritieke temperatuuralerts.
+
+SSH key: `/root/.ssh/thermal_shutdown` op METRICSSERVER.  
+Publieke sleutel gedistribueerd naar (mei 2025): AI-NODE-I9, AI-NODE-I5, NETWORKSERVER, MEDIASERVER, NUT-SERVER, HAOS-NUC, WINDOWSSERVER2025.  
+Nog te doen: FILESERVER (SSH poort 221), TRAVELSERVER (offline gehad).
+
+Hosts config: `thermal-shutdown/hosts.yml`
+
+## Alerts
+
+| Alert | Drempel | Ernst | Kanaal |
+|-------|---------|-------|--------|
+| InstanceDown | 2 minuten offline | critical | ntfy + email |
+| HighCpuUsage | >80% gedurende 5 min | warning | ntfy |
+| HighMemoryUsage | >80% gedurende 5 min | warning | ntfy |
+| NvmeDiskUsageHigh | >80% gedurende 5 min | warning | ntfy |
+| NvmeDiskUsageCritical | >90% gedurende 1 min | critical | ntfy + email |
+
+## ntfy
+
+Server: `https://ntfy.hostinglocal.be` (VPS-HOSTINGLOCAL 100.125.153.71)  
+Topic: `homelab`  
+Publisher token: Vaultwarden → Homelab - Infrastructure → "ntfy — publisher token homelab"
 
 ## Gerelateerde repositories
 
 | Repo | Inhoud |
 |------|--------|
-| [infra-hostinglocal](../infra-hostinglocal) | Infra-documentatie + homelab_finance DB + haos_sync |
-| [vps-workinglocal](../vps-workinglocal) | Server setup & infrastructuur |
+| [infra-hostinglocal](../infra-hostinglocal) | Infra-documentatie + homelab_finance DB |
+| [vps-workinglocal](../vps-workinglocal) | VPS-WORKINGLOCAL setup |

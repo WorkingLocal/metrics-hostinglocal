@@ -1,0 +1,13 @@
+apiVersion: 1
+datasources:
+  - name: NetBox (Infinity)
+    type: yesoreyeram-infinity-datasource
+    uid: infinity-netbox
+    access: proxy
+    url: http://192.168.111.63:8000
+    jsonData:
+      auth_type: bearer_token
+      allowedHosts:
+        - http://192.168.111.63:8000
+    secureJsonData:
+      bearerToken: "nbt_QFRmWaRtexnJ.RdsjrywP9VBQUjqn6CQTmsOTwgOO0d3TNLvTBqLw"
