@@ -527,8 +527,8 @@
         "overrides": []
       },
       "targets": [{
-        "expr": "node_hwmon_temp_celsius{instance=\"NETWORKSERVER\", chip=\"platform_coretemp_0\"}",
-        "legendFormat": "{{sensor}}", "refId": "A"
+        "expr": "node_hwmon_temp_celsius{instance=\"NETWORKSERVER\", chip=\"platform_coretemp_0\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"NETWORKSERVER\", chip=\"platform_coretemp_0\"}",
+        "legendFormat": "{{label}}", "refId": "A"
       }]
     },
 
