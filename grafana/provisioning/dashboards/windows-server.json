@@ -537,6 +537,191 @@
           "refId": "B"
         }
       ]
+    },
+
+    {
+      "id": 50,
+      "type": "row",
+      "title": "Temperatuur",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 39 },
+      "collapsed": false
+    },
+
+    {
+      "id": 51,
+      "type": "stat",
+      "title": "CPU Socket 0 — Package",
+      "description": "Intel Xeon Silver 4114 Socket 0 (LibreHardwareMonitor)",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 40 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", hardware=\"Intel_Xeon_Silver_4114\", sensor=\"CPU_Package\"}",
+          "legendFormat": "Socket 0 Package",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 52,
+      "type": "stat",
+      "title": "CPU Socket 1 — Package",
+      "description": "Intel Xeon Silver 4114 Socket 1 (LibreHardwareMonitor)",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 40 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", hardware=\"Intel_Xeon_Silver_4114_1\", sensor=\"CPU_Package\"}",
+          "legendFormat": "Socket 1 Package",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 53,
+      "type": "stat",
+      "title": "Socket 0 — Core Max",
+      "description": "Hoogste core temperatuur Socket 0",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 40 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", hardware=\"Intel_Xeon_Silver_4114\", sensor=\"Core_Max\"}",
+          "legendFormat": "Socket 0 Core Max",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 54,
+      "type": "stat",
+      "title": "Socket 1 — Core Max",
+      "description": "Hoogste core temperatuur Socket 1",
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 40 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", hardware=\"Intel_Xeon_Silver_4114_1\", sensor=\"Core_Max\"}",
+          "legendFormat": "Socket 1 Core Max",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 55,
+      "type": "timeseries",
+      "title": "CPU Temperatuur — tijdreeks (alle cores)",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 44 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": { "lineWidth": 1, "fillOpacity": 5 },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", sensor=~\"CPU_Package|Core_Max|Core_Average\"}",
+          "legendFormat": "{{hardware}} {{sensor}}",
+          "refId": "A"
+        }
+      ]
     }
 
   ]
