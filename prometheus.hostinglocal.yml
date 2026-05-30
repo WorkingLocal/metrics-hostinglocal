@@ -265,11 +265,11 @@ scrape_configs:
         labels:
           instance: 'VM-NETBOX'
 
-  # PROXMOXMANAGER (NUC Celeron, 192.168.111.11, node_exporter systemd)
+  # PROXMOXMANAGER (NUC Celeron, huidig IP 192.168.111.15, node_exporter systemd)
   # Vereist: node_exporter geïnstalleerd als systemd service op poort 9100
   - job_name: 'proxmoxmanager'
     static_configs:
-      - targets: ['192.168.111.11:9100']
+      - targets: ['192.168.111.15:9100']
         labels:
           instance: 'PROXMOXMANAGER'
 
