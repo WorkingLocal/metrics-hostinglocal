@@ -437,8 +437,8 @@
         "overrides": []
       },
       "targets": [{
-        "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})",
-        "legendFormat": "I9 CPU", "refId": "A"
+        "expr": "node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}",
+        "legendFormat": "I9 CPU Package", "refId": "A"
       }]
     },
 
@@ -461,8 +461,8 @@
         "overrides": []
       },
       "targets": [{
-        "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})",
-        "legendFormat": "I5 CPU", "refId": "A"
+        "expr": "node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}",
+        "legendFormat": "I5 CPU Package", "refId": "A"
       }]
     },
 
@@ -480,17 +480,17 @@
         "overrides": []
       },
       "targets": [
-        { "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})", "legendFormat": "I9 — Package", "refId": "A" },
-        { "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\"coretemp.*\", sensor=~\"Package id.*|temp1\"})", "legendFormat": "I5 — Package", "refId": "B" },
-        { "expr": "intel_gpu_temperature_celsius{instance=\"AI-NODE-I9\"}", "legendFormat": "I9 — GPU", "refId": "C" },
-        { "expr": "intel_gpu_temperature_celsius{instance=\"AI-NODE-I5\"}", "legendFormat": "I5 — GPU", "refId": "D" }
+        { "expr": "node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}", "legendFormat": "I9 — CPU Package", "refId": "A" },
+        { "expr": "node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}", "legendFormat": "I5 — CPU Package", "refId": "B" },
+        { "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\"nvme.*\", sensor=\"temp1\"})", "legendFormat": "I9 — NVMe max", "refId": "C" },
+        { "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\"nvme.*\", sensor=\"temp1\"})", "legendFormat": "I5 — NVMe max", "refId": "D" }
       ]
     },
 
     {
       "id": 44,
       "type": "stat",
-      "title": "AI-NODE-I9 — GPU temp",
+      "title": "AI-NODE-I9 — NVMe temp (max)",
       "gridPos": { "h": 4, "w": 4, "x": 0, "y": 38 },
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
       "fieldConfig": {
@@ -498,23 +498,23 @@
           "unit": "celsius",
           "thresholds": { "mode": "absolute", "steps": [
             { "color": "green", "value": null },
-            { "color": "yellow", "value": 65 },
-            { "color": "orange", "value": 80 },
-            { "color": "red", "value": 90 }
+            { "color": "yellow", "value": 50 },
+            { "color": "orange", "value": 65 },
+            { "color": "red", "value": 75 }
           ]}
         },
         "overrides": []
       },
       "targets": [{
-        "expr": "intel_gpu_temperature_celsius{instance=\"AI-NODE-I9\"}",
-        "legendFormat": "I9 GPU", "refId": "A"
+        "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+        "legendFormat": "I9 NVMe max", "refId": "A"
       }]
     },
 
     {
       "id": 45,
       "type": "stat",
-      "title": "AI-NODE-I5 — GPU temp",
+      "title": "AI-NODE-I5 — NVMe temp (max)",
       "gridPos": { "h": 4, "w": 4, "x": 4, "y": 38 },
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
       "fieldConfig": {
@@ -522,16 +522,16 @@
           "unit": "celsius",
           "thresholds": { "mode": "absolute", "steps": [
             { "color": "green", "value": null },
-            { "color": "yellow", "value": 65 },
-            { "color": "orange", "value": 80 },
-            { "color": "red", "value": 90 }
+            { "color": "yellow", "value": 50 },
+            { "color": "orange", "value": 65 },
+            { "color": "red", "value": 75 }
           ]}
         },
         "overrides": []
       },
       "targets": [{
-        "expr": "intel_gpu_temperature_celsius{instance=\"AI-NODE-I5\"}",
-        "legendFormat": "I5 GPU", "refId": "A"
+        "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+        "legendFormat": "I5 NVMe max", "refId": "A"
       }]
     },
 
