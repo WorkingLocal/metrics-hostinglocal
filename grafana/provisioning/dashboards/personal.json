@@ -1,0 +1,853 @@
+{
+  "title": "Persoonlijke Gezondheid",
+  "uid": "personal-health-hl",
+  "description": "Dagelijkse activiteit, slaap, lichaamssamenstelling en gezondheidsdata via HAOS (Fitbit + Companion App)",
+  "timezone": "browser",
+  "refresh": "5m",
+  "schemaVersion": 38,
+  "version": 1,
+  "time": { "from": "now-30d", "to": "now" },
+  "tags": ["personal", "health", "haos", "fitbit"],
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Thomas — Activiteit",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Stappen vandaag",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 5000 },
+            { "color": "yellow", "value": 8000 },
+            { "color": "green", "value": 10000 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_unit_steps{friendly_name=\"Thomas V. Stappen\"}",
+        "legendFormat": "Stappen", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Afstand",
+      "gridPos": { "h": 4, "w": 3, "x": 4, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "lengthkm",
+          "decimals": 1,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 3 },
+            { "color": "yellow", "value": 6 },
+            { "color": "green", "value": 8 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_distance_km{friendly_name=\"Thomas V. Afstand\"}",
+        "legendFormat": "km", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Verdiepingen",
+      "gridPos": { "h": 4, "w": 3, "x": 7, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 5 },
+            { "color": "yellow", "value": 10 },
+            { "color": "green", "value": 15 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_unit_floors{friendly_name=\"Thomas V. Verdiepingen\"}",
+        "legendFormat": "verdiepingen", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Rusthartslag",
+      "gridPos": { "h": 4, "w": 3, "x": 10, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "displayName": "bpm",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 75 },
+            { "color": "orange", "value": 85 },
+            { "color": "red", "value": 95 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_unit_bpm{friendly_name=\"Thomas V. Resting heart rate\"}",
+        "legendFormat": "bpm", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Actieve calorieën",
+      "gridPos": { "h": 4, "w": 3, "x": 13, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "displayName": "kcal actief",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 500 },
+            { "color": "yellow", "value": 800 },
+            { "color": "green", "value": 1200 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_unit_cal{friendly_name=\"Thomas V. Actieve calorieën\"}",
+        "legendFormat": "actief", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Totale calorieën",
+      "gridPos": { "h": 4, "w": 3, "x": 16, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "displayName": "kcal totaal",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 2800 },
+            { "color": "red", "value": 3500 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_unit_cal{friendly_name=\"Thomas V. Calorieën\"}",
+        "legendFormat": "totaal", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 8,
+      "type": "stat",
+      "title": "Gewicht",
+      "gridPos": { "h": 4, "w": 2, "x": 19, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "weightkg",
+          "decimals": 1,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 80 },
+            { "color": "red", "value": 90 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_weight_kg{friendly_name=\"Thomas V. Gewicht\"}",
+        "legendFormat": "kg", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 9,
+      "type": "stat",
+      "title": "BMI",
+      "gridPos": { "h": 4, "w": 1, "x": 21, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 1,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 25 },
+            { "color": "orange", "value": 27.5 },
+            { "color": "red", "value": 30 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_unit_bmi{friendly_name=\"Thomas V. BMI\"}",
+        "legendFormat": "BMI", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 10,
+      "type": "stat",
+      "title": "Lichaamsvet",
+      "gridPos": { "h": 4, "w": 2, "x": 22, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 22 },
+            { "color": "orange", "value": 26 },
+            { "color": "red", "value": 30 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_unit_percent{friendly_name=\"Thomas V. Body fat\"}",
+        "legendFormat": "%", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Stappen & Afstand — 30 dagen",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": { "custom": { "lineWidth": 2, "fillOpacity": 15 } },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Stappen" },
+            "properties": [{ "id": "unit", "value": "short" }, { "id": "custom.axisPlacement", "value": "left" }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Afstand (km)" },
+            "properties": [{ "id": "unit", "value": "lengthkm" }, { "id": "custom.axisPlacement", "value": "right" }]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_unit_steps{friendly_name=\"Thomas V. Stappen\"}",
+          "legendFormat": "Stappen", "refId": "A"
+        },
+        {
+          "expr": "homeassistant_sensor_distance_km{friendly_name=\"Thomas V. Afstand\"}",
+          "legendFormat": "Afstand (km)", "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Activiteitsverdeling — minuten per dag",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": { "unit": "m", "custom": { "lineWidth": 2, "fillOpacity": 20 } },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "homeassistant_sensor_duration_min{friendly_name=\"Thomas V. Minutes very active\"}", "legendFormat": "Zeer actief", "refId": "A" },
+        { "expr": "homeassistant_sensor_duration_min{friendly_name=\"Thomas V. Minutes fairly active\"}", "legendFormat": "Redelijk actief", "refId": "B" },
+        { "expr": "homeassistant_sensor_duration_min{friendly_name=\"Thomas V. Minutes lightly active\"}", "legendFormat": "Licht actief", "refId": "C" },
+        { "expr": "homeassistant_sensor_duration_min{friendly_name=\"Thomas V. Minutes sedentary\"}", "legendFormat": "Sedentair", "refId": "D" }
+      ]
+    },
+
+    {
+      "id": 20,
+      "type": "row",
+      "title": "Thomas — Slaap",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 13 },
+      "collapsed": false
+    },
+
+    {
+      "id": 21,
+      "type": "stat",
+      "title": "Geslapen",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 14 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 300 },
+            { "color": "yellow", "value": 360 },
+            { "color": "green", "value": 420 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_duration_min{friendly_name=\"Thomas V. Sleep minutes asleep\"}",
+        "legendFormat": "geslapen", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 22,
+      "type": "stat",
+      "title": "In bed",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 14 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 480 },
+            { "color": "red", "value": 600 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_duration_min{friendly_name=\"Thomas V. Sleep time in bed\"}",
+        "legendFormat": "in bed", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 23,
+      "type": "stat",
+      "title": "Slaapefficiëntie",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 14 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 70 },
+            { "color": "yellow", "value": 80 },
+            { "color": "green", "value": 88 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_unit_percent{friendly_name=\"Thomas V. Sleep efficiency\"}",
+        "legendFormat": "efficiëntie", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 24,
+      "type": "stat",
+      "title": "Wakker",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 14 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 20 },
+            { "color": "orange", "value": 40 },
+            { "color": "red", "value": 60 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_duration_min{friendly_name=\"Thomas V. Sleep minutes awake\"}",
+        "legendFormat": "wakker (min)", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 25,
+      "type": "stat",
+      "title": "Inslapen duur",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 14 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 20 },
+            { "color": "red", "value": 30 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_duration_min{friendly_name=\"Thomas V. Sleep minutes to fall asleep\"}",
+        "legendFormat": "inslapen", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 26,
+      "type": "timeseries",
+      "title": "Slaapkwaliteit — 30 dagen",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 18 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": { "unit": "m", "custom": { "lineWidth": 2, "fillOpacity": 15 } },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Efficiëntie (%)" },
+            "properties": [
+              { "id": "unit", "value": "percent" },
+              { "id": "custom.axisPlacement", "value": "right" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "yellow" } }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        { "expr": "homeassistant_sensor_duration_min{friendly_name=\"Thomas V. Sleep minutes asleep\"}", "legendFormat": "Geslapen", "refId": "A" },
+        { "expr": "homeassistant_sensor_duration_min{friendly_name=\"Thomas V. Sleep time in bed\"}", "legendFormat": "In bed", "refId": "B" },
+        { "expr": "homeassistant_sensor_duration_min{friendly_name=\"Thomas V. Sleep minutes awake\"}", "legendFormat": "Wakker", "refId": "C" },
+        { "expr": "homeassistant_sensor_unit_percent{friendly_name=\"Thomas V. Sleep efficiency\"}", "legendFormat": "Efficiëntie (%)", "refId": "D" }
+      ]
+    },
+
+    {
+      "id": 30,
+      "type": "row",
+      "title": "Thomas — Lichaamssamenstelling & Hartslag",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 },
+      "collapsed": false
+    },
+
+    {
+      "id": 31,
+      "type": "timeseries",
+      "title": "Gewicht & BMI — 30 dagen",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 27 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": { "custom": { "lineWidth": 2, "fillOpacity": 10 } },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Gewicht (kg)" },
+            "properties": [
+              { "id": "unit", "value": "weightkg" },
+              { "id": "custom.axisPlacement", "value": "left" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "BMI" },
+            "properties": [
+              { "id": "unit", "value": "short" },
+              { "id": "custom.axisPlacement", "value": "right" },
+              { "id": "decimals", "value": 1 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Lichaamsvet (%)" },
+            "properties": [
+              { "id": "unit", "value": "percent" },
+              { "id": "custom.axisPlacement", "value": "right" },
+              { "id": "decimals", "value": 1 }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        { "expr": "homeassistant_sensor_weight_kg{friendly_name=\"Thomas V. Gewicht\"}", "legendFormat": "Gewicht (kg)", "refId": "A" },
+        { "expr": "homeassistant_sensor_unit_bmi{friendly_name=\"Thomas V. BMI\"}", "legendFormat": "BMI", "refId": "B" },
+        { "expr": "homeassistant_sensor_unit_percent{friendly_name=\"Thomas V. Body fat\"}", "legendFormat": "Lichaamsvet (%)", "refId": "C" }
+      ]
+    },
+
+    {
+      "id": 32,
+      "type": "timeseries",
+      "title": "Rusthartslag & Calorieën — 30 dagen",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 27 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max", "mean"] }
+      },
+      "fieldConfig": {
+        "defaults": { "custom": { "lineWidth": 2, "fillOpacity": 10 } },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Rusthartslag (bpm)" },
+            "properties": [
+              { "id": "unit", "value": "short" },
+              { "id": "custom.axisPlacement", "value": "left" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Actieve calorieën" },
+            "properties": [
+              { "id": "unit", "value": "short" },
+              { "id": "custom.axisPlacement", "value": "right" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Totale calorieën" },
+            "properties": [
+              { "id": "unit", "value": "short" },
+              { "id": "custom.axisPlacement", "value": "right" }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        { "expr": "homeassistant_sensor_unit_bpm{friendly_name=\"Thomas V. Resting heart rate\"}", "legendFormat": "Rusthartslag (bpm)", "refId": "A" },
+        { "expr": "homeassistant_sensor_unit_cal{friendly_name=\"Thomas V. Actieve calorieën\"}", "legendFormat": "Actieve calorieën", "refId": "B" },
+        { "expr": "homeassistant_sensor_unit_cal{friendly_name=\"Thomas V. Calorieën\"}", "legendFormat": "Totale calorieën", "refId": "C" }
+      ]
+    },
+
+    {
+      "id": 40,
+      "type": "row",
+      "title": "Stéphanie — Activiteit",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 35 },
+      "collapsed": false
+    },
+
+    {
+      "id": 41,
+      "type": "stat",
+      "title": "Stappen vandaag",
+      "gridPos": { "h": 4, "w": 5, "x": 0, "y": 36 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 5000 },
+            { "color": "yellow", "value": 8000 },
+            { "color": "green", "value": 10000 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_unit_steps{friendly_name=\"Stéphanie Smartphone Steps sensor\"}",
+        "legendFormat": "stappen", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 42,
+      "type": "stat",
+      "title": "Slaap confidence",
+      "gridPos": { "h": 4, "w": 4, "x": 5, "y": 36 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 30 },
+            { "color": "yellow", "value": 60 },
+            { "color": "green", "value": 80 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_unit_percent{friendly_name=\"Stéphanie Smartphone Sleep confidence\"}",
+        "legendFormat": "confidence", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 43,
+      "type": "stat",
+      "title": "Batterij smartphone",
+      "gridPos": { "h": 4, "w": 4, "x": 9, "y": 36 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 20 },
+            { "color": "yellow", "value": 40 },
+            { "color": "green", "value": 60 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Stéphanie Smartphone Battery level\"}",
+        "legendFormat": "batterij", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 44,
+      "type": "timeseries",
+      "title": "Stéphanie — Stappen over tijd",
+      "gridPos": { "h": 7, "w": 11, "x": 13, "y": 36 },
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "custom": { "lineWidth": 2, "fillOpacity": 15 },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "green", "value": 8000 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_unit_steps{friendly_name=\"Stéphanie Smartphone Steps sensor\"}",
+        "legendFormat": "Stéphanie stappen", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 50,
+      "type": "row",
+      "title": "Apparaten — Batterijen",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 43 },
+      "collapsed": false
+    },
+
+    {
+      "id": 51,
+      "type": "stat",
+      "title": "Samsung S24+ (Thomas)",
+      "gridPos": { "h": 3, "w": 4, "x": 0, "y": 44 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 20 },
+            { "color": "yellow", "value": 40 },
+            { "color": "green", "value": 60 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Samsung S24 Plus Battery level\"}",
+        "legendFormat": "S24+", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 52,
+      "type": "stat",
+      "title": "Stéphanie Smartphone",
+      "gridPos": { "h": 3, "w": 4, "x": 4, "y": 44 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 20 },
+            { "color": "yellow", "value": 40 },
+            { "color": "green", "value": 60 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Stéphanie Smartphone Battery level\"}",
+        "legendFormat": "Stéphanie phone", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 53,
+      "type": "stat",
+      "title": "Galaxy Watch7",
+      "gridPos": { "h": 3, "w": 4, "x": 8, "y": 44 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 20 },
+            { "color": "yellow", "value": 40 },
+            { "color": "green", "value": 60 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Galaxy Watch7 (ELRN) Battery level\"}",
+        "legendFormat": "Watch7", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 54,
+      "type": "stat",
+      "title": "Fitbit Sense",
+      "gridPos": { "h": 3, "w": 4, "x": 12, "y": 44 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 20 },
+            { "color": "yellow", "value": 40 },
+            { "color": "green", "value": 60 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Sense Battery level\"}",
+        "legendFormat": "Fitbit Sense", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 55,
+      "type": "stat",
+      "title": "Lenovo Tab M9",
+      "gridPos": { "h": 3, "w": 4, "x": 16, "y": 44 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 20 },
+            { "color": "yellow", "value": 40 },
+            { "color": "green", "value": 60 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Lenovo Tab M9 Battery level\"}",
+        "legendFormat": "Lenovo M9", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 56,
+      "type": "stat",
+      "title": "Samsung Tab S8+",
+      "gridPos": { "h": 3, "w": 4, "x": 20, "y": 44 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 20 },
+            { "color": "yellow", "value": 40 },
+            { "color": "green", "value": 60 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Samsung Tab S8+ Tablet S8plus Battery level\"}",
+        "legendFormat": "Tab S8+", "refId": "A"
+      }]
+    },
+
+    {
+      "id": 57,
+      "type": "timeseries",
+      "title": "Batterijniveaus alle apparaten",
+      "gridPos": { "h": 7, "w": 24, "x": 0, "y": 47 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0, "max": 100,
+          "custom": { "lineWidth": 2, "fillOpacity": 5 },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 20 },
+            { "color": "yellow", "value": 40 },
+            { "color": "green", "value": 60 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [
+        { "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Samsung S24 Plus Battery level\"}", "legendFormat": "S24+ Thomas", "refId": "A" },
+        { "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Stéphanie Smartphone Battery level\"}", "legendFormat": "Stéphanie phone", "refId": "B" },
+        { "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Galaxy Watch7 (ELRN) Battery level\"}", "legendFormat": "Watch7", "refId": "C" },
+        { "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Sense Battery level\"}", "legendFormat": "Fitbit Sense", "refId": "D" },
+        { "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Lenovo Tab M9 Battery level\"}", "legendFormat": "Tab M9", "refId": "E" },
+        { "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Samsung Tab S8+ Tablet S8plus Battery level\"}", "legendFormat": "Tab S8+", "refId": "F" }
+      ]
+    }
+
+  ]
+}
