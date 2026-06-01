@@ -295,4 +295,66 @@ echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAr/tovxf6AYTHL4hxe7vT/zcGgly/BKKP0laO
 chmod 600 ~/.ssh/authorized_keys
 ```
 
-Status (mei 2026): gedistribueerd naar AI-NODE-I9 ✅, AI-NODE-I5 ✅, NETWORKSERVER ✅, MEDIASERVER ✅, NUT-SERVER ✅, HAOS-NUC ✅, WINDOWSSERVER2025 ✅, FILESERVER ⏳, TRAVELSERVER ⏳
+Status (juni 2026): gedistribueerd naar AI-NODE-I9 ✅, AI-NODE-I5 ✅, NETWORKSERVER ✅, MEDIASERVER ✅, NUT-SERVER ✅, HAOS-NUC ✅, WINDOWSSERVER2025 ✅, FILESERVER ⏳, TRAVELSERVER ⏳
+
+---
+
+## PBS relay installeren op METRICSSERVER
+
+METRICSSERVER fungeert als TCP relay voor externe servers (VPS) naar PBS op het lokale netwerk.
+
+```bash
+sudo apt-get install -y socat
+
+# Service bestand staat in infra-hostinglocal/compose/pbs-backup/pbs-relay.service
+sudo cp pbs-relay.service /etc/systemd/system/pbs-relay.service
+sudo systemctl daemon-reload
+sudo systemctl enable pbs-relay
+sudo systemctl start pbs-relay
+sudo systemctl status pbs-relay
+```
+
+De relay bindt uitsluitend op de Tailscale interface (100.67.19.40:8007) en stuurt door naar
+PBS op het lokale netwerk (192.168.111.201:8007).
+
+---
+
+## Deploy script (Windows → METRICSSERVER)
+
+`deploy_sftp.py` staat in de repo root. Gebruik het om de volledige stack te deployen:
+
+```bash
+python deploy_sftp.py
+```
+
+Vereiste: `pip install paramiko`
+SSH credentials: Vaultwarden → Homelab - Infrastructure → METRICSSERVER SSH
+
+Het script:
+- Verbindt via paramiko SFTP naar 192.168.111.18
+- Uploadt compose file, prometheus config, alertmanager config, dashboards, thermal-shutdown, alertmanager-ntfy
+- Maakt Docker netwerken `proxy` en `metrics_internal` aan
+- Start de stack met `docker compose -f compose.hostinglocal.yml up -d`
+
+---
+
+## Grafana dashboards overzicht (juni 2026)
+
+| Dashboard | UID | Bestand |
+|---|---|---|
+| Homelab Overview | homelab-overview-hl | overview.json |
+| AI Nodes Load Monitor | 2ca2c5e5-... | ai-nodes.json |
+| Host Temperatures | host-temperatures-hl | temperatures.json |
+| Energie & Zonnepanelen | energie-zonnepanelen | energie.json |
+| Personal Health | personal-health-hl | personal.json |
+| Disk Overview | disk-overview-hl | disk-overview.json |
+| AdGuard Home DNS | adguard-home-hostinglocal | adguard-home.json |
+| Unifi Gateway | unifi-gateway-hl | unifi.json |
+| Windows Server 2025 | windows-server-hl | windows-server.json |
+| HAOS NUC | haos-nuc-hl | haos.json |
+| FILESERVER DS423+ | fileserver-hl | fileserver.json |
+| NETWORKSERVER | networkserver-hl | networkserver.json |
+| VPS | vps-hl | vps.json |
+| Controllers | controllers-hl | controllers.json |
+| Backup Monitoring | backup-monitoring-hl | backup-monitoring.json |
+| NetBox | netbox-hl | netbox.json |
