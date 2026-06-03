@@ -281,6 +281,18 @@ scrape_configs:
         labels:
           instance: 'KIOSK-TOUCH'
 
+  # ====== CONTROLLERS (Xibo signage + kiosk displays) ======
+
+  # XIBO-SURFACE-WOONKAMER (Microsoft Surface Pro 4, Ubuntu 22.04, Working Local)
+  - job_name: 'xibo-surface'
+    static_configs:
+      - targets: ['100.77.163.65:9100']
+        labels:
+          instance: 'XIBO-SURFACE'
+          group: 'controllers'
+
+  # ====== SMARTHOMESERVER ======
+
   # SMARTHOMESERVER (HAOS Intel NUC i3) — native HA Prometheus integration (alle numerieke entiteiten)
   # Endpoint: /api/prometheus met Bearer token (long-lived access token)
   # METRICSSERVER bereikt HAOS via lokaal netwerk 192.168.111.75
