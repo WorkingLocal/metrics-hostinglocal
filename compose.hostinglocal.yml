@@ -55,7 +55,7 @@ services:
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
-      GF_SERVER_ROOT_URL: https://metrics.hostinglocal.be
+      GF_SERVER_ROOT_URL: http://metrics.hostinglocal.be
       GF_SMTP_ENABLED: "true"
       GF_SMTP_HOST: smtp.hostinger.com:587
       GF_SMTP_USER: info@workinglocal.be
@@ -73,7 +73,7 @@ services:
       GF_AUTH_GENERIC_OAUTH_API_URL: "https://auth.hostinglocal.be/realms/hostinglocal/protocol/openid-connect/userinfo"
       GF_AUTH_GENERIC_OAUTH_USE_PKCE: "true"
       GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], '/Admins') && 'Admin' || 'Viewer'"
-      GF_AUTH_SIGNOUT_REDIRECT_URL: "https://auth.hostinglocal.be/realms/hostinglocal/protocol/openid-connect/logout?post_logout_redirect_uri=https://metrics.hostinglocal.be&client_id=grafana"
+      GF_AUTH_SIGNOUT_REDIRECT_URL: "https://auth.hostinglocal.be/realms/hostinglocal/protocol/openid-connect/logout?post_logout_redirect_uri=http://metrics.hostinglocal.be&client_id=grafana"
       GF_INSTALL_PLUGINS: yesoreyeram-infinity-datasource
     ports:
       - "3000:3000"
