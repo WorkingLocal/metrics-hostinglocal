@@ -213,10 +213,10 @@ scrape_configs:
       - target_label: __address__
         replacement: '100.119.137.54:9116'
 
-  # TRAVELSERVER (TrueNAS SCALE, Minisforum S100, Tailscale 100.83.16.76)
+  # TRAVELSERVER (TrueNAS SCALE, Minisforum S100, Tailscale 100.83.29.41)
   - job_name: 'travelserver'
     static_configs:
-      - targets: ['100.83.16.76:9100']
+      - targets: ['100.83.29.41:9100']
         labels:
           instance: 'TRAVELSERVER'
 
