@@ -1,0 +1,256 @@
+{
+  "__inputs": [],
+  "__requires": [
+    {"type": "datasource", "id": "yesoreyeram-infinity-datasource", "name": "Infinity", "version": "1.0.0"}
+  ],
+  "annotations": {"list": []},
+  "description": "LiteLLM API-verbruik en Claude credits monitoring",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Totaal Verbruikt",
+      "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+      "datasource": {"uid": "infinity-litellm", "type": "yesoreyeram-infinity-datasource"},
+      "options": {
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 4,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 5},
+              {"color": "red", "value": 9}
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"uid": "infinity-litellm", "type": "yesoreyeram-infinity-datasource"},
+          "type": "json",
+          "source": "url",
+          "url": "/global/spend",
+          "url_options": {"method": "GET", "data": ""},
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            {"selector": "spend", "text": "Verbruikt", "type": "number"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Budget Limiet",
+      "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4},
+      "datasource": {"uid": "infinity-litellm", "type": "yesoreyeram-infinity-datasource"},
+      "options": {
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 2,
+          "color": {"mode": "fixed", "fixedColor": "blue"},
+          "mappings": [
+            {"type": "value", "options": {"0": {"text": "Niet ingesteld", "color": "orange"}}}
+          ]
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"uid": "infinity-litellm", "type": "yesoreyeram-infinity-datasource"},
+          "type": "json",
+          "source": "url",
+          "url": "/global/spend",
+          "url_options": {"method": "GET", "data": ""},
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            {"selector": "max_budget", "text": "Budget", "type": "number"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "gauge",
+      "title": "Budget Gebruikt",
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 4},
+      "datasource": {"uid": "infinity-litellm", "type": "yesoreyeram-infinity-datasource"},
+      "options": {
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "/^Verbruikt$/", "values": false},
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "minVizHeight": 75,
+        "minVizWidth": 75
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 4,
+          "min": 0,
+          "max": 10,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 5},
+              {"color": "red", "value": 9}
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"uid": "infinity-litellm", "type": "yesoreyeram-infinity-datasource"},
+          "type": "json",
+          "source": "url",
+          "url": "/global/spend",
+          "url_options": {"method": "GET", "data": ""},
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            {"selector": "spend", "text": "Verbruikt", "type": "number"},
+            {"selector": "max_budget", "text": "Budget", "type": "number"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "barchart",
+      "title": "Spend per Model (Claude)",
+      "gridPos": {"x": 0, "y": 4, "w": 12, "h": 8},
+      "datasource": {"uid": "infinity-litellm", "type": "yesoreyeram-infinity-datasource"},
+      "options": {
+        "orientation": "auto",
+        "xTickLabelRotation": 0,
+        "xTickLabelMaxLength": 20,
+        "xTickLabelSpacing": 200,
+        "fillOpacity": 80,
+        "gradientMode": "none",
+        "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
+        "tooltip": {"mode": "single", "sort": "none"},
+        "groupWidth": 0.7,
+        "barWidth": 0.97,
+        "stacking": "none",
+        "showValue": "auto",
+        "barRadius": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 6,
+          "color": {"mode": "palette-classic"},
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"uid": "infinity-litellm", "type": "yesoreyeram-infinity-datasource"},
+          "type": "json",
+          "source": "url",
+          "url": "/global/spend/models",
+          "url_options": {"method": "GET", "data": ""},
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            {"selector": "model", "text": "Model", "type": "string"},
+            {"selector": "total_spend", "text": "Spend ($)", "type": "number"}
+          ],
+          "filters": [
+            {"field": "model", "operator": "contains", "value": "anthropic"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "table",
+      "title": "Recente Claude Requests",
+      "gridPos": {"x": 12, "y": 4, "w": 12, "h": 8},
+      "datasource": {"uid": "infinity-litellm", "type": "yesoreyeram-infinity-datasource"},
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {"show": false, "reducer": ["sum"], "countRows": false}
+      },
+      "fieldConfig": {
+        "defaults": {"custom": {"align": "auto", "displayMode": "auto"}},
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "spend"}, "properties": [{"id": "unit", "value": "currencyUSD"}, {"id": "decimals", "value": 6}]},
+          {"matcher": {"id": "byName", "options": "startTime"}, "properties": [{"id": "custom.width", "value": 180}]},
+          {"matcher": {"id": "byName", "options": "model"}, "properties": [{"id": "custom.width", "value": 220}]}
+        ]
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"uid": "infinity-litellm", "type": "yesoreyeram-infinity-datasource"},
+          "type": "json",
+          "source": "url",
+          "url": "/spend/logs?limit=20",
+          "url_options": {"method": "GET", "data": ""},
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            {"selector": "startTime", "text": "Tijdstip", "type": "string"},
+            {"selector": "model", "text": "Model", "type": "string"},
+            {"selector": "total_tokens", "text": "Tokens", "type": "number"},
+            {"selector": "spend", "text": "Kost", "type": "number"},
+            {"selector": "call_type", "text": "Type", "type": "string"}
+          ],
+          "filters": [
+            {"field": "model", "operator": "contains", "value": "anthropic"}
+          ]
+        }
+      ],
+      "transformations": [
+        {"id": "sortBy", "options": {"fields": [{"displayName": "Tijdstip", "desc": true}]}}
+      ]
+    }
+  ],
+  "refresh": "5m",
+  "schemaVersion": 39,
+  "tags": ["ai", "litellm", "claude"],
+  "templating": {"list": []},
+  "time": {"from": "now-7d", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "AI Engine — Claude Credits",
+  "uid": "litellm-credits",
+  "version": 1
+}

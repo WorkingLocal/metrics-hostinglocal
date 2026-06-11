@@ -1,0 +1,14 @@
+apiVersion: 1
+
+datasources:
+  - name: LiteLLM (Infinity)
+    type: yesoreyeram-infinity-datasource
+    uid: infinity-litellm
+    access: proxy
+    url: https://ai.hostinglocal.be
+    jsonData:
+      auth_type: bearer_token
+      allowedHosts:
+        - https://ai.hostinglocal.be
+    secureJsonData:
+      bearerToken: "HostingLocal2024"
