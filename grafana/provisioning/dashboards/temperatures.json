@@ -784,6 +784,11 @@
           "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"FILESERVER\", chip=~\".*coretemp.*\"})",
           "legendFormat": "FILESERVER",
           "refId": "E"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_9f54_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Rack Berging (ambient)",
+          "refId": "F"
         }
       ]
     },
@@ -1173,6 +1178,93 @@
               "refId": "A"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "type": "stat",
+      "title": "Serverrack — Ambient",
+      "description": "Thermo Berging (TP357) — omgevingstemperatuur in de netwerkkast/berging",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 9
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": ["lastNotNull"]
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 30 },
+              { "color": "orange", "value": 38 },
+              { "color": "red", "value": 45 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_9f54_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Rack Berging",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "type": "stat",
+      "title": "FILESERVER — Disks max",
+      "description": "Synology DS423+ — hoogste schijftemperatuur (4x HDD + 2x M.2 via HAOS)",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 9
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": ["lastNotNull"]
+        },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 45 },
+              { "color": "orange", "value": 55 },
+              { "color": "red", "value": 60 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max(homeassistant_sensor_temperature_celsius{entity=~\"sensor\\.fileserver_drive._temperatuur|sensor\\.fileserver_m_2_drive._temperatuur\", job=\"smarthomeserver\"})",
+          "legendFormat": "FILESERVER Disks",
+          "refId": "A"
         }
       ]
     },

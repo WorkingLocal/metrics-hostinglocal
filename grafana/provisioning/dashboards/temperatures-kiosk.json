@@ -1,0 +1,961 @@
+{
+  "title": "Serverrack Kiosk — Temperaturen",
+  "uid": "serverrack-kiosk",
+  "description": "HDMI kiosk display — alle server en omgevingstemperaturen",
+  "timezone": "browser",
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "version": 1,
+  "time": {
+    "from": "now-2h",
+    "to": "now"
+  },
+  "tags": ["kiosk", "temperatures"],
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "CPU Temperaturen",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "AI-NODE-I9",
+      "description": "Intel i9 MS-01 — Package °C",
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "orientation": "auto",
+        "textMode": "auto",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "legendFormat": "AI-NODE-I9",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "AI-NODE-I5",
+      "description": "Intel i5 MS-01 — Package °C",
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "legendFormat": "AI-NODE-I5",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "NETWORKSERVER",
+      "description": "Proxmox i3-N305 — Package °C",
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"NETWORKSERVER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "legendFormat": "NETWORKSERVER",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "MEDIASERVER",
+      "description": "Proxmox NUC i5-8259U — Package °C",
+      "gridPos": { "h": 5, "w": 4, "x": 12, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"MEDIASERVER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "legendFormat": "MEDIASERVER",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "METRICSSERVER",
+      "description": "Dell OptiPlex i5-7500 — Package °C",
+      "gridPos": { "h": 5, "w": 4, "x": 16, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"METRICSSERVER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "legendFormat": "METRICSSERVER",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "HAOS NUC",
+      "description": "Intel NUC i3 — CPU via System Monitor °C",
+      "gridPos": { "h": 5, "w": 4, "x": 20, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.system_monitor_processortemperatuur\", job=\"smarthomeserver\"}",
+          "legendFormat": "HAOS NUC",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 8,
+      "type": "stat",
+      "title": "WINDOWSSERVER2025",
+      "description": "Dual Xeon Silver 4114 — max Package °C",
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 6 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max(windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", sensor=\"CPU_Package\"})",
+          "legendFormat": "WINSVR2025",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 9,
+      "type": "stat",
+      "title": "NUT-SERVER Pi",
+      "description": "Raspberry Pi 3B — zone temp °C",
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 6 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 70 },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_hwmon_temp_celsius{instance=\"NUT-SERVER\", chip=\"thermal_thermal_zone0\", sensor=\"temp0\"}",
+          "legendFormat": "NUT-SERVER Pi",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 10,
+      "type": "stat",
+      "title": "FANSERVER Pi4",
+      "description": "Raspberry Pi 4 — zone temp °C",
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 6 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 70 },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_hwmon_temp_celsius{instance=\"FANSERVER\", chip=\"thermal_thermal_zone0\", sensor=\"temp0\"}",
+          "legendFormat": "FANSERVER Pi4",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 11,
+      "type": "stat",
+      "title": "PROXMOXMANAGER",
+      "description": "NUC Celeron — Package °C",
+      "gridPos": { "h": 5, "w": 4, "x": 12, "y": 6 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"PROXMOXMANAGER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "legendFormat": "PROXMOXMANAGER",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 12,
+      "type": "stat",
+      "title": "TRAVELSERVER",
+      "description": "Minisforum S100 TrueNAS — Package °C",
+      "gridPos": { "h": 5, "w": 4, "x": 16, "y": 6 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"TRAVELSERVER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "legendFormat": "TRAVELSERVER",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 13,
+      "type": "stat",
+      "title": "FILESERVER",
+      "description": "Synology DS423+ Celeron J4125 — CPU °C",
+      "gridPos": { "h": 5, "w": 4, "x": 20, "y": 6 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 75 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"FILESERVER\", chip=~\".*coretemp.*\"})",
+          "legendFormat": "FILESERVER",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 14,
+      "type": "row",
+      "title": "NVMe & Schijf Temperaturen",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 11 },
+      "collapsed": false
+    },
+
+    {
+      "id": 15,
+      "type": "stat",
+      "title": "RACK — Berging Ambient",
+      "description": "TP357 Bluetooth sensor in netwerkkast/berging",
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 12 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "justifyMode": "center"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 30 },
+              { "color": "orange", "value": 38 },
+              { "color": "red", "value": 45 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_9f54_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Rack / Berging",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 16,
+      "type": "stat",
+      "title": "AI-I9 — NVMe",
+      "description": "Composite temp",
+      "gridPos": { "h": 5, "w": 3, "x": 6, "y": 12 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 55 },
+              { "color": "orange", "value": 70 },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+          "legendFormat": "AI-I9",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 17,
+      "type": "stat",
+      "title": "AI-I5 — NVMe",
+      "description": "Composite temp",
+      "gridPos": { "h": 5, "w": 3, "x": 9, "y": 12 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 55 },
+              { "color": "orange", "value": 70 },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+          "legendFormat": "AI-I5",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 18,
+      "type": "stat",
+      "title": "NETWORKSERVER — NVMe",
+      "description": "Composite temp",
+      "gridPos": { "h": 5, "w": 3, "x": 12, "y": 12 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 55 },
+              { "color": "orange", "value": 70 },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"NETWORKSERVER\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+          "legendFormat": "NETWORK",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 19,
+      "type": "stat",
+      "title": "MEDIASERVER — NVMe",
+      "description": "Composite temp",
+      "gridPos": { "h": 5, "w": 3, "x": 15, "y": 12 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 55 },
+              { "color": "orange", "value": 70 },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"MEDIASERVER\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+          "legendFormat": "MEDIA",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 20,
+      "type": "stat",
+      "title": "FILESERVER — Disks max",
+      "description": "4x HDD + 2x M.2 via HAOS Synology",
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 12 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 40 },
+              { "color": "orange", "value": 50 },
+              { "color": "red", "value": 58 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max(homeassistant_sensor_temperature_celsius{entity=~\"sensor\\.fileserver_drive._temperatuur|sensor\\.fileserver_m_2_drive._temperatuur\", job=\"smarthomeserver\"})",
+          "legendFormat": "FILE Disks",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 30,
+      "type": "row",
+      "title": "Buiten & Kamer",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
+      "collapsed": false
+    },
+
+    {
+      "id": 31,
+      "type": "stat",
+      "title": "Buiten — Terras",
+      "description": "TP357 buitentemperatuur (Terras Beneden)",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 18 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "super-light-blue", "value": 5 },
+              { "color": "green", "value": 15 },
+              { "color": "yellow", "value": 25 },
+              { "color": "orange", "value": 32 },
+              { "color": "red", "value": 38 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_c5a9_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Buiten",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 32,
+      "type": "stat",
+      "title": "Keuken",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 18 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 24 },
+              { "color": "orange", "value": 28 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.hue_beweging_keuken_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Keuken",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 33,
+      "type": "stat",
+      "title": "Hal Beneden",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 18 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 24 },
+              { "color": "orange", "value": 28 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.hue_beweging_hal_beneden_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Hal Beneden",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 34,
+      "type": "stat",
+      "title": "Hal Boven",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 18 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 24 },
+              { "color": "orange", "value": 28 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.0x0017880108647127_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Hal Boven",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 35,
+      "type": "stat",
+      "title": "Toilet",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 18 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 24 },
+              { "color": "orange", "value": 28 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.hue_beweging_toilet_beneden_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Toilet",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 36,
+      "type": "stat",
+      "title": "Trap",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 18 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 24 },
+              { "color": "orange", "value": 28 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.0x0017880108645f15_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Trap",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 21,
+      "type": "row",
+      "title": "CPU Tijdreeks — laatste 2 uur",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+      "collapsed": false
+    },
+
+    {
+      "id": 22,
+      "type": "timeseries",
+      "title": "CPU Temperaturen — alle hosts",
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 23 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": ["lastNotNull", "max"]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (\n  node_hwmon_temp_celsius{\n    instance=~\"AI-NODE-I9|AI-NODE-I5|NETWORKSERVER|MEDIASERVER|TRAVELSERVER|METRICSSERVER|PROXMOXMANAGER\",\n    chip=~\".*coretemp.*\",\n    sensor=\"temp1\"\n  }\n)",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        },
+        {
+          "expr": "node_hwmon_temp_celsius{instance=~\"NUT-SERVER|FANSERVER\", chip=\"thermal_thermal_zone0\", sensor=\"temp0\"}",
+          "legendFormat": "{{instance}}",
+          "refId": "B"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.system_monitor_processortemperatuur\", job=\"smarthomeserver\"}",
+          "legendFormat": "HAOS NUC",
+          "refId": "C"
+        },
+        {
+          "expr": "max(windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", sensor=\"CPU_Package\"})",
+          "legendFormat": "WINDOWSSERVER2025",
+          "refId": "D"
+        },
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"FILESERVER\", chip=~\".*coretemp.*\"})",
+          "legendFormat": "FILESERVER",
+          "refId": "E"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_9f54_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Rack / Berging (ambient)",
+          "refId": "F"
+        }
+      ]
+    }
+
+  ]
+}

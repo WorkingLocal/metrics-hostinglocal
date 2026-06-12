@@ -1,0 +1,465 @@
+{
+  "title": "Omgevingstemperaturen — Kamer & Buiten",
+  "uid": "ambient-temps-hl",
+  "description": "Kamer- en buitentemperaturen via HAOS (Hue sensoren + TP357 Bluetooth)",
+  "timezone": "browser",
+  "refresh": "2m",
+  "schemaVersion": 38,
+  "version": 1,
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "tags": ["temperatures", "ambient", "haos"],
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Buiten & Berging",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Terras Beneden — Buiten",
+      "description": "TP357 Bluetooth sensor op het terras (buitentemperatuur)",
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "orientation": "auto",
+        "textMode": "auto",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "super-light-blue", "value": 5 },
+              { "color": "green", "value": 15 },
+              { "color": "yellow", "value": 25 },
+              { "color": "orange", "value": 32 },
+              { "color": "red", "value": 38 }
+            ]
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_c5a9_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Terras Beneden",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Berging — Netwerkkast",
+      "description": "TP357 Bluetooth sensor in de berging/netwerkkast",
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 28 },
+              { "color": "orange", "value": 35 },
+              { "color": "red", "value": 42 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_9f54_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Berging",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Buiten & Berging — tijdreeks 24u",
+      "gridPos": { "h": 7, "w": 16, "x": 8, "y": 1 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "calcs": ["lastNotNull", "min", "max"]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": { "lineWidth": 2, "fillOpacity": 15 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_c5a9_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Terras Beneden (buiten)",
+          "refId": "A"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_9f54_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Berging / Netwerkkast",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 20,
+      "type": "row",
+      "title": "Kamers — Binnen (Hue bewegingssensoren)",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
+      "collapsed": false
+    },
+
+    {
+      "id": 21,
+      "type": "stat",
+      "title": "Keuken",
+      "description": "Hue bewegingssensor keuken — omgevingstemperatuur",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 9 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 24 },
+              { "color": "orange", "value": 28 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.hue_beweging_keuken_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Keuken",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 22,
+      "type": "stat",
+      "title": "Hal Beneden",
+      "description": "Hue bewegingssensor hal beneden",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 9 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 24 },
+              { "color": "orange", "value": 28 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.hue_beweging_hal_beneden_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Hal Beneden",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 23,
+      "type": "stat",
+      "title": "Hal Boven",
+      "description": "Hue bewegingssensor hal boven",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 9 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 24 },
+              { "color": "orange", "value": 28 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.0x0017880108647127_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Hal Boven",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 24,
+      "type": "stat",
+      "title": "Toilet Beneden",
+      "description": "Hue bewegingssensor toilet beneden",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 9 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 24 },
+              { "color": "orange", "value": 28 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.hue_beweging_toilet_beneden_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Toilet Beneden",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 25,
+      "type": "stat",
+      "title": "Trap",
+      "description": "Hue bewegingssensor trap",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 9 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 24 },
+              { "color": "orange", "value": 28 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.0x0017880108645f15_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Trap",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 26,
+      "type": "stat",
+      "title": "Kinderkamer",
+      "description": "TP357 Bluetooth sensor — kan unavailable zijn",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 9 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 24 },
+              { "color": "orange", "value": 28 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_e33d_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Kinderkamer",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 27,
+      "type": "stat",
+      "title": "Slaapkamer",
+      "description": "TP357 Bluetooth sensor — kan unavailable zijn",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 13 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 18 },
+              { "color": "yellow", "value": 24 },
+              { "color": "orange", "value": 28 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_5eb7_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Slaapkamer",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 30,
+      "type": "row",
+      "title": "Tijdreeks — alle kamersensoren 24u",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
+      "collapsed": false
+    },
+
+    {
+      "id": 31,
+      "type": "timeseries",
+      "title": "Kamertemperaturen — alle sensoren",
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 18 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": ["lastNotNull", "min", "max"]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": { "lineWidth": 2, "fillOpacity": 8 }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_c5a9_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Terras Beneden (buiten)",
+          "refId": "A"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_9f54_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Berging / Rack",
+          "refId": "B"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.hue_beweging_keuken_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Keuken",
+          "refId": "C"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.hue_beweging_hal_beneden_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Hal Beneden",
+          "refId": "D"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.0x0017880108647127_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Hal Boven",
+          "refId": "E"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.hue_beweging_toilet_beneden_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Toilet Beneden",
+          "refId": "F"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.0x0017880108645f15_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Trap",
+          "refId": "G"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_e33d_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Kinderkamer",
+          "refId": "H"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_5eb7_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "Slaapkamer",
+          "refId": "I"
+        }
+      ]
+    }
+
+  ]
+}

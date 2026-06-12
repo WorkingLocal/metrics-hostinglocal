@@ -13,7 +13,7 @@ import paramiko, sys, time, os
 
 LOCAL_REPO = os.path.dirname(os.path.abspath(__file__))
 REMOTE_DIR = "/opt/metrics-hostinglocal"
-HOST = "192.168.111.18"
+HOST = "100.67.19.40"  # Tailscale IP (192.168.111.18 niet bereikbaar vanop laptop-VLAN)
 USER = "metrics"
 PASS = os.environ.get("METRICS_SSH_PASS") or input("SSH wachtwoord METRICSSERVER: ")
 
@@ -66,7 +66,7 @@ files = [
     "alert.rules.yml",
     "alertmanager.yml",
 ]
-dirs = ["grafana", "thermal-shutdown", "alertmanager-ntfy", "snmp"]
+dirs = ["grafana", "thermal-shutdown", "alertmanager-ntfy", "snmp", "kiosk"]
 
 print(f"\nUploaden naar {REMOTE_DIR}...")
 for f in files:
@@ -123,5 +123,10 @@ run("docker ps --format 'table {{.Names}}\\t{{.Status}}'")
 
 client.close()
 print("\n=== KLAAR ===")
-print(f"Prometheus: http://{HOST}:9090")
-print(f"Grafana:    http://{HOST}:3000 (via container IP — zie docs/setup.md)")
+print(f"Prometheus: http://192.168.111.18:9090  (of http://{HOST}:9090 via Tailscale)")
+print(f"Grafana:    http://metrics.hostinglocal.be")
+print(f"\n--- KIOSK SETUP (eenmalig, vereist reboot) ---")
+print(f"SSH naar METRICSSERVER en voer uit:")
+print(f"  sudo bash {REMOTE_DIR}/kiosk/setup.sh")
+print(f"  sudo reboot")
+print(f"Daarna opent Chromium automatisch na reboot.")
