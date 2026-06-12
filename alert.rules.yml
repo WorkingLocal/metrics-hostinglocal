@@ -13,7 +13,7 @@ groups:
             chip=~"platform_coretemp_0|thermal_thermal_zone0",
             sensor=~"temp0|temp1"
           } > 80
-        for: 3m
+        for: 30s
         labels:
           severity: warning
         annotations:
@@ -26,7 +26,7 @@ groups:
             chip=~"platform_coretemp_0|thermal_thermal_zone0",
             sensor=~"temp0|temp1"
           } > 90
-        for: 2m
+        for: 30s
         labels:
           severity: critical
           action: shutdown
