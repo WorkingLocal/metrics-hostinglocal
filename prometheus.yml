@@ -19,10 +19,63 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  # VPS-WORKINGLOCAL (node_exporter op VPS host)
-  - job_name: 'vps-workinglocal'
+  # METRICSSERVER (Dell OptiPlex 3050, lokale host, node_exporter systemd)
+  - job_name: 'metricsserver'
     static_configs:
       - targets: ['localhost:9100']
+        labels:
+          instance: 'METRICSSERVER'
+
+  # SMART disk health — METRICSSERVER (smartctl_exporter poort 9633)
+  - job_name: 'smartctl-metricsserver'
+    static_configs:
+      - targets: ['localhost:9633']
+        labels:
+          instance: 'METRICSSERVER'
+
+  # SMART disk health — AI-NODE-I9 (MS-01 bare metal, NVMe, Tailscale 100.126.121.11)
+  # Vereist: smartctl_exporter als systemd service op poort 9633
+  - job_name: 'smartctl-ai-node-i9'
+    static_configs:
+      - targets: ['100.126.121.11:9633']
+        labels:
+          instance: 'AI-NODE-I9'
+
+  # SMART disk health — AI-NODE-I5 (MS-01 bare metal, NVMe, Tailscale 100.78.175.49)
+  # Vereist: smartctl_exporter als systemd service op poort 9633
+  - job_name: 'smartctl-ai-node-i5'
+    static_configs:
+      - targets: ['100.78.175.49:9633']
+        labels:
+          instance: 'AI-NODE-I5'
+
+  # SMART disk health — MEDIASERVER (Proxmox NUC, 192.168.111.52 — geen Tailscale scrape)
+  # Vereist: smartctl_exporter als systemd service op poort 9633
+  - job_name: 'smartctl-mediaserver'
+    static_configs:
+      - targets: ['192.168.111.52:9633']
+        labels:
+          instance: 'MEDIASERVER'
+
+  # SMART disk health — NETWORKSERVER (Proxmox i3-N305, Tailscale 100.119.137.54)
+  # Vereist: smartctl_exporter als systemd service op poort 9633
+  - job_name: 'smartctl-networkserver'
+    static_configs:
+      - targets: ['100.119.137.54:9633']
+        labels:
+          instance: 'NETWORKSERVER'
+
+  # VPS-HOSTINGLOCAL (externe monitoring VPS, node_exporter systemd)
+  - job_name: 'vps-hostinglocal'
+    static_configs:
+      - targets: ['100.125.153.71:9100']
+        labels:
+          instance: 'VPS-HOSTINGLOCAL'
+
+  # VPS-WORKINGLOCAL (RackNerd 8GB, Tailscale 100.107.226.24)
+  - job_name: 'vps-workinglocal'
+    static_configs:
+      - targets: ['100.107.226.24:9100']
         labels:
           instance: 'VPS-WORKINGLOCAL'
 
@@ -72,24 +125,24 @@ scrape_configs:
         labels:
           instance: 'AI-NODE-I5'
 
-  # VM-IMMICH (Ubuntu 24.04, Tailscale 100.75.33.124)
+  # VM-IMMICH (Ubuntu 24.04, 192.168.111.51 — geen Tailscale)
   - job_name: 'vm-immich'
     static_configs:
-      - targets: ['100.75.33.124:9100']
+      - targets: ['192.168.111.51:9100']
         labels:
           instance: 'VM-IMMICH'
 
-  # MEDIASERVER (Proxmox host NUC i5-8259U, Tailscale 100.111.62.69)
+  # MEDIASERVER (Proxmox host NUC i5-8259U, 192.168.111.52)
   - job_name: 'mediaserver'
     static_configs:
-      - targets: ['100.111.62.69:9100']
+      - targets: ['192.168.111.52:9100']
         labels:
           instance: 'MEDIASERVER'
 
-  # VM-PLEX (Ubuntu 24.04, 192.168.111.50)
+  # VM-PLEX (Ubuntu 24.04, 192.168.111.50 — geen Tailscale)
   - job_name: 'vm-plex'
     static_configs:
-      - targets: ['100.83.181.85:9100']
+      - targets: ['192.168.111.50:9100']
         labels:
           instance: 'VM-PLEX'
 
@@ -121,17 +174,17 @@ scrape_configs:
         labels:
           instance: 'VM-NETBOX'
 
-  # VM-ADGUARD node_exporter (Tailscale 100.121.177.76)
+  # VM-ADGUARD node_exporter (192.168.111.61 — geen Tailscale)
   - job_name: 'vm-adguard'
     static_configs:
-      - targets: ['100.121.177.76:9100']
+      - targets: ['192.168.111.61:9100']
         labels:
           instance: 'VM-ADGUARD'
 
   # VM-ADGUARD AdGuard Home exporter (poort 9617)
   - job_name: 'adguard-home'
     static_configs:
-      - targets: ['100.121.177.76:9617']
+      - targets: ['192.168.111.61:9617']
         labels:
           instance: 'VM-ADGUARD'
 
@@ -160,10 +213,10 @@ scrape_configs:
       - target_label: __address__
         replacement: '100.119.137.54:9116'
 
-  # TRAVELSERVER (TrueNAS SCALE, Minisforum S100, Tailscale 100.83.16.76)
+  # TRAVELSERVER (TrueNAS SCALE, Minisforum S100, Tailscale 100.83.29.41)
   - job_name: 'travelserver'
     static_configs:
-      - targets: ['100.83.16.76:9100']
+      - targets: ['100.83.29.41:9100']
         labels:
           instance: 'TRAVELSERVER'
 
@@ -174,27 +227,84 @@ scrape_configs:
         labels:
           instance: 'FILESERVER'
 
-  # VM-MUSIC (Ubuntu 24.04, Navidrome+Lidarr+MA, Tailscale 100.77.174.124)
+  # VM-MUSIC (Ubuntu 24.04, Navidrome+Lidarr+MA, 192.168.111.53 — geen Tailscale)
   - job_name: 'vm-music'
     static_configs:
-      - targets: ['100.77.174.124:9100']
+      - targets: ['192.168.111.53:9100']
         labels:
           instance: 'VM-MUSIC'
 
-  # VM-DOCS (Ubuntu 24.04, Calibre+Paperless+BookStack, Tailscale 100.107.238.37)
+  # VM-DOCS (Ubuntu 24.04, Calibre+Paperless+BookStack, 192.168.111.54 — geen Tailscale)
   - job_name: 'vm-docs'
     static_configs:
-      - targets: ['100.107.238.37:9100']
+      - targets: ['192.168.111.54:9100']
         labels:
           instance: 'VM-DOCS'
 
-  # HAOS Intel NUC — via Netdata Prometheus export
-  - job_name: 'haos-nuc'
-    metrics_path: /api/v1/allmetrics
-    params:
-      format: [prometheus]
-      help: ['yes']
+  # VM-AUTH (Keycloak 26.2 SSO, NETWORKSERVER VM 1604, Tailscale 100.82.145.54)
+  - job_name: 'vm-auth'
     static_configs:
-      - targets: ['100.109.230.93:19999']
+      - targets: ['100.82.145.54:9100']
         labels:
-          instance: 'HAOS-NUC'
+          instance: 'VM-AUTH'
+
+  # FANSERVER (Raspberry Pi 4 8GB, PWM fan controller, Tailscale 100.103.226.56)
+  - job_name: 'fanserver'
+    static_configs:
+      - targets: ['100.103.226.56:9100']
+        labels:
+          instance: 'FANSERVER'
+
+  # VM-NETBOX applicatie metrics (django-prometheus, METRICS_ENABLED=true vereist)
+  # Exposeert netbox_object_count per model + request/latency metrics
+  - job_name: 'netbox-app'
+    scrape_interval: 60s
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['100.122.166.117:8000']
+        labels:
+          instance: 'VM-NETBOX'
+
+  # PROXMOXMANAGER (NUC Celeron, huidig IP 192.168.111.15, node_exporter systemd)
+  # Vereist: node_exporter geïnstalleerd als systemd service op poort 9100
+  - job_name: 'proxmoxmanager'
+    static_configs:
+      - targets: ['192.168.111.15:9100']
+        labels:
+          instance: 'PROXMOXMANAGER'
+
+  # KIOSK-TOUCH-MELE (Windows 10 Enterprise, 192.168.111.120)
+  # Vereist: windows_exporter geïnstalleerd op poort 9182
+  - job_name: 'kiosk-touch'
+    static_configs:
+      - targets: ['192.168.111.120:9182']
+        labels:
+          instance: 'KIOSK-TOUCH'
+
+  # ====== CONTROLLERS (Xibo signage + kiosk displays) ======
+
+  # XIBO-SURFACE-WOONKAMER (Microsoft Surface Pro 4, Ubuntu 22.04, Working Local)
+  - job_name: 'xibo-surface'
+    static_configs:
+      - targets: ['100.77.163.65:9100']
+        labels:
+          instance: 'XIBO-SURFACE'
+          group: 'controllers'
+
+  # ====== SMARTHOMESERVER ======
+
+  # SMARTHOMESERVER (HAOS Intel NUC i3) — native HA Prometheus integration (alle numerieke entiteiten)
+  # Endpoint: /api/prometheus met Bearer token (long-lived access token)
+  # METRICSSERVER bereikt HAOS via lokaal netwerk 192.168.111.75
+  - job_name: 'smarthomeserver'
+    scrape_interval: 120s
+    metrics_path: /api/prometheus
+    bearer_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIwODlmNDViMzlmZDQ0N2I5OWExNTE0ZTRhMmRhN2Q0NiIsImlhdCI6MTc3OTUxNjAxMywiZXhwIjoyMDk0ODc2MDEzfQ.-JZIKRGCnxQieFTxOXFfEZwT2VPgbEUb4NzOmpqqa1E'
+    static_configs:
+      - targets: ['192.168.111.75:8123']
+        labels:
+          instance: 'SMARTHOMESERVER'
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'homeassistant_state_change_created|homeassistant_last_updated_time_seconds|homeassistant_entity_info'
+        action: drop
