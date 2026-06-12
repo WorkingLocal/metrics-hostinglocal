@@ -49,11 +49,11 @@ scrape_configs:
         labels:
           instance: 'AI-NODE-I5'
 
-  # SMART disk health — MEDIASERVER (Proxmox NUC, 192.168.111.52 — geen Tailscale scrape)
+  # SMART disk health — MEDIASERVER (Proxmox NUC, 192.168.111.20 — geen Tailscale scrape)
   # Vereist: smartctl_exporter als systemd service op poort 9633
   - job_name: 'smartctl-mediaserver'
     static_configs:
-      - targets: ['192.168.111.52:9633']
+      - targets: ['192.168.111.20:9633']
         labels:
           instance: 'MEDIASERVER'
 
@@ -132,10 +132,10 @@ scrape_configs:
         labels:
           instance: 'VM-IMMICH'
 
-  # MEDIASERVER (Proxmox host NUC i5-8259U, 192.168.111.52)
+  # MEDIASERVER (Proxmox host NUC i5-8259U, 192.168.111.20)
   - job_name: 'mediaserver'
     static_configs:
-      - targets: ['192.168.111.52:9100']
+      - targets: ['192.168.111.20:9100']
         labels:
           instance: 'MEDIASERVER'
 

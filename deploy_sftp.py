@@ -111,6 +111,12 @@ run("docker network create metrics_internal 2>/dev/null || true")
 print("\nStack starten...")
 run(f"cd {REMOTE_DIR} && docker compose -f compose.hostinglocal.yml up -d 2>&1", 180)
 
+# Prometheus bind-mount inode fix: altijd herstarten na config upload
+# SFTP overschrijft het bestand met een nieuw inode; Docker ziet de stale versie
+# tenzij de container herstart wordt.
+print("\nPrometheus herstarten (inode fix)...")
+run("docker restart prometheus-metrics", 30)
+
 time.sleep(12)
 print("\nContainer status:")
 run("docker ps --format 'table {{.Names}}\\t{{.Status}}'")
