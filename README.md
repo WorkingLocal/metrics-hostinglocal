@@ -133,23 +133,25 @@ metrics-hostinglocal/
 
 ## Deploy
 
-Gebruik het deploy script (Windows, Python + paramiko):
+De server `/opt/metrics-hostinglocal/` is een git clone van dit repo (geconfigureerd 2026-06-12).
 
-```
-C:\Temp\deploy_sftp.py
-```
-
-Verbindt via SSH/SFTP naar 192.168.111.18, uploadt alle bestanden (incl. `prometheus.hostinglocal.yml` als `prometheus.yml`), en start de stack.
-
-```python
-python C:\Temp\deploy_sftp.py
-```
-
-Prometheus hot-reload na config-wijziging:
-
+**Workflow:**
 ```bash
+# 1. Push vanuit laptop
+git push origin main
+
+# 2. Op METRICSSERVER (SSH: metrics@100.67.19.40)
+cd /opt/metrics-hostinglocal && git pull
+docker compose -f compose.hostinglocal.yml restart grafana
+
+# Voor Prometheus config-wijziging (hot-reload):
 curl -s -X POST http://192.168.111.18:9090/-/reload
+# Of volledige herstart:
+docker compose -f compose.hostinglocal.yml up -d prometheus
 ```
+
+SSH hostkey METRICSSERVER: `ssh-ed25519 255 SHA256:OjbfvxtNnimyojTDKvh58i24tTCEZdafj98DljzwBsU`  
+Credentials: Vaultwarden → "METRICSSERVER — metrics user" (metrics@192.168.111.18 / 100.67.19.40)
 
 ## Grafana
 
@@ -172,8 +174,17 @@ curl -s -X POST http://192.168.111.18:9090/-/reload
 | VPS — Workinglocal | vps-workinglocal-hl | `vps.json` | — |
 | HAOS — Intel NUC | haos-nuc-hl | `haos.json` | — |
 | FILESERVER Synology | fileserver-hl | `fileserver.json` | — |
+| AI Engine — Claude Credits | litellm-credits | `litellm-credits.json` | — |
 
 Alle dashboards worden automatisch provisioned vanuit `grafana/provisioning/dashboards/`.
+
+### Datasources
+
+| Datasource | UID | Bestand | Beschrijving |
+|-----------|-----|---------|--------------|
+| Prometheus | prometheus | `datasources/prometheus.yml` | Prometheus via host.docker.internal |
+| NetBox (Infinity) | infinity-netbox | `datasources/infinity.yml` | NetBox REST API |
+| LiteLLM (Infinity) | infinity-litellm | `datasources/litellm.yml` | LiteLLM spend/budget API (bearer: HostingLocal2024) |
 
 ## Energie-monitoring (HAOS)
 
