@@ -49,11 +49,11 @@ scrape_configs:
         labels:
           instance: 'AI-NODE-I5'
 
-  # SMART disk health — MEDIASERVER (Proxmox NUC, Tailscale 100.111.62.69)
+  # SMART disk health — MEDIASERVER (Proxmox NUC, 192.168.111.52 — geen Tailscale scrape)
   # Vereist: smartctl_exporter als systemd service op poort 9633
   - job_name: 'smartctl-mediaserver'
     static_configs:
-      - targets: ['100.111.62.69:9633']
+      - targets: ['192.168.111.52:9633']
         labels:
           instance: 'MEDIASERVER'
 
@@ -125,24 +125,24 @@ scrape_configs:
         labels:
           instance: 'AI-NODE-I5'
 
-  # VM-IMMICH (Ubuntu 24.04, Tailscale 100.75.33.124)
+  # VM-IMMICH (Ubuntu 24.04, 192.168.111.51 — geen Tailscale)
   - job_name: 'vm-immich'
     static_configs:
-      - targets: ['100.75.33.124:9100']
+      - targets: ['192.168.111.51:9100']
         labels:
           instance: 'VM-IMMICH'
 
-  # MEDIASERVER (Proxmox host NUC i5-8259U, Tailscale 100.111.62.69)
+  # MEDIASERVER (Proxmox host NUC i5-8259U, 192.168.111.52)
   - job_name: 'mediaserver'
     static_configs:
-      - targets: ['100.111.62.69:9100']
+      - targets: ['192.168.111.52:9100']
         labels:
           instance: 'MEDIASERVER'
 
-  # VM-PLEX (Ubuntu 24.04, 192.168.111.50)
+  # VM-PLEX (Ubuntu 24.04, 192.168.111.50 — geen Tailscale)
   - job_name: 'vm-plex'
     static_configs:
-      - targets: ['100.83.181.85:9100']
+      - targets: ['192.168.111.50:9100']
         labels:
           instance: 'VM-PLEX'
 
@@ -174,17 +174,17 @@ scrape_configs:
         labels:
           instance: 'VM-NETBOX'
 
-  # VM-ADGUARD node_exporter (Tailscale 100.121.177.76)
+  # VM-ADGUARD node_exporter (192.168.111.61 — geen Tailscale)
   - job_name: 'vm-adguard'
     static_configs:
-      - targets: ['100.121.177.76:9100']
+      - targets: ['192.168.111.61:9100']
         labels:
           instance: 'VM-ADGUARD'
 
   # VM-ADGUARD AdGuard Home exporter (poort 9617)
   - job_name: 'adguard-home'
     static_configs:
-      - targets: ['100.121.177.76:9617']
+      - targets: ['192.168.111.61:9617']
         labels:
           instance: 'VM-ADGUARD'
 
@@ -227,17 +227,17 @@ scrape_configs:
         labels:
           instance: 'FILESERVER'
 
-  # VM-MUSIC (Ubuntu 24.04, Navidrome+Lidarr+MA, Tailscale 100.77.174.124)
+  # VM-MUSIC (Ubuntu 24.04, Navidrome+Lidarr+MA, 192.168.111.53 — geen Tailscale)
   - job_name: 'vm-music'
     static_configs:
-      - targets: ['100.77.174.124:9100']
+      - targets: ['192.168.111.53:9100']
         labels:
           instance: 'VM-MUSIC'
 
-  # VM-DOCS (Ubuntu 24.04, Calibre+Paperless+BookStack, Tailscale 100.107.238.37)
+  # VM-DOCS (Ubuntu 24.04, Calibre+Paperless+BookStack, 192.168.111.54 — geen Tailscale)
   - job_name: 'vm-docs'
     static_configs:
-      - targets: ['100.107.238.37:9100']
+      - targets: ['192.168.111.54:9100']
         labels:
           instance: 'VM-DOCS'
 
