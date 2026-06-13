@@ -34,7 +34,7 @@ services:
     container_name: alertmanager-ntfy
     restart: unless-stopped
     environment:
-      NTFY_URL: ${NTFY_URL:-http://100.125.153.71:2586}
+      NTFY_URL: ${NTFY_URL:-https://ntfy.hostinglocal.be}
       NTFY_TOPIC: homelab
       NTFY_TOKEN: ${NTFY_PUBLISHER_TOKEN}
     networks:
