@@ -1,10 +1,3 @@
-global:
-  smtp_smarthost: 'smtp.hostinger.com:587'
-  smtp_from: 'info@workinglocal.be'
-  smtp_auth_username: 'info@workinglocal.be'
-  smtp_auth_password: 'VERVANG_MET_SMTP_WACHTWOORD'
-  smtp_require_tls: true
-
 route:
   receiver: ntfy-warning
   group_by: [alertname, instance]
@@ -12,7 +5,7 @@ route:
   group_interval: 10m
   repeat_interval: 12h
   routes:
-    # Thermal shutdown: eerst webhook (actie), rest via continue
+    # Thermal shutdown: eerst webhook (actie), dan ook ntfy
     - match:
         action: shutdown
       receiver: thermal-shutdown-webhook
@@ -21,42 +14,24 @@ route:
       repeat_interval: 2h
       continue: true
 
-    # Critical: ntfy push + e-mail
+    # Critical → ntfy
     - match:
         severity: critical
       receiver: ntfy-critical
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 1h
-      continue: true
-
-    - match:
-        severity: critical
-      receiver: email-critical
-      group_wait: 30s
-      group_interval: 5m
-      repeat_interval: 1h
 
 receivers:
-  # Warnings → ntfy push (geen e-mail, volume te hoog)
   - name: ntfy-warning
     webhook_configs:
       - url: 'http://alertmanager-ntfy:9095/hook'
         send_resolved: true
 
-  # Critical → ntfy push (urgentie via bridge)
   - name: ntfy-critical
     webhook_configs:
       - url: 'http://alertmanager-ntfy:9095/hook'
         send_resolved: true
-
-  # Critical → e-mail (blijft voor kritieke alerts)
-  - name: email-critical
-    email_configs:
-      - to: 'thomas@workinglocal.be'
-        send_resolved: true
-        headers:
-          Subject: '[CRITICAL] {{ .GroupLabels.alertname }} — {{ .GroupLabels.instance }}'
 
   - name: thermal-shutdown-webhook
     webhook_configs:

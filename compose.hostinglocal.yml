@@ -16,6 +16,7 @@ services:
       - '--storage.tsdb.retention.time=500d'
       - '--web.listen-address=0.0.0.0:9090'
       - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
 
   alertmanager:
     image: prom/alertmanager:latest
@@ -56,12 +57,7 @@ services:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
       GF_SERVER_ROOT_URL: http://metrics.hostinglocal.be
-      GF_SMTP_ENABLED: "true"
-      GF_SMTP_HOST: smtp.hostinger.com:587
-      GF_SMTP_USER: info@workinglocal.be
-      GF_SMTP_PASSWORD: ${SMTP_PASSWORD:-}
-      GF_SMTP_FROM_ADDRESS: info@workinglocal.be
-      GF_SMTP_FROM_NAME: "Hosting Local Metrics"
+      GF_SMTP_ENABLED: "false"
       # Keycloak SSO
       GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
       GF_AUTH_GENERIC_OAUTH_NAME: "Keycloak"
@@ -79,6 +75,8 @@ services:
       GF_AUTH_ANONYMOUS_ENABLED: "true"
       GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
       GF_AUTH_ANONYMOUS_ORG_NAME: "Main Org."
+      # iframe embedding voor kiosk rotatie HTML pagina
+      GF_SECURITY_ALLOW_EMBEDDING: "true"
     ports:
       - "3000:3000"
     networks:
