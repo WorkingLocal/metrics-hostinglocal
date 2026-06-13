@@ -273,11 +273,11 @@ scrape_configs:
         labels:
           instance: 'PROXMOXMANAGER'
 
-  # KIOSK-TOUCH-MELE (Windows 10 Enterprise, 192.168.111.120)
-  # Vereist: windows_exporter geïnstalleerd op poort 9182
+  # KIOSK-TOUCH (Mele Quieter 3, Windows 10 IoT Enterprise LTSC)
+  # IP nu .34 — na Unifi DHCP migratie wijzigen naar 192.168.111.120
   - job_name: 'kiosk-touch'
     static_configs:
-      - targets: ['192.168.111.120:9182']
+      - targets: ['192.168.111.34:9182']
         labels:
           instance: 'KIOSK-TOUCH'
 

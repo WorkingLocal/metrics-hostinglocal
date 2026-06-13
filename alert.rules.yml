@@ -167,3 +167,83 @@ groups:
         annotations:
           summary: "NVMe schijf kritiek vol op {{ $labels.instance }}"
           description: "{{ $labels.device }} ({{ $labels.mountpoint }}) is {{ $value | humanize }}% vol!"
+
+  # ── Windows Kiosk alerts (windows_exporter metrics) ─────────────────────
+  - name: windows_kiosk_alerts
+    rules:
+
+      # Temperatuur via thermalzone collector (Kelvin → Celsius door windows_exporter)
+      - alert: KioskTemperatureWarning
+        expr: windows_thermalzone_temperature_celsius{instance="KIOSK-TOUCH"} > 80
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Hoge temperatuur op KIOSK-TOUCH"
+          description: "Thermalzone temperatuur is {{ $value | humanize }}°C (drempel: 80°C)"
+
+      - alert: KioskTemperatureCritical
+        expr: windows_thermalzone_temperature_celsius{instance="KIOSK-TOUCH"} > 90
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "KRITIEKE temperatuur op KIOSK-TOUCH"
+          description: "Thermalzone temperatuur is {{ $value | humanize }}°C (drempel: 90°C)"
+
+      # CPU gebruik
+      - alert: KioskHighCpuWarning
+        expr: (1 - avg(rate(windows_cpu_time_total{instance="KIOSK-TOUCH", mode="idle"}[5m]))) * 100 > 70
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Hoog CPU gebruik op KIOSK-TOUCH"
+          description: "CPU gebruik is {{ $value | humanize }}% (drempel: 70%)"
+
+      - alert: KioskHighCpuCritical
+        expr: (1 - avg(rate(windows_cpu_time_total{instance="KIOSK-TOUCH", mode="idle"}[5m]))) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "KRITIEK CPU gebruik op KIOSK-TOUCH"
+          description: "CPU gebruik is {{ $value | humanize }}% (drempel: 90%)"
+
+      # Geheugen
+      - alert: KioskHighMemoryWarning
+        expr: (1 - windows_os_physical_memory_free_bytes{instance="KIOSK-TOUCH"} / windows_cs_physical_memory_bytes{instance="KIOSK-TOUCH"}) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Hoog geheugengebruik op KIOSK-TOUCH"
+          description: "RAM gebruik is {{ $value | humanize }}% (drempel: 80%)"
+
+      - alert: KioskHighMemoryCritical
+        expr: (1 - windows_os_physical_memory_free_bytes{instance="KIOSK-TOUCH"} / windows_cs_physical_memory_bytes{instance="KIOSK-TOUCH"}) * 100 > 95
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "KRITIEK geheugengebruik op KIOSK-TOUCH"
+          description: "RAM gebruik is {{ $value | humanize }}% (drempel: 95%)"
+
+      # Schijfruimte C:
+      - alert: KioskDiskUsageWarning
+        expr: (1 - windows_logical_disk_free_bytes{instance="KIOSK-TOUCH", volume="C:"} / windows_logical_disk_size_bytes{instance="KIOSK-TOUCH", volume="C:"}) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Schijf bijna vol op KIOSK-TOUCH (C:)"
+          description: "C: is {{ $value | humanize }}% vol (drempel: 80%)"
+
+      - alert: KioskDiskUsageCritical
+        expr: (1 - windows_logical_disk_free_bytes{instance="KIOSK-TOUCH", volume="C:"} / windows_logical_disk_size_bytes{instance="KIOSK-TOUCH", volume="C:"}) * 100 > 90
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Schijf kritiek vol op KIOSK-TOUCH (C:)"
+          description: "C: is {{ $value | humanize }}% vol (drempel: 90%)"
