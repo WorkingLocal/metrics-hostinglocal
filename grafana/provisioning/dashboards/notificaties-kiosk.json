@@ -1,6 +1,6 @@
 {
   "title": "Serverrack Kiosk — NTFY Meldingen",
-  "uid": "serverrack-ntfy",
+  "uid": "serverrack-notify",
   "description": "FHD kiosk scherm 4 — NTFY meldingen ticker (links) + statistieken (rechts)",
   "timezone": "browser",
   "refresh": "1m",
