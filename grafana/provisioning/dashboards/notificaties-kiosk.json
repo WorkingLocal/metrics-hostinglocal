@@ -5,7 +5,7 @@
   "timezone": "browser",
   "refresh": "5m",
   "schemaVersion": 38,
-  "version": 1,
+  "version": 2,
   "time": {
     "from": "now-7d",
     "to": "now"
@@ -535,28 +535,186 @@
     },
     {
       "id": 11,
-      "type": "text",
-      "title": "",
-      "transparent": true,
+      "type": "stat",
+      "title": "NTFY — Laatste 1 uur",
+      "description": "Berichten per topic in de laatste 1 uur",
       "gridPos": {
         "h": 4,
-        "w": 24,
+        "w": 8,
         "x": 0,
         "y": 16
       },
       "options": {
-        "content": "**NTFY** loopt op de VPS (100.125.153.71:2586 — ntfy.hostinglocal.be).\n\nPer-topic monitoring vereist een custom scraper die nog niet geconfigureerd is. Voeg topics toe in de Prometheus scrape config of maak een ntfy-exporter aan om notificatietellingen per topic te zien.",
-        "mode": "markdown",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": {
+          "valueSize": 52,
+          "titleSize": 18
         }
       },
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "yellow",
+                "value": 20
+              },
+              {
+                "color": "orange",
+                "value": 50
+              }
+            ]
+          }
+        },
         "overrides": []
-      }
+      },
+      "targets": [
+        {
+          "expr": "ntfy_topic_message_count{period=\"1h\"}",
+          "legendFormat": "{{topic}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "stat",
+      "title": "NTFY — Laatste 24 uur",
+      "description": "Berichten per topic in de laatste 24 uur",
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 8,
+        "y": 16
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": {
+          "valueSize": 52,
+          "titleSize": 18
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "yellow",
+                "value": 20
+              },
+              {
+                "color": "orange",
+                "value": 50
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "ntfy_topic_message_count{period=\"24h\"}",
+          "legendFormat": "{{topic}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "stat",
+      "title": "NTFY — Laatste 7 dagen",
+      "description": "Berichten per topic in de laatste 7 dagen",
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 16,
+        "y": 16
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": {
+          "valueSize": 52,
+          "titleSize": 18
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "yellow",
+                "value": 20
+              },
+              {
+                "color": "orange",
+                "value": 50
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "ntfy_topic_message_count{period=\"7d\"}",
+          "legendFormat": "{{topic}}",
+          "refId": "A"
+        }
+      ]
     },
     {
       "id": 12,
