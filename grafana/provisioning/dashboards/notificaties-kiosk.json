@@ -5,7 +5,7 @@
   "timezone": "browser",
   "refresh": "5m",
   "schemaVersion": 38,
-  "version": 2,
+  "version": 3,
   "time": {
     "from": "now-7d",
     "to": "now"
@@ -536,8 +536,8 @@
     {
       "id": 11,
       "type": "stat",
-      "title": "NTFY — Laatste 1 uur",
-      "description": "Berichten per topic in de laatste 1 uur",
+      "title": "NTFY — Laatste uur",
+      "description": "NTFY homelab berichten in de laatste 1 uur per topic",
       "gridPos": {
         "h": 4,
         "w": 8,
@@ -597,8 +597,8 @@
     {
       "id": 20,
       "type": "stat",
-      "title": "NTFY — Laatste 24 uur",
-      "description": "Berichten per topic in de laatste 24 uur",
+      "title": "NTFY — Laatste 24u",
+      "description": "NTFY homelab berichten in de laatste 24 uur per topic",
       "gridPos": {
         "h": 4,
         "w": 8,
@@ -658,8 +658,8 @@
     {
       "id": 21,
       "type": "stat",
-      "title": "NTFY — Laatste 7 dagen",
-      "description": "Berichten per topic in de laatste 7 dagen",
+      "title": "NTFY — Prioriteit (24u)",
+      "description": "Berichten per prioriteit in de laatste 24 uur — urgent=rood, high=oranje",
       "gridPos": {
         "h": 4,
         "w": 8,
@@ -697,10 +697,14 @@
               },
               {
                 "color": "yellow",
-                "value": 20
+                "value": 10
               },
               {
                 "color": "orange",
+                "value": 25
+              },
+              {
+                "color": "red",
                 "value": 50
               }
             ]
@@ -710,8 +714,8 @@
       },
       "targets": [
         {
-          "expr": "ntfy_topic_message_count{period=\"7d\"}",
-          "legendFormat": "{{topic}}",
+          "expr": "ntfy_topic_message_count_by_priority{period=\"24h\"}",
+          "legendFormat": "{{priority}}",
           "refId": "A"
         }
       ]

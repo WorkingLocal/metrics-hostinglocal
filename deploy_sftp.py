@@ -124,9 +124,10 @@ run(f"chmod +x {REMOTE_DIR}/scripts/*.py 2>/dev/null || true")
 # Cron jobs instellen (idempotent — bestaande regels overschrijven)
 print("\nCron jobs instellen...")
 cron_cmd = (
-    f"(crontab -u {USER} -l 2>/dev/null | grep -v 'netbox-exporter\\|litellm-exporter' || true; "
+    f"(crontab -u {USER} -l 2>/dev/null | grep -v 'netbox-exporter\\|litellm-exporter\\|ntfy-exporter' || true; "
     f"echo '*/5 * * * * /usr/bin/python3 {REMOTE_DIR}/scripts/netbox-exporter.py >> /tmp/netbox-exporter.log 2>&1'; "
-    f"echo '*/5 * * * * /usr/bin/python3 {REMOTE_DIR}/scripts/litellm-exporter.py >> /tmp/litellm-exporter.log 2>&1') "
+    f"echo '*/5 * * * * /usr/bin/python3 {REMOTE_DIR}/scripts/litellm-exporter.py >> /tmp/litellm-exporter.log 2>&1'; "
+    f"echo '*/5 * * * * /usr/bin/python3 {REMOTE_DIR}/scripts/ntfy-exporter.py >> /tmp/ntfy-exporter.log 2>&1') "
     f"| crontab -u {USER} -"
 )
 run(cron_cmd)
