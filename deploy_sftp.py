@@ -66,7 +66,7 @@ files = [
     "alert.rules.yml",
     "alertmanager.yml",
 ]
-dirs = ["grafana", "thermal-shutdown", "alertmanager-ntfy", "snmp", "kiosk", "scripts"]
+dirs = ["grafana", "thermal-shutdown", "alertmanager-ntfy", "snmp", "kiosk", "scripts", "unifi"]
 
 print(f"\nUploaden naar {REMOTE_DIR}...")
 for f in files:
@@ -86,6 +86,8 @@ env_defaults = {
     "SMTP_PASSWORD": "",             # Hostinger SMTP
     "NTFY_PUBLISHER_TOKEN": "",      # zie Vaultwarden
     "NTFY_URL": "http://100.125.153.71:2586",
+    "UNIFI_POLLER_USER": "",         # lokale UniFi admin (no SSO) — zie Vaultwarden
+    "UNIFI_POLLER_PASS": "",         # lokale UniFi admin password
 }
 try:
     existing = sftp.open(f"{REMOTE_DIR}/.env", "r").read().decode("utf-8")
