@@ -1,18 +1,19 @@
 {
-  "title": "Serverrack Kiosk — Energie",
-  "uid": "serverrack-energie",
-  "description": "FHD kiosk scherm 3 — BEEM zonnepanelen, EATON UPS verbruik, 7-dagen vergelijking",
+  "title": "Serverrack Kiosk — Backups & Notificaties",
+  "uid": "serverrack-notify",
+  "description": "FHD kiosk scherm 4 — PBS backup status, rclone jobs, NTFY berichten, tijdreeks",
   "timezone": "browser",
-  "refresh": "30s",
+  "refresh": "5m",
   "schemaVersion": 38,
-  "version": 2,
+  "version": 1,
   "time": {
     "from": "now-7d",
     "to": "now"
   },
   "tags": [
     "kiosk",
-    "energie"
+    "backups",
+    "ntfy"
   ],
   "panels": [
     {
@@ -27,7 +28,7 @@
         "y": 0
       },
       "options": {
-        "content": "## Zonnepanelen (BEEM)",
+        "content": "## PBS Backup — Proxmox Backup Server",
         "mode": "markdown",
         "code": {
           "language": "plaintext",
@@ -43,11 +44,11 @@
     {
       "id": 2,
       "type": "stat",
-      "title": "Huidig Vermogen",
-      "description": "BEEM plug-in zonnepanelen — actuele output",
+      "title": "PBS Opslag Gebruik",
+      "description": "Proxmox Backup Server — gebruikte opslagruimte %",
       "gridPos": {
-        "h": 4,
-        "w": 8,
+        "h": 5,
+        "w": 6,
         "x": 0,
         "y": 2
       },
@@ -62,31 +63,32 @@
         "textMode": "value_and_name",
         "justifyMode": "center",
         "text": {
-          "valueSize": 60,
-          "titleSize": 20
+          "valueSize": 52,
+          "titleSize": 18
         }
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "watt",
+          "unit": "percent",
+          "decimals": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
+                "color": "green",
                 "value": null
               },
               {
-                "color": "green",
-                "value": 10
-              },
-              {
                 "color": "yellow",
-                "value": 150
+                "value": 60
               },
               {
                 "color": "orange",
-                "value": 300
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
               }
             ]
           }
@@ -95,8 +97,8 @@
       },
       "targets": [
         {
-          "expr": "homeassistant_sensor_power_w{entity=\"sensor.beem_energy_thomas_vandromme_current_power\", job=\"smarthomeserver\"}",
-          "legendFormat": "Zonnepanelen",
+          "expr": "pbs_datastore_used_bytes / pbs_datastore_total_bytes * 100",
+          "legendFormat": "PBS Gebruik %",
           "refId": "A"
         }
       ]
@@ -104,12 +106,12 @@
     {
       "id": 3,
       "type": "stat",
-      "title": "Vandaag",
-      "description": "BEEM — opgewekte energie vandaag",
+      "title": "PBS Vrije Ruimte",
+      "description": "Proxmox Backup Server — vrije opslagruimte",
       "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 8,
+        "h": 5,
+        "w": 6,
+        "x": 6,
         "y": 2
       },
       "options": {
@@ -123,27 +125,31 @@
         "textMode": "value_and_name",
         "justifyMode": "center",
         "text": {
-          "valueSize": 60,
-          "titleSize": 20
+          "valueSize": 52,
+          "titleSize": 18
         }
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "watth",
+          "unit": "bytes",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
+                "color": "red",
                 "value": null
               },
               {
-                "color": "green",
-                "value": 100
+                "color": "orange",
+                "value": 107374182400
               },
               {
                 "color": "yellow",
-                "value": 800
+                "value": 536870912000
+              },
+              {
+                "color": "green",
+                "value": 1099511627776
               }
             ]
           }
@@ -152,8 +158,8 @@
       },
       "targets": [
         {
-          "expr": "homeassistant_sensor_energy_wh{entity=\"sensor.beem_energy_thomas_vandromme_daily_energy\", job=\"smarthomeserver\"}",
-          "legendFormat": "Vandaag",
+          "expr": "pbs_datastore_available_bytes",
+          "legendFormat": "PBS Vrij",
           "refId": "A"
         }
       ]
@@ -161,12 +167,12 @@
     {
       "id": 4,
       "type": "stat",
-      "title": "Deze Maand",
-      "description": "BEEM — opgewekte energie deze maand",
+      "title": "PBS Backup Status",
+      "description": "Proxmox Backup Server — laatste backup taak (1=OK, 0=FAIL)",
       "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 16,
+        "h": 5,
+        "w": 6,
+        "x": 12,
         "y": 2
       },
       "options": {
@@ -180,28 +186,40 @@
         "textMode": "value_and_name",
         "justifyMode": "center",
         "text": {
-          "valueSize": 60,
-          "titleSize": 20
-        }
+          "valueSize": 52,
+          "titleSize": 18
+        },
+        "mappings": [
+          {
+            "type": "value",
+            "options": {
+              "1": {
+                "text": "OK",
+                "color": "green",
+                "index": 0
+              },
+              "0": {
+                "text": "FAIL",
+                "color": "red",
+                "index": 1
+              }
+            }
+          }
+        ]
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "kwatth",
-          "decimals": 1,
+          "unit": "short",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
+                "color": "red",
                 "value": null
               },
               {
                 "color": "green",
                 "value": 1
-              },
-              {
-                "color": "yellow",
-                "value": 10
               }
             ]
           }
@@ -210,14 +228,75 @@
       },
       "targets": [
         {
-          "expr": "homeassistant_sensor_energy_wh{entity=\"sensor.beem_energy_thomas_vandromme_monthly_energy\", job=\"smarthomeserver\"} / 1000",
-          "legendFormat": "Deze Maand",
+          "expr": "pbs_backup_task_last_status",
+          "legendFormat": "PBS Status",
           "refId": "A"
         }
       ]
     },
     {
       "id": 5,
+      "type": "stat",
+      "title": "PBS Laatste Backup",
+      "description": "Proxmox Backup Server — tijd geleden sinds laatste backup",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 2
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": {
+          "valueSize": 36,
+          "titleSize": 18
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 86400
+              },
+              {
+                "color": "orange",
+                "value": 172800
+              },
+              {
+                "color": "red",
+                "value": 259200
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "time() - pbs_backup_task_last_timestamp",
+          "legendFormat": "Geleden",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 6,
       "type": "text",
       "title": "",
       "transparent": true,
@@ -225,10 +304,10 @@
         "h": 2,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 7
       },
       "options": {
-        "content": "## EATON UPS — Rack Verbruik",
+        "content": "## rclone Backups — FILESERVER",
         "mode": "markdown",
         "code": {
           "language": "plaintext",
@@ -242,76 +321,15 @@
       }
     },
     {
-      "id": 6,
-      "type": "stat",
-      "title": "Rack Verbruik",
-      "description": "EATON EX 1000 — totaal vermogen rack",
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 0,
-        "y": 8
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "colorMode": "background",
-        "graphMode": "area",
-        "textMode": "value_and_name",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 56,
-          "titleSize": 18
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "watt",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 400
-              },
-              {
-                "color": "orange",
-                "value": 600
-              },
-              {
-                "color": "red",
-                "value": 800
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "homeassistant_sensor_power_w{entity=\"sensor.eatonups_current_real_power\", job=\"smarthomeserver\"}",
-          "legendFormat": "UPS Rack",
-          "refId": "A"
-        }
-      ]
-    },
-    {
       "id": 7,
       "type": "stat",
-      "title": "UPS Belasting",
-      "description": "EATON — belasting als % van 900W nominaal",
+      "title": "rclone Status",
+      "description": "rclone backup taken — laatste resultaat (1=OK, 0=FAIL)",
       "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 6,
-        "y": 8
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 9
       },
       "options": {
         "reduceOptions": {
@@ -320,35 +338,44 @@
           ]
         },
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "textMode": "value_and_name",
         "justifyMode": "center",
         "text": {
-          "valueSize": 56,
+          "valueSize": 52,
           "titleSize": 18
-        }
+        },
+        "mappings": [
+          {
+            "type": "value",
+            "options": {
+              "1": {
+                "text": "OK",
+                "color": "green",
+                "index": 0
+              },
+              "0": {
+                "text": "FAIL",
+                "color": "red",
+                "index": 1
+              }
+            }
+          }
+        ]
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "percent",
+          "unit": "short",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "red",
                 "value": null
               },
               {
-                "color": "yellow",
-                "value": 50
-              },
-              {
-                "color": "orange",
-                "value": 75
-              },
-              {
-                "color": "red",
-                "value": 90
+                "color": "green",
+                "value": 1
               }
             ]
           }
@@ -357,8 +384,8 @@
       },
       "targets": [
         {
-          "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.eatonups_load\", job=\"smarthomeserver\"}",
-          "legendFormat": "UPS Load",
+          "expr": "rclone_backup_job_success",
+          "legendFormat": "{{exported_job}} ({{instance}})",
           "refId": "A"
         }
       ]
@@ -366,13 +393,13 @@
     {
       "id": 8,
       "type": "stat",
-      "title": "Batterij",
-      "description": "EATON — batterijcapaciteit",
+      "title": "rclone Laatste Run",
+      "description": "rclone — tijd geleden since laatste backup run",
       "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 12,
-        "y": 8
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 9
       },
       "options": {
         "reduceOptions": {
@@ -385,31 +412,31 @@
         "textMode": "value_and_name",
         "justifyMode": "center",
         "text": {
-          "valueSize": 56,
+          "valueSize": 36,
           "titleSize": 18
         }
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "percent",
+          "unit": "s",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
+                "color": "green",
                 "value": null
               },
               {
-                "color": "orange",
-                "value": 20
-              },
-              {
                 "color": "yellow",
-                "value": 50
+                "value": 86400
               },
               {
-                "color": "green",
-                "value": 80
+                "color": "orange",
+                "value": 172800
+              },
+              {
+                "color": "red",
+                "value": 259200
               }
             ]
           }
@@ -418,8 +445,8 @@
       },
       "targets": [
         {
-          "expr": "homeassistant_sensor_battery_percent{entity=\"sensor.eatonups_battery_charge\", job=\"smarthomeserver\"}",
-          "legendFormat": "Batterij",
+          "expr": "time() - rclone_backup_job_last_run_timestamp",
+          "legendFormat": "{{exported_job}} geleden",
           "refId": "A"
         }
       ]
@@ -427,13 +454,13 @@
     {
       "id": 9,
       "type": "stat",
-      "title": "Runtime",
-      "description": "EATON — beschikbare batterijreserve",
+      "title": "rclone Duur",
+      "description": "rclone — duur van de laatste backup run",
       "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 18,
-        "y": 8
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 9
       },
       "options": {
         "reduceOptions": {
@@ -446,31 +473,27 @@
         "textMode": "value_and_name",
         "justifyMode": "center",
         "text": {
-          "valueSize": 56,
+          "valueSize": 52,
           "titleSize": 18
         }
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "dtdurations",
+          "unit": "s",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
+                "color": "green",
                 "value": null
               },
               {
-                "color": "orange",
-                "value": 300
-              },
-              {
                 "color": "yellow",
-                "value": 600
+                "value": 1800
               },
               {
-                "color": "green",
-                "value": 900
+                "color": "orange",
+                "value": 3600
               }
             ]
           }
@@ -479,8 +502,8 @@
       },
       "targets": [
         {
-          "expr": "homeassistant_sensor_duration_s{entity=\"sensor.eatonups_battery_runtime\", job=\"smarthomeserver\"}",
-          "legendFormat": "Runtime",
+          "expr": "rclone_backup_job_duration_seconds",
+          "legendFormat": "{{exported_job}} duur",
           "refId": "A"
         }
       ]
@@ -494,10 +517,10 @@
         "h": 2,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 14
       },
       "options": {
-        "content": "## Solar vs Rack — 7 dagen",
+        "content": "## NTFY — Notificaties (VPS)",
         "mode": "markdown",
         "code": {
           "language": "plaintext",
@@ -512,14 +535,64 @@
     },
     {
       "id": 11,
-      "type": "timeseries",
-      "title": "Zonnepanelen vs Rack Verbruik — 7 dagen",
-      "description": "Groen = solar productie, Rood = UPS rack verbruik. Doel: solar ≥ rack.",
+      "type": "text",
+      "title": "",
+      "transparent": true,
       "gridPos": {
-        "h": 8,
+        "h": 4,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 16
+      },
+      "options": {
+        "content": "**NTFY** loopt op de VPS (100.125.153.71:2586 — ntfy.hostinglocal.be).\n\nPer-topic monitoring vereist een custom scraper die nog niet geconfigureerd is. Voeg topics toe in de Prometheus scrape config of maak een ntfy-exporter aan om notificatietellingen per topic te zien.",
+        "mode": "markdown",
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
+    },
+    {
+      "id": 12,
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "options": {
+        "content": "## Backup Tijdreeks — 7 dagen",
+        "mode": "markdown",
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Backup Jobs — Duur & PBS Opslag",
+      "description": "rclone duur, PBS duur en PBS opslaggebruik % over 7 dagen",
+      "gridPos": {
+        "h": 14,
+        "w": 24,
+        "x": 0,
+        "y": 22
       },
       "options": {
         "tooltip": {
@@ -538,38 +611,31 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "watt",
+          "unit": "s",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 15
+            "fillOpacity": 10
           }
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "Zonnepanelen"
+              "options": "PBS Gebruik %"
             },
             "properties": [
               {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#73BF69",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "UPS Rack"
-            },
-            "properties": [
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#F2495C",
+                  "fixedColor": "#FF9830",
                   "mode": "fixed"
                 }
               }
@@ -579,14 +645,19 @@
       },
       "targets": [
         {
-          "expr": "homeassistant_sensor_power_w{entity=\"sensor.beem_energy_thomas_vandromme_current_power\", job=\"smarthomeserver\"}",
-          "legendFormat": "Zonnepanelen",
+          "expr": "rclone_backup_job_duration_seconds",
+          "legendFormat": "rclone {{exported_job}} duur (s)",
           "refId": "A"
         },
         {
-          "expr": "homeassistant_sensor_power_w{entity=\"sensor.eatonups_current_real_power\", job=\"smarthomeserver\"}",
-          "legendFormat": "UPS Rack",
+          "expr": "pbs_backup_task_last_duration_seconds",
+          "legendFormat": "PBS backup duur (s)",
           "refId": "B"
+        },
+        {
+          "expr": "pbs_datastore_used_bytes / pbs_datastore_total_bytes * 100",
+          "legendFormat": "PBS Gebruik %",
+          "refId": "C"
         }
       ]
     }

@@ -5,7 +5,7 @@
   "timezone": "browser",
   "refresh": "30s",
   "schemaVersion": 38,
-  "version": 1,
+  "version": 2,
   "time": {
     "from": "now-6h",
     "to": "now"
@@ -17,15 +17,28 @@
   "panels": [
     {
       "id": 1,
-      "type": "row",
-      "title": "NVMe Temperaturen",
+      "type": "text",
+      "title": "",
+      "transparent": true,
       "gridPos": {
-        "h": 1,
+        "h": 2,
         "w": 24,
         "x": 0,
         "y": 0
       },
-      "collapsed": false
+      "options": {
+        "content": "## NVMe Temperaturen",
+        "mode": "markdown",
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
     },
     {
       "id": 2,
@@ -36,7 +49,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 1
+        "y": 2
       },
       "options": {
         "reduceOptions": {
@@ -50,7 +63,7 @@
         "justifyMode": "center",
         "text": {
           "valueSize": 64,
-          "titleSize": 44
+          "titleSize": 22
         }
       },
       "fieldConfig": {
@@ -97,7 +110,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 1
+        "y": 2
       },
       "options": {
         "reduceOptions": {
@@ -111,7 +124,7 @@
         "justifyMode": "center",
         "text": {
           "valueSize": 64,
-          "titleSize": 44
+          "titleSize": 22
         }
       },
       "fieldConfig": {
@@ -158,7 +171,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 1
+        "y": 2
       },
       "options": {
         "reduceOptions": {
@@ -172,7 +185,7 @@
         "justifyMode": "center",
         "text": {
           "valueSize": 64,
-          "titleSize": 44
+          "titleSize": 22
         }
       },
       "fieldConfig": {
@@ -219,7 +232,7 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 1
+        "y": 2
       },
       "options": {
         "reduceOptions": {
@@ -233,7 +246,7 @@
         "justifyMode": "center",
         "text": {
           "valueSize": 64,
-          "titleSize": 44
+          "titleSize": 22
         }
       },
       "fieldConfig": {
@@ -273,15 +286,28 @@
     },
     {
       "id": 6,
-      "type": "row",
-      "title": "FILESERVER Schijven",
+      "type": "text",
+      "title": "",
+      "transparent": true,
       "gridPos": {
-        "h": 1,
+        "h": 2,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 7
       },
-      "collapsed": false
+      "options": {
+        "content": "## FILESERVER Schijven",
+        "mode": "markdown",
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
     },
     {
       "id": 7,
@@ -292,7 +318,7 @@
         "h": 4,
         "w": 8,
         "x": 0,
-        "y": 7
+        "y": 9
       },
       "options": {
         "reduceOptions": {
@@ -305,8 +331,8 @@
         "textMode": "value_and_name",
         "justifyMode": "center",
         "text": {
-          "valueSize": 112,
-          "titleSize": 36
+          "valueSize": 56,
+          "titleSize": 18
         }
       },
       "fieldConfig": {
@@ -353,7 +379,7 @@
         "h": 4,
         "w": 16,
         "x": 8,
-        "y": 7
+        "y": 9
       },
       "options": {
         "reduceOptions": {
@@ -366,8 +392,8 @@
         "textMode": "value_and_name",
         "justifyMode": "auto",
         "text": {
-          "valueSize": 56,
-          "titleSize": 24
+          "valueSize": 28,
+          "titleSize": 12
         }
       },
       "fieldConfig": {
@@ -407,15 +433,28 @@
     },
     {
       "id": 9,
-      "type": "row",
-      "title": "Tijdreeks — NVMe & Disks (6 uur)",
+      "type": "text",
+      "title": "",
+      "transparent": true,
       "gridPos": {
-        "h": 1,
+        "h": 2,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 13
       },
-      "collapsed": false
+      "options": {
+        "content": "## Tijdreeks — NVMe & Disks (6u)",
+        "mode": "markdown",
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
     },
     {
       "id": 10,
@@ -425,7 +464,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 15
       },
       "options": {
         "tooltip": {
