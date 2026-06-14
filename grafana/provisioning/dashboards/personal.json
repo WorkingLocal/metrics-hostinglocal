@@ -847,6 +847,417 @@
         { "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Lenovo Tab M9 Battery level\"}", "legendFormat": "Tab M9", "refId": "E" },
         { "expr": "homeassistant_sensor_battery_percent{friendly_name=\"Samsung Tab S8+ Tablet S8plus Battery level\"}", "legendFormat": "Tab S8+", "refId": "F" }
       ]
+    },
+
+    {
+      "id": 60,
+      "type": "row",
+      "title": "Productiviteit — Rescuetime",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 54 },
+      "collapsed": false
+    },
+
+    {
+      "id": 61,
+      "type": "stat",
+      "title": "Productiviteitsscore (7d gem.)",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 55 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 50 },
+            { "color": "yellow", "value": 65 },
+            { "color": "green", "value": 75 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+        "rawSql": "SELECT CAST(AVG(CAST(r.productive_pct AS FLOAT)) AS FLOAT) AS value FROM dbo.dim_date d JOIN dbo.fact_rescuetime_daily r ON r.date_key = d.date_key WHERE d.date >= CAST(DATEADD(day, -7, GETDATE()) AS DATE)",
+        "format": "table",
+        "rawQuery": true,
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 62,
+      "type": "stat",
+      "title": "Productieve tijd (7d gem.)",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 55 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 180 },
+            { "color": "yellow", "value": 300 },
+            { "color": "green", "value": 420 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+        "rawSql": "SELECT CAST(AVG(CAST(r.very_productive_min + r.productive_min AS FLOAT)) AS FLOAT) AS value FROM dbo.dim_date d JOIN dbo.fact_rescuetime_daily r ON r.date_key = d.date_key WHERE d.date >= CAST(DATEADD(day, -7, GETDATE()) AS DATE)",
+        "format": "table",
+        "rawQuery": true,
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 63,
+      "type": "stat",
+      "title": "Actieve werkdagen (30d)",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 55 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "yellow", "value": 15 },
+            { "color": "green", "value": 20 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+        "rawSql": "SELECT CAST(COUNT(*) AS FLOAT) AS value FROM dbo.dim_date d JOIN dbo.fact_rescuetime_daily r ON r.date_key = d.date_key WHERE d.date >= CAST(DATEADD(day, -30, GETDATE()) AS DATE) AND r.total_time_min > 60",
+        "format": "table",
+        "rawQuery": true,
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 64,
+      "type": "stat",
+      "title": "Totale data beschikbaar",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 55 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "displayName": "dagen RT",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "blue", "value": null }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+        "rawSql": "SELECT CAST(COUNT(*) AS FLOAT) AS value FROM dbo.fact_rescuetime_daily",
+        "format": "table",
+        "rawQuery": true,
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 65,
+      "type": "timeseries",
+      "title": "Productiviteitstijd per dag (minuten)",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 59 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "sum"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m",
+          "custom": { "lineWidth": 0, "fillOpacity": 80, "stacking": { "mode": "normal", "group": "A" } }
+        },
+        "overrides": [
+          { "matcher": {"id": "byName", "options": "Zeer Productief"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "green"}}] },
+          { "matcher": {"id": "byName", "options": "Productief"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "light-green"}}] },
+          { "matcher": {"id": "byName", "options": "Neutraal"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "yellow"}}] },
+          { "matcher": {"id": "byName", "options": "Afleidend"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "orange"}}] },
+          { "matcher": {"id": "byName", "options": "Zeer Afleidend"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "red"}}] }
+        ]
+      },
+      "targets": [{
+        "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+        "rawSql": "SELECT CAST(d.date AS DATETIME) AS time, r.very_productive_min AS [Zeer Productief], r.productive_min AS [Productief], r.neutral_min AS [Neutraal], r.distracting_min AS [Afleidend], r.very_distracting_min AS [Zeer Afleidend] FROM dbo.dim_date d JOIN dbo.fact_rescuetime_daily r ON r.date_key = d.date_key WHERE $__timeFilter(CAST(d.date AS DATETIME)) ORDER BY d.date ASC",
+        "format": "time_series",
+        "rawQuery": true,
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 66,
+      "type": "timeseries",
+      "title": "Productiviteitsscore % over tijd",
+      "gridPos": { "h": 7, "w": 24, "x": 0, "y": 67 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": {
+        "tooltip": { "mode": "single" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": { "lineWidth": 2, "fillOpacity": 15 },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 50 },
+            { "color": "green", "value": 75 }
+          ]},
+          "color": { "mode": "thresholds" }
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+        "rawSql": "SELECT CAST(d.date AS DATETIME) AS time, CAST(r.productive_pct AS FLOAT) AS [Productiviteits %] FROM dbo.dim_date d JOIN dbo.fact_rescuetime_daily r ON r.date_key = d.date_key WHERE $__timeFilter(CAST(d.date AS DATETIME)) ORDER BY d.date ASC",
+        "format": "time_series",
+        "rawQuery": true,
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 70,
+      "type": "row",
+      "title": "Welzijn — Exist.io",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 74 },
+      "collapsed": false
+    },
+
+    {
+      "id": 71,
+      "type": "stat",
+      "title": "Gemiddeld Mood (7d)",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 75 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 1,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 2 },
+            { "color": "yellow", "value": 3 },
+            { "color": "green", "value": 4 }
+          ]},
+          "min": 1, "max": 5
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+        "rawSql": "SELECT CAST(AVG(CAST(e.value_numeric AS FLOAT)) AS FLOAT) AS value FROM dbo.dim_date d JOIN dbo.fact_exist_daily e ON e.date_key = d.date_key WHERE e.attribute = 'mood' AND d.date >= CAST(DATEADD(day, -7, GETDATE()) AS DATE)",
+        "format": "table",
+        "rawQuery": true,
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 72,
+      "type": "stat",
+      "title": "Gemiddelde Energie (7d)",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 75 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 1,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "red", "value": null },
+            { "color": "orange", "value": 2 },
+            { "color": "yellow", "value": 3 },
+            { "color": "green", "value": 4 }
+          ]},
+          "min": 1, "max": 5
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+        "rawSql": "SELECT CAST(AVG(CAST(e.value_numeric AS FLOAT)) AS FLOAT) AS value FROM dbo.dim_date d JOIN dbo.fact_exist_daily e ON e.date_key = d.date_key WHERE e.attribute = 'energy' AND d.date >= CAST(DATEADD(day, -7, GETDATE()) AS DATE)",
+        "format": "table",
+        "rawQuery": true,
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 73,
+      "type": "stat",
+      "title": "Gewicht (laatste meting)",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 75 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "weightkg",
+          "decimals": 1,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 80 },
+            { "color": "red", "value": 90 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+        "rawSql": "SELECT TOP 1 CAST(e.value_numeric AS FLOAT) AS value FROM dbo.dim_date d JOIN dbo.fact_exist_daily e ON e.date_key = d.date_key WHERE e.attribute = 'weight' AND e.value_numeric IS NOT NULL ORDER BY d.date DESC",
+        "format": "table",
+        "rawQuery": true,
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 74,
+      "type": "stat",
+      "title": "Koffie (7d gem.)",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 75 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 1,
+          "displayName": "kopjes/dag",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 3 },
+            { "color": "orange", "value": 5 },
+            { "color": "red", "value": 7 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+        "rawSql": "SELECT CAST(AVG(CAST(e.value_numeric AS FLOAT)) AS FLOAT) AS value FROM dbo.dim_date d JOIN dbo.fact_exist_daily e ON e.date_key = d.date_key WHERE e.attribute = 'coffee' AND d.date >= CAST(DATEADD(day, -7, GETDATE()) AS DATE)",
+        "format": "table",
+        "rawQuery": true,
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 75,
+      "type": "stat",
+      "title": "Exist.io data beschikbaar",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 75 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "displayName": "EAV rijen",
+          "thresholds": { "mode": "absolute", "steps": [{"color": "blue", "value": null}]}
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+        "rawSql": "SELECT CAST(COUNT(*) AS FLOAT) AS value FROM dbo.fact_exist_daily",
+        "format": "table",
+        "rawQuery": true,
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 76,
+      "type": "timeseries",
+      "title": "Mood & Energie over tijd",
+      "gridPos": { "h": 8, "w": 14, "x": 0, "y": 79 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "min", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 1, "max": 5,
+          "decimals": 1,
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": [
+          { "matcher": {"id": "byName", "options": "Mood"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "purple"}}] },
+          { "matcher": {"id": "byName", "options": "Energie"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "yellow"}}] }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+          "rawSql": "SELECT CAST(d.date AS DATETIME) AS time, CAST(e.value_numeric AS FLOAT) AS [Mood] FROM dbo.dim_date d JOIN dbo.fact_exist_daily e ON e.date_key = d.date_key WHERE e.attribute = 'mood' AND $__timeFilter(CAST(d.date AS DATETIME)) ORDER BY d.date ASC",
+          "format": "time_series",
+          "rawQuery": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+          "rawSql": "SELECT CAST(d.date AS DATETIME) AS time, CAST(e.value_numeric AS FLOAT) AS [Energie] FROM dbo.dim_date d JOIN dbo.fact_exist_daily e ON e.date_key = d.date_key WHERE e.attribute = 'energy' AND $__timeFilter(CAST(d.date AS DATETIME)) ORDER BY d.date ASC",
+          "format": "time_series",
+          "rawQuery": true,
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 77,
+      "type": "timeseries",
+      "title": "Gewicht over tijd",
+      "gridPos": { "h": 8, "w": 10, "x": 14, "y": 79 },
+      "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+      "options": {
+        "tooltip": { "mode": "single" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "weightkg",
+          "decimals": 1,
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "spanNulls": true },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "yellow", "value": 80 },
+            { "color": "red", "value": 90 }
+          ]},
+          "color": { "mode": "thresholds" }
+        },
+        "overrides": []
+      },
+      "targets": [{
+        "datasource": {"type": "mssql", "uid": "ffp01rla0vtogb"},
+        "rawSql": "SELECT CAST(d.date AS DATETIME) AS time, CAST(e.value_numeric AS FLOAT) AS [Gewicht (kg)] FROM dbo.dim_date d JOIN dbo.fact_exist_daily e ON e.date_key = d.date_key WHERE e.attribute = 'weight' AND e.value_numeric IS NOT NULL AND $__timeFilter(CAST(d.date AS DATETIME)) ORDER BY d.date ASC",
+        "format": "time_series",
+        "rawQuery": true,
+        "refId": "A"
+      }]
     }
 
   ]

@@ -66,7 +66,7 @@ files = [
     "alert.rules.yml",
     "alertmanager.yml",
 ]
-dirs = ["grafana", "thermal-shutdown", "alertmanager-ntfy", "snmp", "kiosk"]
+dirs = ["grafana", "thermal-shutdown", "alertmanager-ntfy", "snmp", "kiosk", "scripts"]
 
 print(f"\nUploaden naar {REMOTE_DIR}...")
 for f in files:
@@ -116,6 +116,21 @@ run(f"cd {REMOTE_DIR} && docker compose -f compose.hostinglocal.yml up -d 2>&1",
 # tenzij de container herstart wordt.
 print("\nPrometheus herstarten (inode fix)...")
 run("docker restart prometheus-metrics", 30)
+
+# Exporter scripts uitvoerbaar maken
+print("\nScripts uitvoerbaar maken...")
+run(f"chmod +x {REMOTE_DIR}/scripts/*.py 2>/dev/null || true")
+
+# Cron jobs instellen (idempotent — bestaande regels overschrijven)
+print("\nCron jobs instellen...")
+cron_cmd = (
+    f"(crontab -u {USER} -l 2>/dev/null | grep -v 'netbox-exporter\\|litellm-exporter' || true; "
+    f"echo '*/5 * * * * /usr/bin/python3 {REMOTE_DIR}/scripts/netbox-exporter.py >> /tmp/netbox-exporter.log 2>&1'; "
+    f"echo '*/5 * * * * /usr/bin/python3 {REMOTE_DIR}/scripts/litellm-exporter.py >> /tmp/litellm-exporter.log 2>&1') "
+    f"| crontab -u {USER} -"
+)
+run(cron_cmd)
+run(f"crontab -u {USER} -l")
 
 time.sleep(12)
 print("\nContainer status:")
