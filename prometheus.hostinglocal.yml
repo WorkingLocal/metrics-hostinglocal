@@ -195,6 +195,16 @@ scrape_configs:
         labels:
           instance: 'VM-OPENCLAW'
 
+  # UNIFI Poller — rijke AP/switch/client metrics via UniFi API
+  # Container draait op METRICSSERVER, publiceert poort 9130
+  # Vereist: lokale UniFi admin account (UNIFI_POLLER_USER/PASS in .env)
+  - job_name: 'unifi-poller'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['localhost:9130']
+        labels:
+          instance: 'UNIFI-GATEWAY'
+
   # UNIFI Gateway (via SNMP Exporter op NETWORKSERVER)
   # Vereist: snmp-exporter draait op NETWORKSERVER (100.119.137.54:9116)
   # SNMP inschakelen op Unifi: Settings → System → Traffic Logging → SNMP Monitoring v1/2C

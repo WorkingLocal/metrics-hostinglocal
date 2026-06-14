@@ -1,6 +1,7 @@
 """
 Alertmanager → ntfy webhook bridge.
-Luistert op :9095/hook, stuurt alerts naar ntfy.
+Luistert op :9095/hook voor Alertmanager alerts.
+Luistert op :9095/unifi-hook voor UniFi Network Application events.
 """
 import os
 import json
@@ -76,6 +77,57 @@ def hook():
 
         _send(title, message, priority, tags, resolved=(status == "resolved"))
 
+    return jsonify({"status": "ok"}), 200
+
+
+_UNIFI_CRITICAL = {"Lost_Contact", "Restart", "Disconnected", "IDS", "Honeypot"}
+
+_UNIFI_PRIORITY = {
+    "critical": 5,
+    "warning": 3,
+    "info": 2,
+}
+
+_UNIFI_TAGS = {
+    "critical": ["rotating_light"],
+    "warning": ["warning"],
+    "info": ["bell"],
+}
+
+
+def _unifi_severity(key: str) -> str:
+    key_upper = key.upper()
+    if any(c in key_upper for c in ("LOST_CONTACT", "RESTART", "IDS_", "HONEYPOT")):
+        return "critical"
+    if any(c in key_upper for c in ("EVT_AP_", "EVT_SW_", "EVT_GW_", "EVT_UGW_")):
+        return "warning"
+    return "info"
+
+
+@app.route("/unifi-hook", methods=["POST"])
+def unifi_hook():
+    """
+    Accepteert UniFi Network Application webhook events.
+    UniFi stuurt JSON met variabel formaat — probeer alle bekende velden.
+    Webhook URL op UDM: http://192.168.111.18:9095/unifi-hook
+    """
+    data = request.get_json(force=True) or {}
+    logging.info("UniFi webhook ontvangen: %s", json.dumps(data)[:500])
+
+    # Normaliseer de payload: UniFi gebruikt wisselende structuren
+    payload = data.get("payload") or data.get("data") or data
+    key     = (data.get("key") or payload.get("key") or data.get("event") or "UNKNOWN").upper()
+    msg     = payload.get("msg") or payload.get("message") or key
+    ap_name = payload.get("ap_name") or payload.get("device_name") or ""
+
+    severity = _unifi_severity(key)
+    priority = _UNIFI_PRIORITY[severity]
+    tags     = _UNIFI_TAGS[severity]
+
+    title   = f"[UniFi] {key.replace('EVT_', '').replace('_', ' ').title()}"
+    body    = f"{ap_name}\n{msg}".strip() if ap_name else msg
+
+    _send(title, body, priority, tags)
     return jsonify({"status": "ok"}), 200
 
 

@@ -38,9 +38,32 @@ services:
       NTFY_URL: ${NTFY_URL:-https://ntfy.hostinglocal.be}
       NTFY_TOPIC: homelab
       NTFY_TOKEN: ${NTFY_PUBLISHER_TOKEN}
+    ports:
+      - "9095:9095"
     networks:
       - proxy
       - metrics_internal
+
+  # UniFi Poller — scrapet UniFi API voor rijke AP/switch/client metrics
+  # Vereist: lokale UniFi admin account (geen SSO) op UDM Pro Max
+  # Aanmaken: UniFi UI → Settings → Admins → Add Admin → "Local Access Only"
+  # Prometheus scrapet via localhost:9130 (host-mode Prometheus kan published port bereiken)
+  unifi-poller:
+    image: ghcr.io/unpoller/unpoller:latest
+    container_name: unifi-poller
+    restart: unless-stopped
+    environment:
+      UP_UNIFI_DEFAULT_URL: https://192.168.111.1
+      UP_UNIFI_DEFAULT_USER: ${UNIFI_POLLER_USER}
+      UP_UNIFI_DEFAULT_PASS: ${UNIFI_POLLER_PASS}
+      UP_UNIFI_DEFAULT_VERIFY_SSL: "false"
+      UP_PROMETHEUS_HTTP_LISTEN: "0.0.0.0:9130"
+      UP_PROMETHEUS_NAMESPACE: unifi
+      UP_INFLUXDB_DISABLE: "true"
+      UP_UNIFI_DEFAULT_SAVE_SITES: "true"
+      UP_UNIFI_DEFAULT_SAVE_DPI: "false"
+    ports:
+      - "9130:9130"
 
   grafana:
     image: grafana/grafana:11.6.2

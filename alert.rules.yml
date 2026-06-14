@@ -168,6 +168,40 @@ groups:
           summary: "NVMe schijf kritiek vol op {{ $labels.instance }}"
           description: "{{ $labels.device }} ({{ $labels.mountpoint }}) is {{ $value | humanize }}% vol!"
 
+  # ── UniFi alerts ──────────────────────────────────────────────────────────
+
+  # WAN1 down via SNMP (eth8 = Realtek 2.5GbE, de WAN RJ45 poort op UDM Pro Max)
+  # ifOperStatus: 1=up, 2=down, 3=testing, 5=dormant, 7=lowerLayerDown
+  - alert: UnifiWan1Down
+    expr: ifOperStatus{instance="UNIFI-GATEWAY", ifName="eth8"} != 1
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "UniFi WAN1 DOWN op UDM Pro Max"
+      description: "Interface eth8 (Realtek 2.5GbE WAN) is niet operationeel (status: {{ $value }})"
+
+  # AP offline via unifi-poller
+  # state label: 1=connected, 0=disconnected — verschijnt zodra unifi-poller draait
+  - alert: UnifiApOffline
+    expr: unifi_uap_info{state="0"} == 1
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "UniFi AP offline: {{ $labels.name }}"
+      description: "Access Point {{ $labels.name }} ({{ $labels.ip }}) is niet verbonden"
+
+  # Switch offline via unifi-poller
+  - alert: UnifiSwitchOffline
+    expr: unifi_usw_info{state="0"} == 1
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "UniFi Switch offline: {{ $labels.name }}"
+      description: "Switch {{ $labels.name }} ({{ $labels.ip }}) is niet verbonden"
+
   # ── Windows Kiosk alerts (windows_exporter metrics) ─────────────────────
   - name: windows_kiosk_alerts
     rules:
