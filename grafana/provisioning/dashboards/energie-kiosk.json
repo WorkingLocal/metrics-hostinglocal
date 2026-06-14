@@ -1,7 +1,7 @@
 {
-  "title": "Serverrack Kiosk — Energie",
+  "title": "Serverrack Kiosk \u00e2\u20ac\u201d Energie",
   "uid": "serverrack-energie",
-  "description": "FHD kiosk scherm 3 — BEEM zonnepanelen, EATON UPS verbruik, 7-dagen vergelijking",
+  "description": "FHD kiosk scherm 3 \u00e2\u20ac\u201d BEEM zonnepanelen, EATON UPS verbruik, 7-dagen vergelijking",
   "timezone": "browser",
   "refresh": "30s",
   "schemaVersion": 38,
@@ -21,7 +21,7 @@
       "title": "",
       "transparent": true,
       "gridPos": {
-        "h": 2,
+        "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
@@ -44,12 +44,12 @@
       "id": 2,
       "type": "stat",
       "title": "Huidig Vermogen",
-      "description": "BEEM plug-in zonnepanelen — actuele output",
+      "description": "BEEM plug-in zonnepanelen \u00e2\u20ac\u201d actuele output",
       "gridPos": {
         "h": 4,
         "w": 8,
         "x": 0,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -105,12 +105,12 @@
       "id": 3,
       "type": "stat",
       "title": "Vandaag",
-      "description": "BEEM — opgewekte energie vandaag",
+      "description": "BEEM \u00e2\u20ac\u201d opgewekte energie vandaag",
       "gridPos": {
         "h": 4,
         "w": 8,
         "x": 8,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -162,12 +162,12 @@
       "id": 4,
       "type": "stat",
       "title": "Deze Maand",
-      "description": "BEEM — opgewekte energie deze maand",
+      "description": "BEEM \u00e2\u20ac\u201d opgewekte energie deze maand",
       "gridPos": {
         "h": 4,
         "w": 8,
         "x": 16,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -222,13 +222,13 @@
       "title": "",
       "transparent": true,
       "gridPos": {
-        "h": 2,
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 5
       },
       "options": {
-        "content": "## EATON UPS — Rack Verbruik",
+        "content": "## EATON UPS \u00e2\u20ac\u201d Rack Verbruik",
         "mode": "markdown",
         "code": {
           "language": "plaintext",
@@ -245,12 +245,12 @@
       "id": 6,
       "type": "stat",
       "title": "Rack Verbruik",
-      "description": "EATON EX 1000 — totaal vermogen rack",
+      "description": "EATON EX 1000 \u00e2\u20ac\u201d totaal vermogen rack",
       "gridPos": {
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 8
+        "y": 6
       },
       "options": {
         "reduceOptions": {
@@ -306,12 +306,12 @@
       "id": 7,
       "type": "stat",
       "title": "UPS Belasting",
-      "description": "EATON — belasting als % van 900W nominaal",
+      "description": "EATON \u00e2\u20ac\u201d belasting als % van 900W nominaal",
       "gridPos": {
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 8
+        "y": 6
       },
       "options": {
         "reduceOptions": {
@@ -367,12 +367,12 @@
       "id": 8,
       "type": "stat",
       "title": "Batterij",
-      "description": "EATON — batterijcapaciteit",
+      "description": "EATON \u00e2\u20ac\u201d batterijcapaciteit",
       "gridPos": {
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 8
+        "y": 6
       },
       "options": {
         "reduceOptions": {
@@ -428,12 +428,12 @@
       "id": 9,
       "type": "stat",
       "title": "Runtime",
-      "description": "EATON — beschikbare batterijreserve",
+      "description": "EATON \u00e2\u20ac\u201d beschikbare batterijreserve",
       "gridPos": {
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 8
+        "y": 6
       },
       "options": {
         "reduceOptions": {
@@ -491,13 +491,13 @@
       "title": "",
       "transparent": true,
       "gridPos": {
-        "h": 2,
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 10
       },
       "options": {
-        "content": "## Solar vs Rack — 7 dagen",
+        "content": "## Solar vs Rack \u00e2\u20ac\u201d 7 dagen",
         "mode": "markdown",
         "code": {
           "language": "plaintext",
@@ -513,13 +513,13 @@
     {
       "id": 11,
       "type": "timeseries",
-      "title": "Zonnepanelen vs Rack Verbruik — 7 dagen",
-      "description": "Groen = solar productie, Rood = UPS rack verbruik. Doel: solar ≥ rack.",
+      "title": "Zonnepanelen vs Rack Verbruik \u00e2\u20ac\u201d 7 dagen",
+      "description": "Groen = solar productie, Rood = UPS rack verbruik. Doel: solar \u00e2\u2030\u00a5 rack.",
       "gridPos": {
-        "h": 8,
+        "h": 25,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 11
       },
       "options": {
         "tooltip": {

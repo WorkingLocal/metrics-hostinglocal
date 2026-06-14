@@ -1,211 +1,137 @@
 {
-  "title": "Serverrack Kiosk — Backups & Notificaties",
-  "uid": "serverrack-notify",
-  "description": "FHD kiosk scherm 4 — PBS backup status, rclone jobs, NTFY berichten, tijdreeks",
+  "title": "Serverrack Kiosk — NTFY Meldingen",
+  "uid": "serverrack-ntfy",
+  "description": "FHD kiosk scherm 4 — NTFY meldingen ticker (links) + statistieken (rechts)",
   "timezone": "browser",
-  "refresh": "5m",
+  "refresh": "1m",
   "schemaVersion": 38,
-  "version": 3,
-  "time": {
-    "from": "now-7d",
-    "to": "now"
-  },
-  "tags": [
-    "kiosk",
-    "backups",
-    "ntfy"
-  ],
+  "version": 1,
+  "time": { "from": "now-24h", "to": "now" },
+  "tags": ["kiosk", "ntfy"],
   "panels": [
     {
       "id": 1,
       "type": "text",
       "title": "",
       "transparent": true,
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
       "options": {
-        "content": "## PBS Backup — Proxmox Backup Server",
+        "content": "## NTFY Meldingen",
         "mode": "markdown",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false }
       },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      }
+      "fieldConfig": { "defaults": {}, "overrides": [] }
     },
     {
       "id": 2,
-      "type": "stat",
-      "title": "PBS Opslag Gebruik",
-      "description": "Proxmox Backup Server — gebruikte opslagruimte %",
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 0,
-        "y": 2
-      },
+      "type": "table",
+      "title": "Recente meldingen — 12u",
+      "gridPos": { "h": 35, "w": 12, "x": 0, "y": 1 },
       "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "colorMode": "background",
-        "graphMode": "area",
-        "textMode": "value_and_name",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 52,
-          "titleSize": 18
-        }
+        "frameIndex": 0,
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": { "show": false, "reducer": ["sum"], "countRows": false, "fields": "" }
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "percent",
-          "decimals": 1,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 60
-              },
-              {
-                "color": "orange",
-                "value": 80
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
+          "custom": {
+            "align": "left",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "time" },
+            "properties": [
+              { "id": "custom.width", "value": 100 },
+              { "id": "displayName", "value": "Tijd" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "title" },
+            "properties": [
+              { "id": "custom.width", "value": 200 },
+              { "id": "displayName", "value": "Titel" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "message" },
+            "properties": [
+              { "id": "displayName", "value": "Bericht" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "priority" },
+            "properties": [
+              { "id": "custom.width", "value": 40 },
+              { "id": "displayName", "value": "P" },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "blue", "value": null },
+                    { "color": "text", "value": 3 },
+                    { "color": "orange", "value": 4 },
+                    { "color": "red", "value": 5 }
+                  ]
+                }
+              },
+              { "id": "custom.cellOptions", "value": { "type": "color-background", "mode": "basic" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "tags" },
+            "properties": [
+              { "id": "custom.width", "value": 80 },
+              { "id": "displayName", "value": "Tags" }
+            ]
+          }
+        ]
       },
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity" },
       "targets": [
         {
-          "expr": "pbs_datastore_used_bytes / pbs_datastore_total_bytes * 100",
-          "legendFormat": "PBS Gebruik %",
-          "refId": "A"
+          "refId": "A",
+          "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "infinity" },
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "url": "http://alertmanager-ntfy:9095/ntfy-messages",
+          "url_options": { "method": "GET", "data": "" },
+          "parser": "backend",
+          "json_options": { "root_selector": "", "columns": [] }
         }
       ]
     },
     {
       "id": 3,
-      "type": "stat",
-      "title": "PBS Vrije Ruimte",
-      "description": "Proxmox Backup Server — vrije opslagruimte",
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 6,
-        "y": 2
-      },
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "gridPos": { "h": 1, "w": 12, "x": 12, "y": 1 },
       "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "colorMode": "background",
-        "graphMode": "none",
-        "textMode": "value_and_name",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 52,
-          "titleSize": 18
-        }
+        "content": "## Statistieken",
+        "mode": "markdown",
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false }
       },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bytes",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 107374182400
-              },
-              {
-                "color": "yellow",
-                "value": 536870912000
-              },
-              {
-                "color": "green",
-                "value": 1099511627776
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "pbs_datastore_available_bytes",
-          "legendFormat": "PBS Vrij",
-          "refId": "A"
-        }
-      ]
+      "fieldConfig": { "defaults": {}, "overrides": [] }
     },
     {
       "id": 4,
       "type": "stat",
-      "title": "PBS Backup Status",
-      "description": "Proxmox Backup Server — laatste backup taak (1=OK, 0=FAIL)",
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 12,
-        "y": 2
-      },
+      "title": "Laatste uur",
+      "description": "Aantal NTFY berichten in de laatste 1 uur",
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 2 },
       "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
+        "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
         "graphMode": "none",
         "textMode": "value_and_name",
         "justifyMode": "center",
-        "text": {
-          "valueSize": 52,
-          "titleSize": 18
-        },
-        "mappings": [
-          {
-            "type": "value",
-            "options": {
-              "1": {
-                "text": "OK",
-                "color": "green",
-                "index": 0
-              },
-              "0": {
-                "text": "FAIL",
-                "color": "red",
-                "index": 1
-              }
-            }
-          }
-        ]
+        "text": { "valueSize": 64, "titleSize": 20 }
       },
       "fieldConfig": {
         "defaults": {
@@ -213,14 +139,10 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              }
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 1 },
+              { "color": "yellow", "value": 20 },
+              { "color": "orange", "value": 50 }
             ]
           }
         },
@@ -228,8 +150,8 @@
       },
       "targets": [
         {
-          "expr": "pbs_backup_task_last_status",
-          "legendFormat": "PBS Status",
+          "expr": "ntfy_topic_message_count{period=\"1h\"}",
+          "legendFormat": "1u",
           "refId": "A"
         }
       ]
@@ -237,51 +159,27 @@
     {
       "id": 5,
       "type": "stat",
-      "title": "PBS Laatste Backup",
-      "description": "Proxmox Backup Server — tijd geleden sinds laatste backup",
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 18,
-        "y": 2
-      },
+      "title": "Laatste 24u",
+      "description": "Aantal NTFY berichten in de laatste 24 uur",
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 2 },
       "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
+        "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
         "graphMode": "none",
         "textMode": "value_and_name",
         "justifyMode": "center",
-        "text": {
-          "valueSize": 36,
-          "titleSize": 18
-        }
+        "text": { "valueSize": 64, "titleSize": 20 }
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "s",
+          "unit": "short",
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 86400
-              },
-              {
-                "color": "orange",
-                "value": 172800
-              },
-              {
-                "color": "red",
-                "value": 259200
-              }
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 1 },
+              { "color": "yellow", "value": 20 },
+              { "color": "orange", "value": 50 }
             ]
           }
         },
@@ -289,8 +187,8 @@
       },
       "targets": [
         {
-          "expr": "time() - pbs_backup_task_last_timestamp",
-          "legendFormat": "Geleden",
+          "expr": "ntfy_topic_message_count{period=\"24h\"}",
+          "legendFormat": "24u",
           "refId": "A"
         }
       ]
@@ -300,68 +198,27 @@
       "type": "text",
       "title": "",
       "transparent": true,
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 7
-      },
+      "gridPos": { "h": 1, "w": 12, "x": 12, "y": 7 },
       "options": {
-        "content": "## rclone Backups — FILESERVER",
+        "content": "## Prioriteiten — 24u",
         "mode": "markdown",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false }
       },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      }
+      "fieldConfig": { "defaults": {}, "overrides": [] }
     },
     {
       "id": 7,
       "type": "stat",
-      "title": "rclone Status",
-      "description": "rclone backup taken — laatste resultaat (1=OK, 0=FAIL)",
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 0,
-        "y": 9
-      },
+      "title": "Urgente berichten",
+      "description": "Priority 5 (urgent) berichten in 24u",
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 8 },
       "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
+        "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
         "graphMode": "none",
         "textMode": "value_and_name",
         "justifyMode": "center",
-        "text": {
-          "valueSize": 52,
-          "titleSize": 18
-        },
-        "mappings": [
-          {
-            "type": "value",
-            "options": {
-              "1": {
-                "text": "OK",
-                "color": "green",
-                "index": 0
-              },
-              "0": {
-                "text": "FAIL",
-                "color": "red",
-                "index": 1
-              }
-            }
-          }
-        ]
+        "text": { "valueSize": 64, "titleSize": 20 }
       },
       "fieldConfig": {
         "defaults": {
@@ -369,14 +226,8 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              }
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
             ]
           }
         },
@@ -384,8 +235,8 @@
       },
       "targets": [
         {
-          "expr": "rclone_backup_job_success",
-          "legendFormat": "{{exported_job}} ({{instance}})",
+          "expr": "ntfy_topic_message_count_by_priority{period=\"24h\", priority=\"urgent\"}",
+          "legendFormat": "Urgent",
           "refId": "A"
         }
       ]
@@ -393,51 +244,25 @@
     {
       "id": 8,
       "type": "stat",
-      "title": "rclone Laatste Run",
-      "description": "rclone — tijd geleden since laatste backup run",
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 8,
-        "y": 9
-      },
+      "title": "High priority",
+      "description": "Priority 4 (high) berichten in 24u",
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 8 },
       "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
+        "reduceOptions": { "calcs": ["lastNotNull"] },
         "colorMode": "background",
         "graphMode": "none",
         "textMode": "value_and_name",
         "justifyMode": "center",
-        "text": {
-          "valueSize": 36,
-          "titleSize": 18
-        }
+        "text": { "valueSize": 64, "titleSize": 20 }
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "s",
+          "unit": "short",
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 86400
-              },
-              {
-                "color": "orange",
-                "value": 172800
-              },
-              {
-                "color": "red",
-                "value": 259200
-              }
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1 }
             ]
           }
         },
@@ -445,381 +270,56 @@
       },
       "targets": [
         {
-          "expr": "time() - rclone_backup_job_last_run_timestamp",
-          "legendFormat": "{{exported_job}} geleden",
+          "expr": "ntfy_topic_message_count_by_priority{period=\"24h\", priority=\"high\"}",
+          "legendFormat": "High",
           "refId": "A"
         }
       ]
     },
     {
       "id": 9,
-      "type": "stat",
-      "title": "rclone Duur",
-      "description": "rclone — duur van de laatste backup run",
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 16,
-        "y": 9
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "colorMode": "background",
-        "graphMode": "none",
-        "textMode": "value_and_name",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 52,
-          "titleSize": 18
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "s",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1800
-              },
-              {
-                "color": "orange",
-                "value": 3600
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "rclone_backup_job_duration_seconds",
-          "legendFormat": "{{exported_job}} duur",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "id": 10,
       "type": "text",
       "title": "",
       "transparent": true,
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 14
-      },
+      "gridPos": { "h": 1, "w": 12, "x": 12, "y": 13 },
       "options": {
-        "content": "## NTFY — Notificaties (VPS)",
+        "content": "## Activiteit — 24u",
         "mode": "markdown",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false }
       },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      }
+      "fieldConfig": { "defaults": {}, "overrides": [] }
     },
     {
-      "id": 11,
-      "type": "stat",
-      "title": "NTFY — Laatste uur",
-      "description": "NTFY homelab berichten in de laatste 1 uur per topic",
-      "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 0,
-        "y": 16
-      },
+      "id": 10,
+      "type": "timeseries",
+      "title": "NTFY Activiteit",
+      "description": "Berichtenaantal per periode over de afgelopen 24 uur",
+      "gridPos": { "h": 22, "w": 12, "x": 12, "y": 14 },
       "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "colorMode": "background",
-        "graphMode": "none",
-        "textMode": "value_and_name",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 52,
-          "titleSize": 18
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": ["lastNotNull", "max"]
         }
       },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              },
-              {
-                "color": "yellow",
-                "value": 20
-              },
-              {
-                "color": "orange",
-                "value": 50
-              }
-            ]
-          }
+          "custom": { "lineWidth": 2, "fillOpacity": 15 }
         },
         "overrides": []
       },
       "targets": [
         {
           "expr": "ntfy_topic_message_count{period=\"1h\"}",
-          "legendFormat": "{{topic}}",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "id": 20,
-      "type": "stat",
-      "title": "NTFY — Laatste 24u",
-      "description": "NTFY homelab berichten in de laatste 24 uur per topic",
-      "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 8,
-        "y": 16
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "colorMode": "background",
-        "graphMode": "none",
-        "textMode": "value_and_name",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 52,
-          "titleSize": 18
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              },
-              {
-                "color": "yellow",
-                "value": 20
-              },
-              {
-                "color": "orange",
-                "value": 50
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "ntfy_topic_message_count{period=\"24h\"}",
-          "legendFormat": "{{topic}}",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "id": 21,
-      "type": "stat",
-      "title": "NTFY — Prioriteit (24u)",
-      "description": "Berichten per prioriteit in de laatste 24 uur — urgent=rood, high=oranje",
-      "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 16,
-        "y": 16
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "colorMode": "background",
-        "graphMode": "none",
-        "textMode": "value_and_name",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 52,
-          "titleSize": 18
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              },
-              {
-                "color": "yellow",
-                "value": 10
-              },
-              {
-                "color": "orange",
-                "value": 25
-              },
-              {
-                "color": "red",
-                "value": 50
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "ntfy_topic_message_count_by_priority{period=\"24h\"}",
-          "legendFormat": "{{priority}}",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "id": 12,
-      "type": "text",
-      "title": "",
-      "transparent": true,
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 20
-      },
-      "options": {
-        "content": "## Backup Tijdreeks — 7 dagen",
-        "mode": "markdown",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      }
-    },
-    {
-      "id": 13,
-      "type": "timeseries",
-      "title": "Backup Jobs — Duur & PBS Opslag",
-      "description": "rclone duur, PBS duur en PBS opslaggebruik % over 7 dagen",
-      "gridPos": {
-        "h": 14,
-        "w": 24,
-        "x": 0,
-        "y": 22
-      },
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "displayMode": "table",
-          "placement": "right",
-          "calcs": [
-            "lastNotNull",
-            "mean",
-            "max"
-          ]
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "s",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 10
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "PBS Gebruik %"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#FF9830",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "targets": [
-        {
-          "expr": "rclone_backup_job_duration_seconds",
-          "legendFormat": "rclone {{exported_job}} duur (s)",
+          "legendFormat": "1u venster",
           "refId": "A"
         },
         {
-          "expr": "pbs_backup_task_last_duration_seconds",
-          "legendFormat": "PBS backup duur (s)",
+          "expr": "ntfy_topic_message_count_by_priority{period=\"24h\", priority=~\"urgent|high\"}",
+          "legendFormat": "{{priority}} (24u)",
           "refId": "B"
-        },
-        {
-          "expr": "pbs_datastore_used_bytes / pbs_datastore_total_bytes * 100",
-          "legendFormat": "PBS Gebruik %",
-          "refId": "C"
         }
       ]
     }

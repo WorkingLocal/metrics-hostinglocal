@@ -1,0 +1,373 @@
+{
+  "title": "Serverrack Kiosk — Backups",
+  "uid": "serverrack-backup",
+  "description": "FHD kiosk scherm 5 — PBS backup status, rclone jobs, backup tijdreeks",
+  "timezone": "browser",
+  "refresh": "5m",
+  "schemaVersion": 38,
+  "version": 1,
+  "time": { "from": "now-7d", "to": "now" },
+  "tags": ["kiosk", "backups"],
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "options": {
+        "content": "## PBS Backup — Proxmox Backup Server",
+        "mode": "markdown",
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false }
+      },
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "PBS Opslag Gebruik",
+      "description": "Proxmox Backup Server — gebruikte opslagruimte %",
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": { "valueSize": 64, "titleSize": 20 }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "orange", "value": 80 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "pbs_datastore_used_bytes / pbs_datastore_total_bytes * 100",
+          "legendFormat": "PBS Gebruik %",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "PBS Vrije Ruimte",
+      "description": "Proxmox Backup Server — vrije opslagruimte",
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": { "valueSize": 64, "titleSize": 20 }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 107374182400 },
+              { "color": "yellow", "value": 536870912000 },
+              { "color": "green", "value": 1099511627776 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "pbs_datastore_available_bytes",
+          "legendFormat": "PBS Vrij",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "PBS Backup Status",
+      "description": "Proxmox Backup Server — laatste backup taak (1=OK, 0=FAIL)",
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": { "valueSize": 64, "titleSize": 20 },
+        "mappings": [
+          {
+            "type": "value",
+            "options": {
+              "1": { "text": "OK", "color": "green", "index": 0 },
+              "0": { "text": "FAIL", "color": "red", "index": 1 }
+            }
+          }
+        ]
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "pbs_backup_task_last_status",
+          "legendFormat": "PBS Status",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "PBS Laatste Backup",
+      "description": "Proxmox Backup Server — tijd geleden sinds laatste backup",
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 1 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": { "valueSize": 46, "titleSize": 20 }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 86400 },
+              { "color": "orange", "value": 172800 },
+              { "color": "red", "value": 259200 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "time() - pbs_backup_task_last_timestamp",
+          "legendFormat": "Geleden",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 7 },
+      "options": {
+        "content": "## rclone Backups — FILESERVER",
+        "mode": "markdown",
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false }
+      },
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "rclone Status",
+      "description": "rclone backup taken — laatste resultaat (1=OK, 0=FAIL)",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 8 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": { "valueSize": 52, "titleSize": 18 },
+        "mappings": [
+          {
+            "type": "value",
+            "options": {
+              "1": { "text": "OK", "color": "green", "index": 0 },
+              "0": { "text": "FAIL", "color": "red", "index": 1 }
+            }
+          }
+        ]
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rclone_backup_job_success",
+          "legendFormat": "{{exported_job}} ({{instance}})",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "stat",
+      "title": "rclone Laatste Run",
+      "description": "rclone — tijd geleden since laatste backup run",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 8 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": { "valueSize": 38, "titleSize": 18 }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 86400 },
+              { "color": "orange", "value": 172800 },
+              { "color": "red", "value": 259200 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "time() - rclone_backup_job_last_run_timestamp",
+          "legendFormat": "{{exported_job}} geleden",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "stat",
+      "title": "rclone Duur",
+      "description": "rclone — duur van de laatste backup run",
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 8 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": { "valueSize": 52, "titleSize": 18 }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1800 },
+              { "color": "orange", "value": 3600 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rclone_backup_job_duration_seconds",
+          "legendFormat": "{{exported_job}} duur",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "options": {
+        "content": "## Backup Tijdreeks — 7 dagen",
+        "mode": "markdown",
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false }
+      },
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Backup Jobs — Duur & PBS Opslag",
+      "description": "rclone duur, PBS duur en PBS opslaggebruik % over 7 dagen",
+      "gridPos": { "h": 21, "w": 24, "x": 0, "y": 15 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "calcs": ["lastNotNull", "mean", "max"]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "PBS Gebruik %" },
+            "properties": [
+              { "id": "unit", "value": "percent" },
+              { "id": "custom.axisPlacement", "value": "right" },
+              { "id": "color", "value": { "fixedColor": "#FF9830", "mode": "fixed" } }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "rclone_backup_job_duration_seconds",
+          "legendFormat": "rclone {{exported_job}} duur (s)",
+          "refId": "A"
+        },
+        {
+          "expr": "pbs_backup_task_last_duration_seconds",
+          "legendFormat": "PBS backup duur (s)",
+          "refId": "B"
+        },
+        {
+          "expr": "pbs_datastore_used_bytes / pbs_datastore_total_bytes * 100",
+          "legendFormat": "PBS Gebruik %",
+          "refId": "C"
+        }
+      ]
+    }
+  ]
+}

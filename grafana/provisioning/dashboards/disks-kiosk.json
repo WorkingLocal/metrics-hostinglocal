@@ -1,7 +1,7 @@
 {
-  "title": "Serverrack Kiosk — NVMe & Schijven",
+  "title": "Serverrack Kiosk \u00e2\u20ac\u201d NVMe & Schijven",
   "uid": "serverrack-disks",
-  "description": "FHD kiosk scherm 2 — NVMe temperaturen, FILESERVER schijven, tijdreeks",
+  "description": "FHD kiosk scherm 2 \u00e2\u20ac\u201d NVMe temperaturen, FILESERVER schijven, tijdreeks",
   "timezone": "browser",
   "refresh": "30s",
   "schemaVersion": 38,
@@ -21,7 +21,7 @@
       "title": "",
       "transparent": true,
       "gridPos": {
-        "h": 2,
+        "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
@@ -43,13 +43,13 @@
     {
       "id": 2,
       "type": "stat",
-      "title": "AI-I9 — NVMe",
+      "title": "AI-I9 \u00e2\u20ac\u201d NVMe",
       "description": "Composite sensor temp1",
       "gridPos": {
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -104,13 +104,13 @@
     {
       "id": 3,
       "type": "stat",
-      "title": "AI-I5 — NVMe",
+      "title": "AI-I5 \u00e2\u20ac\u201d NVMe",
       "description": "Composite sensor temp1",
       "gridPos": {
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -165,13 +165,13 @@
     {
       "id": 4,
       "type": "stat",
-      "title": "NETWORK — NVMe",
+      "title": "NETWORK \u00e2\u20ac\u201d NVMe",
       "description": "Composite sensor temp1",
       "gridPos": {
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -226,13 +226,13 @@
     {
       "id": 5,
       "type": "stat",
-      "title": "MEDIA — NVMe",
+      "title": "MEDIA \u00e2\u20ac\u201d NVMe",
       "description": "Composite sensor temp1",
       "gridPos": {
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -290,10 +290,10 @@
       "title": "",
       "transparent": true,
       "gridPos": {
-        "h": 2,
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 6
       },
       "options": {
         "content": "## FILESERVER Schijven",
@@ -312,13 +312,13 @@
     {
       "id": 7,
       "type": "stat",
-      "title": "FILESERVER — Disks max",
-      "description": "DS423+ — hoogste schijftemperatuur (4x HDD + 2x M.2)",
+      "title": "FILESERVER \u00e2\u20ac\u201d Disks max",
+      "description": "DS423+ \u00e2\u20ac\u201d hoogste schijftemperatuur (4x HDD + 2x M.2)",
       "gridPos": {
         "h": 4,
         "w": 8,
         "x": 0,
-        "y": 9
+        "y": 7
       },
       "options": {
         "reduceOptions": {
@@ -373,13 +373,13 @@
     {
       "id": 8,
       "type": "stat",
-      "title": "FILESERVER — Alle schijven",
-      "description": "DS423+ — individuele schijftemperaturen",
+      "title": "FILESERVER \u00e2\u20ac\u201d Alle schijven",
+      "description": "DS423+ \u00e2\u20ac\u201d individuele schijftemperaturen",
       "gridPos": {
         "h": 4,
         "w": 16,
         "x": 8,
-        "y": 9
+        "y": 7
       },
       "options": {
         "reduceOptions": {
@@ -437,13 +437,13 @@
       "title": "",
       "transparent": true,
       "gridPos": {
-        "h": 2,
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 11
       },
       "options": {
-        "content": "## Tijdreeks — NVMe & Disks (6u)",
+        "content": "## Tijdreeks \u00e2\u20ac\u201d NVMe & Disks (6u)",
         "mode": "markdown",
         "code": {
           "language": "plaintext",
@@ -461,10 +461,10 @@
       "type": "timeseries",
       "title": "NVMe & Schijf Temperaturen",
       "gridPos": {
-        "h": 7,
+        "h": 24,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 12
       },
       "options": {
         "tooltip": {

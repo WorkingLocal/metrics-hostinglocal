@@ -1,7 +1,8 @@
 #!/bin/bash
 # Grafana kiosk X11 sessie — METRICSSERVER HDMI display
 # Gestart via startx vanuit ~/.bash_profile (autologin tty1)
-# Dashboard rotatie via Grafana Playlist (native, 10s interval)
+# Dashboard rotatie via kiosk-rotate.html (JS iframe, 25s interval, 5 dashboards)
+# Beheer: kiosk/kiosk-rotate.html in metrics-hostinglocal repo
 
 sleep 1
 xrandr --output HDMI-1 --mode 1920x1080 --rate 60 2>/dev/null || \
@@ -13,6 +14,11 @@ xset s noblank
 
 unclutter -idle 1 -root &
 openbox &
+
+# Lokale HTTP server voor kiosk-rotate.html (vermijdt file:// iframe beperkingen)
+python3 -m http.server 8080 --directory /opt/metrics-hostinglocal/kiosk \
+    >> /tmp/kiosk-http.log 2>&1 &
+sleep 2
 
 CHROME_BIN=""
 for candidate in chromium-browser chromium google-chrome-stable google-chrome; do
@@ -27,9 +33,7 @@ if [[ -z "$CHROME_BIN" ]]; then
     exit 1
 fi
 
-# Grafana Playlist — roteert automatisch tussen 4 FHD dashboards
-# Playlist beheren via: http://metrics.hostinglocal.be/playlists
-PLAYLIST_URL="http://metrics.hostinglocal.be/playlists/play/afp1f2l41syrkd?kiosk&theme=dark"
+KIOSK_URL="http://localhost:8080/kiosk-rotate.html"
 
 while true; do
     "$CHROME_BIN" \
@@ -48,6 +52,6 @@ while true; do
         --disk-cache-size=1 \
         --disable-background-timer-throttling \
         --disable-renderer-backgrounding \
-        "$PLAYLIST_URL"
+        "$KIOSK_URL"
     sleep 5
 done

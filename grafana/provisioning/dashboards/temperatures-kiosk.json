@@ -1,7 +1,7 @@
 {
-  "title": "Serverrack Kiosk — Temperaturen",
+  "title": "Serverrack Kiosk \u00e2\u20ac\u201d Temperaturen",
   "uid": "serverrack-kiosk",
-  "description": "FHD kiosk scherm 1 — CPU + Rack temperaturen + tijdreeks",
+  "description": "FHD kiosk scherm 1 \u00e2\u20ac\u201d CPU + Rack temperaturen + tijdreeks",
   "timezone": "browser",
   "refresh": "30s",
   "schemaVersion": 38,
@@ -21,7 +21,7 @@
       "title": "",
       "transparent": true,
       "gridPos": {
-        "h": 2,
+        "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
@@ -44,12 +44,12 @@
       "id": 2,
       "type": "stat",
       "title": "AI-NODE-I9",
-      "description": "Intel i9 MS-01 — Package °C",
+      "description": "Intel i9 MS-01 \u00e2\u20ac\u201d Package \u00c2\u00b0C",
       "gridPos": {
         "h": 5,
         "w": 4,
         "x": 0,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -105,12 +105,12 @@
       "id": 3,
       "type": "stat",
       "title": "AI-NODE-I5",
-      "description": "Intel i5 MS-01 — Package °C",
+      "description": "Intel i5 MS-01 \u00e2\u20ac\u201d Package \u00c2\u00b0C",
       "gridPos": {
         "h": 5,
         "w": 4,
         "x": 4,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -166,12 +166,12 @@
       "id": 4,
       "type": "stat",
       "title": "NETWORKSERVER",
-      "description": "Proxmox i3-N305 — Package °C",
+      "description": "Proxmox i3-N305 \u00e2\u20ac\u201d Package \u00c2\u00b0C",
       "gridPos": {
         "h": 5,
         "w": 4,
         "x": 8,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -227,12 +227,12 @@
       "id": 5,
       "type": "stat",
       "title": "MEDIASERVER",
-      "description": "Proxmox NUC i5-8259U — Package °C",
+      "description": "Proxmox NUC i5-8259U \u00e2\u20ac\u201d Package \u00c2\u00b0C",
       "gridPos": {
         "h": 5,
         "w": 4,
         "x": 12,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -288,12 +288,12 @@
       "id": 6,
       "type": "stat",
       "title": "METRICSSERVER",
-      "description": "Dell OptiPlex i5-7500 — Package °C",
+      "description": "Dell OptiPlex i5-7500 \u00e2\u20ac\u201d Package \u00c2\u00b0C",
       "gridPos": {
         "h": 5,
         "w": 4,
         "x": 16,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -349,12 +349,12 @@
       "id": 7,
       "type": "stat",
       "title": "HAOS NUC",
-      "description": "Intel NUC i3 — CPU via System Monitor °C",
+      "description": "Intel NUC i3 \u00e2\u20ac\u201d CPU via System Monitor \u00c2\u00b0C",
       "gridPos": {
         "h": 5,
         "w": 4,
         "x": 20,
-        "y": 2
+        "y": 1
       },
       "options": {
         "reduceOptions": {
@@ -410,12 +410,12 @@
       "id": 8,
       "type": "stat",
       "title": "WINDOWSSERVER2025",
-      "description": "Dual Xeon Silver 4114 — max Package °C",
+      "description": "Dual Xeon Silver 4114 \u00e2\u20ac\u201d max Package \u00c2\u00b0C",
       "gridPos": {
         "h": 5,
         "w": 4,
         "x": 0,
-        "y": 7
+        "y": 6
       },
       "options": {
         "reduceOptions": {
@@ -471,12 +471,12 @@
       "id": 9,
       "type": "stat",
       "title": "NUT-SERVER Pi",
-      "description": "Raspberry Pi 3B — zone temp °C",
+      "description": "Raspberry Pi 3B \u00e2\u20ac\u201d zone temp \u00c2\u00b0C",
       "gridPos": {
         "h": 5,
         "w": 4,
         "x": 4,
-        "y": 7
+        "y": 6
       },
       "options": {
         "reduceOptions": {
@@ -532,12 +532,12 @@
       "id": 10,
       "type": "stat",
       "title": "FANSERVER Pi4",
-      "description": "Raspberry Pi 4 — zone temp °C",
+      "description": "Raspberry Pi 4 \u00e2\u20ac\u201d zone temp \u00c2\u00b0C",
       "gridPos": {
         "h": 5,
         "w": 4,
         "x": 8,
-        "y": 7
+        "y": 6
       },
       "options": {
         "reduceOptions": {
@@ -593,12 +593,12 @@
       "id": 11,
       "type": "stat",
       "title": "PROXMOXMANAGER",
-      "description": "NUC Celeron — Package °C",
+      "description": "NUC Celeron \u00e2\u20ac\u201d Package \u00c2\u00b0C",
       "gridPos": {
         "h": 5,
         "w": 4,
         "x": 12,
-        "y": 7
+        "y": 6
       },
       "options": {
         "reduceOptions": {
@@ -654,12 +654,12 @@
       "id": 12,
       "type": "stat",
       "title": "TRAVELSERVER",
-      "description": "Minisforum S100 TrueNAS — Package °C",
+      "description": "Minisforum S100 TrueNAS \u00e2\u20ac\u201d Package \u00c2\u00b0C",
       "gridPos": {
         "h": 5,
         "w": 4,
         "x": 16,
-        "y": 7
+        "y": 6
       },
       "options": {
         "reduceOptions": {
@@ -715,12 +715,12 @@
       "id": 13,
       "type": "stat",
       "title": "FILESERVER",
-      "description": "Synology DS423+ Celeron J4125 — CPU °C",
+      "description": "Synology DS423+ Celeron J4125 \u00e2\u20ac\u201d CPU \u00c2\u00b0C",
       "gridPos": {
         "h": 5,
         "w": 4,
         "x": 20,
-        "y": 7
+        "y": 6
       },
       "options": {
         "reduceOptions": {
@@ -778,10 +778,10 @@
       "title": "",
       "transparent": true,
       "gridPos": {
-        "h": 2,
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 11
       },
       "options": {
         "content": "## Rack Temperaturen",
@@ -800,13 +800,13 @@
     {
       "id": 15,
       "type": "stat",
-      "title": "Rack — Ambient",
-      "description": "TP357 op de kast — luchttemperatuur berging",
+      "title": "Rack \u00e2\u20ac\u201d Ambient",
+      "description": "TP357 op de kast \u00e2\u20ac\u201d luchttemperatuur berging",
       "gridPos": {
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 14
+        "y": 12
       },
       "options": {
         "reduceOptions": {
@@ -865,13 +865,13 @@
     {
       "id": 40,
       "type": "stat",
-      "title": "Rack — Networkserver",
-      "description": "TP357 bij passieve networkserver — schap temp",
+      "title": "Rack \u00e2\u20ac\u201d Networkserver",
+      "description": "TP357 bij passieve networkserver \u00e2\u20ac\u201d schap temp",
       "gridPos": {
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 14
+        "y": 12
       },
       "options": {
         "reduceOptions": {
@@ -926,13 +926,13 @@
     {
       "id": 41,
       "type": "stat",
-      "title": "Rack — Mediaserver",
-      "description": "TP357 tussen NUCs — mediaserver zone temp",
+      "title": "Rack \u00e2\u20ac\u201d Mediaserver",
+      "description": "TP357 tussen NUCs \u00e2\u20ac\u201d mediaserver zone temp",
       "gridPos": {
         "h": 7,
         "w": 6,
         "x": 12,
-        "y": 14
+        "y": 12
       },
       "options": {
         "reduceOptions": {
@@ -987,13 +987,13 @@
     {
       "id": 42,
       "type": "stat",
-      "title": "Rack — AI-nodes",
-      "description": "TP357 tussen MS-01's — AI-nodes zone temp",
+      "title": "Rack \u00e2\u20ac\u201d AI-nodes",
+      "description": "TP357 tussen MS-01's \u00e2\u20ac\u201d AI-nodes zone temp",
       "gridPos": {
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 14
+        "y": 12
       },
       "options": {
         "reduceOptions": {
@@ -1051,10 +1051,10 @@
       "title": "",
       "transparent": true,
       "gridPos": {
-        "h": 2,
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 19
       },
       "options": {
         "content": "## CPU & Rack Tijdreeks (2u)",
@@ -1073,12 +1073,12 @@
     {
       "id": 50,
       "type": "timeseries",
-      "title": "CPU & Rack Temperaturen — 2 uur",
+      "title": "CPU & Rack Temperaturen \u00e2\u20ac\u201d 2 uur",
       "gridPos": {
-        "h": 13,
+        "h": 16,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 20
       },
       "options": {
         "tooltip": {

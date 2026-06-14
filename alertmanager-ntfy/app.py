@@ -131,6 +131,48 @@ def unifi_hook():
     return jsonify({"status": "ok"}), 200
 
 
+@app.route("/ntfy-messages")
+def ntfy_messages():
+    """Geeft recente ntfy berichten terug als JSON array voor Grafana Infinity."""
+    import datetime
+    since = request.args.get("since", "12h")
+    try:
+        headers = {}
+        if NTFY_TOKEN:
+            headers["Authorization"] = f"Bearer {NTFY_TOKEN}"
+        r = requests.get(
+            f"{NTFY_URL}/{NTFY_TOPIC}/json",
+            params={"poll": "1", "since": since},
+            headers=headers,
+            timeout=10,
+        )
+        r.raise_for_status()
+        messages = []
+        for line in r.text.strip().splitlines():
+            if not line.strip():
+                continue
+            try:
+                msg = json.loads(line)
+                if msg.get("event") != "message":
+                    continue
+                ts = msg.get("time", 0)
+                dt_str = datetime.datetime.utcfromtimestamp(ts).strftime("%d/%m %H:%M")
+                messages.append({
+                    "time": dt_str,
+                    "title": msg.get("title", ""),
+                    "message": msg.get("message", ""),
+                    "priority": msg.get("priority", 3),
+                    "tags": ",".join(msg.get("tags", [])),
+                })
+            except (json.JSONDecodeError, KeyError):
+                continue
+        messages.sort(key=lambda m: m["time"], reverse=True)
+        return jsonify(messages[:50])
+    except Exception as exc:
+        logging.error("ntfy-messages fout: %s", exc)
+        return jsonify([]), 200
+
+
 @app.route("/health")
 def health():
     return jsonify({"healthy": True})
