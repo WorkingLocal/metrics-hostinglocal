@@ -6,10 +6,13 @@ export XAUTHORITY=/home/metrics/.Xauthority
 
 case "$1" in
     on)
+        /usr/bin/xset +dpms
         /usr/bin/xset dpms force on
+        /usr/bin/xset -dpms
         /usr/bin/xset s reset
         ;;
     off)
+        /usr/bin/xset +dpms
         /usr/bin/xset dpms force off
         ;;
     *)

@@ -125,6 +125,7 @@ run("docker restart prometheus-metrics", 30)
 # Exporter scripts uitvoerbaar maken
 print("\nScripts uitvoerbaar maken...")
 run(f"chmod +x {REMOTE_DIR}/scripts/*.py 2>/dev/null || true")
+run(f"chmod +x {REMOTE_DIR}/kiosk/*.sh {REMOTE_DIR}/kiosk/xinitrc 2>/dev/null || true")
 
 # Cron jobs instellen (idempotent — bestaande regels overschrijven)
 print("\nCron jobs instellen...")
