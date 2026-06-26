@@ -125,7 +125,15 @@ run("docker restart prometheus-metrics", 30)
 # Exporter scripts uitvoerbaar maken
 print("\nScripts uitvoerbaar maken...")
 run(f"chmod +x {REMOTE_DIR}/scripts/*.py 2>/dev/null || true")
-run(f"chmod +x {REMOTE_DIR}/kiosk/*.sh {REMOTE_DIR}/kiosk/xinitrc 2>/dev/null || true")
+run(f"chmod +x {REMOTE_DIR}/kiosk/*.sh {REMOTE_DIR}/kiosk/xinitrc {REMOTE_DIR}/kiosk/display-api.py 2>/dev/null || true")
+
+# Display API systemd service installeren (idempotent)
+print("\nDisplay API service installeren...")
+run(f"cp {REMOTE_DIR}/kiosk/display-api.service /etc/systemd/system/display-api.service")
+run("systemctl daemon-reload")
+run("systemctl enable display-api")
+run("systemctl restart display-api")
+run("systemctl is-active display-api")
 
 # Cron jobs instellen (idempotent — bestaande regels overschrijven)
 print("\nCron jobs instellen...")

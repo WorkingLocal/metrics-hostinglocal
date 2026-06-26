@@ -1,0 +1,16 @@
+[Unit]
+Description=METRICSSERVER Display Control API
+After=network.target
+
+[Service]
+Type=simple
+User=metrics
+Group=metrics
+ExecStart=/usr/bin/python3 /opt/metrics-hostinglocal/kiosk/display-api.py
+Restart=always
+RestartSec=5
+Environment=DISPLAY=:2
+Environment=XAUTHORITY=/home/metrics/.Xauthority
+
+[Install]
+WantedBy=multi-user.target
