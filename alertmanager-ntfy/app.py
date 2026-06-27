@@ -1,4 +1,3 @@
-"""
 Alertmanager → ntfy webhook bridge.
 Luistert op :9095/hook voor Alertmanager alerts.
 Luistert op :9095/unifi-hook voor UniFi Network Application events.

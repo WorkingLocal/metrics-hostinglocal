@@ -1,4 +1,3 @@
-#!/bin/bash
 # Deploy UniFi monitoring naar METRICSSERVER
 # Gebruik: bash unifi/deploy.sh
 # Uitvoeren vanuit de root van de repo

@@ -1,4 +1,3 @@
-groups:
   - name: node_alerts
     rules:
 
@@ -202,6 +201,46 @@ groups:
         annotations:
           summary: "UniFi Switch offline: {{ $labels.name }}"
           description: "Switch {{ $labels.name }} ({{ $labels.ip }}) is niet verbonden"
+
+  - name: network_bandwidth_alerts
+    rules:
+
+      # Test mislukt — iperf3 kon server niet bereiken of meting was 0
+      # for: 90m = ~2 opeenvolgende timer runs (timer loopt elk uur)
+      - alert: NetworkBenchmarkFailed
+        expr: network_iperf3_success == 0
+        for: 90m
+        labels:
+          severity: warning
+        annotations:
+          summary: "iPerf3 test mislukt: {{ $labels.hostname }} → {{ $labels.target }}"
+          description: "Bandbreedte test mislukt van {{ $labels.hostname }} naar {{ $labels.target }} via {{ $labels.interface }} ({{ $labels.interface_type }}). Controleer of iperf3 server actief is op {{ $labels.target }}."
+
+      # 2.5GbE verbinding onder 2 Gbps — verwacht ~2.35 Gbps op basis van gemeten benchmarks
+      - alert: NetworkBandwidthLow25GbE
+        expr: >
+          network_iperf3_bits_per_second{interface_type="lan_2_5gbe"} > 0
+          and
+          network_iperf3_bits_per_second{interface_type="lan_2_5gbe"} < 2000000000
+        for: 2h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Lage bandbreedte (2.5GbE): {{ $labels.hostname }} → {{ $labels.target }}"
+          description: "{{ $labels.hostname }} meet {{ $value | humanize }}bps naar {{ $labels.target }} via {{ $labels.interface }} — verwacht >2 Gbps voor 2.5GbE link (referentie: 2.35 Gbps)."
+
+      # 1GbE verbinding onder 750 Mbps — verwacht ~950 Mbps
+      - alert: NetworkBandwidthLow1GbE
+        expr: >
+          network_iperf3_bits_per_second{interface_type="lan_1gbe"} > 0
+          and
+          network_iperf3_bits_per_second{interface_type="lan_1gbe"} < 750000000
+        for: 2h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Lage bandbreedte (1GbE): {{ $labels.hostname }} → {{ $labels.target }}"
+          description: "{{ $labels.hostname }} meet {{ $value | humanize }}bps naar {{ $labels.target }} via {{ $labels.interface }} — verwacht >750 Mbps voor 1GbE link."
 
   # ── Windows Kiosk alerts (windows_exporter metrics) ─────────────────────
   - name: windows_kiosk_alerts

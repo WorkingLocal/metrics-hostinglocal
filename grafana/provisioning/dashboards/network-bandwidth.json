@@ -1,13 +1,30 @@
 {
   "title": "Network Bandwidth — Homelab",
   "uid": "network-bandwidth-hl",
-  "description": "iPerf3 bandbreedte metingen naar FILESERVER — servers (LAN) en clients (WiFi/LAN)",
+  "description": "iPerf3 bandbreedte metingen naar meerdere targets — fileserver, networkserver, windowsserver",
   "timezone": "browser",
   "refresh": "5m",
   "schemaVersion": 38,
-  "version": 1,
+  "version": 2,
   "time": { "from": "now-24h", "to": "now" },
   "tags": ["network", "iperf3", "bandwidth"],
+  "templating": {
+    "list": [
+      {
+        "name": "target",
+        "label": "Target",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "query": "label_values(network_iperf3_bits_per_second, target)",
+        "refresh": 2,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": { "text": "All", "value": "$__all" },
+        "multi": true,
+        "sort": 1
+      }
+    ]
+  },
   "panels": [
 
     {
@@ -21,7 +38,7 @@
     {
       "id": 2,
       "type": "timeseries",
-      "title": "Bandbreedte naar FILESERVER — alle hosts (laatste 24u)",
+      "title": "Bandbreedte alle hosts — $target (laatste 24u)",
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 1 },
       "fieldConfig": {
         "defaults": {
@@ -48,8 +65,8 @@
       },
       "targets": [
         {
-          "expr": "network_iperf3_to_fileserver_bits_per_second",
-          "legendFormat": "{{hostname}} ({{interface_type}})",
+          "expr": "network_iperf3_bits_per_second{target=~\"$target\"}",
+          "legendFormat": "{{hostname}} → {{target}} ({{interface_type}})",
           "refId": "A"
         }
       ]
@@ -66,7 +83,7 @@
     {
       "id": 4,
       "type": "bargauge",
-      "title": "Bandbreedte naar FILESERVER — laatste meting",
+      "title": "Bandbreedte naar $target — laatste meting",
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 12 },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"] },
@@ -81,16 +98,16 @@
           "unit": "bps",
           "min": 0,
           "max": 10000000000,
-          "displayName": "${__field.labels.hostname} (${__field.labels.interface_type})",
+          "displayName": "${__field.labels.hostname} → ${__field.labels.target} (${__field.labels.interface_type})",
           "color": { "mode": "thresholds" },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red",    "value": null },
-              { "color": "orange", "value": 100000000 },
-              { "color": "yellow", "value": 500000000 },
-              { "color": "green",  "value": 900000000 },
-              { "color": "blue",   "value": 5000000000 }
+              { "color": "red",    "value": null        },
+              { "color": "orange", "value": 100000000   },
+              { "color": "yellow", "value": 500000000   },
+              { "color": "green",  "value": 900000000   },
+              { "color": "blue",   "value": 2000000000  }
             ]
           }
         },
@@ -98,8 +115,8 @@
       },
       "targets": [
         {
-          "expr": "network_iperf3_to_fileserver_bits_per_second",
-          "legendFormat": "{{hostname}}",
+          "expr": "network_iperf3_bits_per_second{target=~\"$target\"}",
+          "legendFormat": "{{hostname}} → {{target}}",
           "refId": "A",
           "instant": true
         }
@@ -118,17 +135,14 @@
       "id": 6,
       "type": "table",
       "title": "Status alle hosts — laatste meting",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 23 },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 23 },
       "options": {
         "sortBy": [{ "displayName": "Bandbreedte", "desc": true }],
         "footer": { "show": false }
       },
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto"
-          }
+          "custom": { "align": "auto", "displayMode": "auto" }
         },
         "overrides": [
           {
@@ -141,10 +155,11 @@
                 "value": {
                   "mode": "absolute",
                   "steps": [
-                    { "color": "red",    "value": null },
-                    { "color": "orange", "value": 100000000 },
-                    { "color": "yellow", "value": 500000000 },
-                    { "color": "green",  "value": 900000000 }
+                    { "color": "red",    "value": null        },
+                    { "color": "orange", "value": 100000000   },
+                    { "color": "yellow", "value": 500000000   },
+                    { "color": "green",  "value": 900000000   },
+                    { "color": "blue",   "value": 2000000000  }
                   ]
                 }
               }
@@ -175,6 +190,7 @@
           "options": {
             "renameByName": {
               "hostname":       "Host",
+              "target":         "Target",
               "interface_type": "Verbinding",
               "interface":      "Interface",
               "Value #A":       "Bandbreedte",
@@ -183,38 +199,36 @@
             },
             "indexByName": {
               "Host":        0,
-              "Verbinding":  1,
-              "Interface":   2,
-              "Bandbreedte": 3,
-              "OK":          4,
-              "Laatste test": 5
+              "Target":      1,
+              "Verbinding":  2,
+              "Interface":   3,
+              "Bandbreedte": 4,
+              "OK":          5,
+              "Laatste test": 6
             },
             "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "job": true,
-              "instance": true
+              "Time": true, "__name__": true, "job": true, "instance": true
             }
           }
         }
       ],
       "targets": [
         {
-          "expr": "network_iperf3_to_fileserver_bits_per_second",
+          "expr": "network_iperf3_bits_per_second{target=~\"$target\"}",
           "legendFormat": "",
           "refId": "A",
           "instant": true,
           "format": "table"
         },
         {
-          "expr": "network_iperf3_to_fileserver_success",
+          "expr": "network_iperf3_success{target=~\"$target\"}",
           "legendFormat": "",
           "refId": "B",
           "instant": true,
           "format": "table"
         },
         {
-          "expr": "network_iperf3_to_fileserver_last_run_timestamp * 1000",
+          "expr": "network_iperf3_last_run_timestamp{target=~\"$target\"} * 1000",
           "legendFormat": "",
           "refId": "C",
           "instant": true,

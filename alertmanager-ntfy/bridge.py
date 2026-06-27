@@ -1,4 +1,3 @@
-"""
 Alertmanager → ntfy bridge.
 Ontvangt Alertmanager webhook JSON, stuurt per alert een ntfy push.
 """
