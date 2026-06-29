@@ -24,7 +24,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 User=nobody
-ExecStart=/usr/bin/iperf3 -s --port $PORT --daemon --logfile /var/log/iperf3-server.log
+ExecStart=/usr/bin/iperf3 -s --port $PORT
 Restart=on-failure
 RestartSec=5
 

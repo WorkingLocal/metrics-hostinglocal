@@ -204,8 +204,7 @@ scrape_configs:
         labels:
           instance: 'UNIFI-GATEWAY'
 
-  # UNIFI Gateway (via SNMP Exporter op NETWORKSERVER)
-  # Vereist: snmp-exporter draait op NETWORKSERVER (100.119.137.54:9116)
+  # UNIFI Gateway (via SNMP Exporter op METRICSSERVER — host network, localhost:9116)
   # SNMP inschakelen op Unifi: Settings → System → Traffic Logging → SNMP Monitoring v1/2C
   - job_name: 'unifi-snmp'
     scrape_interval: 60s
@@ -220,7 +219,7 @@ scrape_configs:
       - source_labels: [__address__]
         target_label: __param_target
       - target_label: __address__
-        replacement: '100.119.137.54:9116'
+        replacement: 'localhost:9116'
 
   # TRAVELSERVER (TrueNAS SCALE, Minisforum S100, Tailscale 100.83.29.41)
   - job_name: 'travelserver'

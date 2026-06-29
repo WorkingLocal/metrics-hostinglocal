@@ -106,6 +106,17 @@ services:
     networks:
       - proxy
 
+  # SNMP Exporter — scrapet UDM Pro Max interface metrics (if_mib module)
+  # Prometheus: job=unifi-snmp, target=192.168.111.1, via localhost:9116
+  # Vereiste: SNMP v2c inschakelen op UDM Pro Max: Settings → System → SNMP
+  snmp-exporter:
+    image: prom/snmp-exporter:latest
+    container_name: snmp-exporter
+    network_mode: host
+    restart: unless-stopped
+    command:
+      - '--web.listen-address=0.0.0.0:9116'
+
   # SMART disk health monitoring (lokale schijven van de metrics server)
   smartctl-exporter:
     image: prometheuscommunity/smartctl-exporter:latest
