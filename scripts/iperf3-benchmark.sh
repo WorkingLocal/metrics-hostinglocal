@@ -12,8 +12,8 @@ HOST=$(hostname -s | tr '[:upper:]' '[:lower:]')
 # Gebruik lokale IPs voor LAN-hosts, Tailscale voor cross-segment
 TARGETS=(
     "192.168.111.30:fileserver"
-    "100.119.137.54:networkserver"
-    "100.92.201.100:windowsserver"
+    "192.168.111.16:networkserver"
+    "192.168.111.205:windowsserver"
 )
 
 detect_iface_type() {
