@@ -1,11 +1,11 @@
 {
-  "title": "Serverrack Kiosk \u00e2\u20ac\u201d Temperaturen",
+  "title": "Serverrack Kiosk â€” Temperaturen",
   "uid": "serverrack-kiosk",
-  "description": "FHD kiosk scherm 1 \u00e2\u20ac\u201d CPU + Rack temperaturen + tijdreeks",
+  "description": "FHD kiosk scherm 1 â€” CPU + Rack temperaturen + tijdreeks",
   "timezone": "browser",
   "refresh": "30s",
   "schemaVersion": 38,
-  "version": 7,
+  "version": 9,
   "time": {
     "from": "now-2h",
     "to": "now"
@@ -44,7 +44,7 @@
       "id": 2,
       "type": "stat",
       "title": "AI-NODE-I9",
-      "description": "Intel i9 MS-01 \u00e2\u20ac\u201d Package \u00c2\u00b0C",
+      "description": "Intel i9 MS-01 â€” Package Â°C",
       "gridPos": {
         "h": 5,
         "w": 4,
@@ -105,7 +105,7 @@
       "id": 3,
       "type": "stat",
       "title": "AI-NODE-I5",
-      "description": "Intel i5 MS-01 \u00e2\u20ac\u201d Package \u00c2\u00b0C",
+      "description": "Intel i5 MS-01 â€” Package Â°C",
       "gridPos": {
         "h": 5,
         "w": 4,
@@ -166,7 +166,7 @@
       "id": 4,
       "type": "stat",
       "title": "NETWORKSERVER",
-      "description": "Proxmox i3-N305 \u00e2\u20ac\u201d Package \u00c2\u00b0C",
+      "description": "Proxmox i3-N305 â€” Package Â°C",
       "gridPos": {
         "h": 5,
         "w": 4,
@@ -227,7 +227,7 @@
       "id": 5,
       "type": "stat",
       "title": "MEDIASERVER",
-      "description": "Proxmox NUC i5-8259U \u00e2\u20ac\u201d Package \u00c2\u00b0C",
+      "description": "Proxmox NUC i5-8259U â€” Package Â°C",
       "gridPos": {
         "h": 5,
         "w": 4,
@@ -288,7 +288,7 @@
       "id": 6,
       "type": "stat",
       "title": "METRICSSERVER",
-      "description": "Dell OptiPlex i5-7500 \u00e2\u20ac\u201d Package \u00c2\u00b0C",
+      "description": "Dell OptiPlex i5-7500 â€” Package Â°C",
       "gridPos": {
         "h": 5,
         "w": 4,
@@ -349,7 +349,7 @@
       "id": 7,
       "type": "stat",
       "title": "HAOS NUC",
-      "description": "Intel NUC i3 \u00e2\u20ac\u201d CPU via System Monitor \u00c2\u00b0C",
+      "description": "Intel NUC i3 â€” CPU via System Monitor Â°C",
       "gridPos": {
         "h": 5,
         "w": 4,
@@ -410,7 +410,7 @@
       "id": 8,
       "type": "stat",
       "title": "WINDOWSSERVER2025",
-      "description": "Dual Xeon Silver 4114 \u00e2\u20ac\u201d max Package \u00c2\u00b0C",
+      "description": "Dual Xeon Silver 4114 â€” max Package Â°C",
       "gridPos": {
         "h": 5,
         "w": 4,
@@ -471,7 +471,7 @@
       "id": 9,
       "type": "stat",
       "title": "NUT-SERVER Pi",
-      "description": "Raspberry Pi 3B \u00e2\u20ac\u201d zone temp \u00c2\u00b0C",
+      "description": "Raspberry Pi 3B â€” zone temp Â°C",
       "gridPos": {
         "h": 5,
         "w": 4,
@@ -532,7 +532,7 @@
       "id": 10,
       "type": "stat",
       "title": "FANSERVER Pi4",
-      "description": "Raspberry Pi 4 \u00e2\u20ac\u201d zone temp \u00c2\u00b0C",
+      "description": "Raspberry Pi 4 â€” zone temp Â°C",
       "gridPos": {
         "h": 5,
         "w": 4,
@@ -593,7 +593,7 @@
       "id": 11,
       "type": "stat",
       "title": "PROXMOXMANAGER",
-      "description": "NUC Celeron \u00e2\u20ac\u201d Package \u00c2\u00b0C",
+      "description": "NUC Celeron â€” Package Â°C",
       "gridPos": {
         "h": 5,
         "w": 4,
@@ -654,7 +654,7 @@
       "id": 12,
       "type": "stat",
       "title": "TRAVELSERVER",
-      "description": "Minisforum S100 TrueNAS \u00e2\u20ac\u201d Package \u00c2\u00b0C",
+      "description": "Minisforum S100 TrueNAS â€” Package Â°C",
       "gridPos": {
         "h": 5,
         "w": 4,
@@ -715,7 +715,7 @@
       "id": 13,
       "type": "stat",
       "title": "FILESERVER",
-      "description": "Synology DS423+ Celeron J4125 \u00e2\u20ac\u201d CPU \u00c2\u00b0C",
+      "description": "Synology DS423+ Celeron J4125 â€” CPU Â°C",
       "gridPos": {
         "h": 5,
         "w": 4,
@@ -800,11 +800,11 @@
     {
       "id": 15,
       "type": "stat",
-      "title": "Rack \u00e2\u20ac\u201d Ambient",
-      "description": "TP357 op de kast \u00e2\u20ac\u201d luchttemperatuur berging",
+      "title": "Rack â€” Ambient",
+      "description": "TP357 op de kast â€” luchttemperatuur berging",
       "gridPos": {
         "h": 7,
-        "w": 6,
+        "w": 5,
         "x": 0,
         "y": 12
       },
@@ -865,12 +865,12 @@
     {
       "id": 40,
       "type": "stat",
-      "title": "Rack \u00e2\u20ac\u201d Networkserver",
-      "description": "TP357 bij passieve networkserver \u00e2\u20ac\u201d schap temp",
+      "title": "Rack â€” Networkserver",
+      "description": "TP357 bij passieve networkserver â€” schap temp",
       "gridPos": {
         "h": 7,
-        "w": 6,
-        "x": 6,
+        "w": 5,
+        "x": 5,
         "y": 12
       },
       "options": {
@@ -926,12 +926,12 @@
     {
       "id": 41,
       "type": "stat",
-      "title": "Rack \u00e2\u20ac\u201d Mediaserver",
-      "description": "TP357 tussen NUCs \u00e2\u20ac\u201d mediaserver zone temp",
+      "title": "Rack â€” Mediaserver",
+      "description": "TP357 tussen NUCs â€” mediaserver zone temp",
       "gridPos": {
         "h": 7,
-        "w": 6,
-        "x": 12,
+        "w": 5,
+        "x": 10,
         "y": 12
       },
       "options": {
@@ -987,12 +987,12 @@
     {
       "id": 42,
       "type": "stat",
-      "title": "Rack \u00e2\u20ac\u201d AI-nodes",
-      "description": "TP357 tussen MS-01's \u00e2\u20ac\u201d AI-nodes zone temp",
+      "title": "Rack â€” AI-nodes",
+      "description": "TP357 tussen MS-01's â€” AI-nodes zone temp",
       "gridPos": {
         "h": 7,
-        "w": 6,
-        "x": 18,
+        "w": 5,
+        "x": 15,
         "y": 12
       },
       "options": {
@@ -1073,7 +1073,7 @@
     {
       "id": 50,
       "type": "timeseries",
-      "title": "CPU & Rack Temperaturen \u00e2\u20ac\u201d 2 uur",
+      "title": "CPU & Rack Temperaturen â€” 2 uur",
       "gridPos": {
         "h": 16,
         "w": 24,
@@ -1144,8 +1144,148 @@
         },
         {
           "expr": "homeassistant_sensor_temperature_celsius{entity=~\"sensor.tp357_(e33d|c5a9|9f54|5eb7)_temperature\", job=\"smarthomeserver\"}",
-          "legendFormat": "Rack {{entity}}",
+          "legendFormat": "{{friendly_name}}",
           "refId": "E"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.temperatuur\", job=\"smarthomeserver\"}",
+          "legendFormat": "Buiten",
+          "refId": "F"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.temperatuur\", job=\"smarthomeserver\"}",
+          "legendFormat": "Buiten",
+          "refId": "F"
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "type": "stat",
+      "title": "Buiten",
+      "description": "Buitentemperatuur — weerstation",
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 20,
+        "y": 12
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": {
+          "valueSize": 52,
+          "titleSize": 18
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 10
+              },
+              {
+                "color": "yellow",
+                "value": 22
+              },
+              {
+                "color": "orange",
+                "value": 30
+              },
+              {
+                "color": "red",
+                "value": 35
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.temperatuur\", job=\"smarthomeserver\"}",
+          "legendFormat": "Buiten",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "type": "stat",
+      "title": "Buiten",
+      "description": "Buitentemperatuur via weerstation",
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 20,
+        "y": 12
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "text": {
+          "valueSize": 52,
+          "titleSize": 18
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 10
+              },
+              {
+                "color": "yellow",
+                "value": 22
+              },
+              {
+                "color": "orange",
+                "value": 30
+              },
+              {
+                "color": "red",
+                "value": 35
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.temperatuur\", job=\"smarthomeserver\"}",
+          "legendFormat": "Buiten",
+          "refId": "A"
         }
       ]
     }

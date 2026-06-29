@@ -46,7 +46,7 @@ cat > /etc/systemd/system/iperf3-benchmark.timer << EOF
 Description=iPerf3 benchmark elk uur
 
 [Timer]
-OnBootSec=5min
+OnActiveSec=2min
 OnUnitActiveSec=1h
 RandomizedDelaySec=120
 

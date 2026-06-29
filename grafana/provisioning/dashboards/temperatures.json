@@ -5,7 +5,7 @@
   "timezone": "browser",
   "refresh": "1m",
   "schemaVersion": 38,
-  "version": 3,
+  "version": 4,
   "time": {
     "from": "now-6h",
     "to": "now"
@@ -18,7 +18,7 @@
     {
       "id": 1,
       "type": "row",
-      "title": "CPU Temperaturen — actueel",
+      "title": "CPU Temperaturen â€” actueel",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -30,8 +30,8 @@
     {
       "id": 2,
       "type": "stat",
-      "title": "AI-NODE-I9 — CPU",
-      "description": "Intel i9 MS-01 — Package temperatuur",
+      "title": "AI-NODE-I9 â€” CPU",
+      "description": "Intel i9 MS-01 â€” Package temperatuur",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -89,8 +89,8 @@
     {
       "id": 3,
       "type": "stat",
-      "title": "AI-NODE-I5 — CPU",
-      "description": "Intel i5 MS-01 — Package temperatuur",
+      "title": "AI-NODE-I5 â€” CPU",
+      "description": "Intel i5 MS-01 â€” Package temperatuur",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -144,8 +144,8 @@
     {
       "id": 4,
       "type": "stat",
-      "title": "NETWORKSERVER — CPU",
-      "description": "Proxmox i3-N305 — Package temperatuur",
+      "title": "NETWORKSERVER â€” CPU",
+      "description": "Proxmox i3-N305 â€” Package temperatuur",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -199,8 +199,8 @@
     {
       "id": 5,
       "type": "stat",
-      "title": "MEDIASERVER — CPU",
-      "description": "Proxmox NUC i5-8259U — Package temperatuur",
+      "title": "MEDIASERVER â€” CPU",
+      "description": "Proxmox NUC i5-8259U â€” Package temperatuur",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -254,8 +254,8 @@
     {
       "id": 6,
       "type": "stat",
-      "title": "NUT-SERVER Pi — CPU",
-      "description": "Raspberry Pi 3B — CPU zone temperatuur",
+      "title": "NUT-SERVER Pi â€” CPU",
+      "description": "Raspberry Pi 3B â€” CPU zone temperatuur",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -309,8 +309,8 @@
     {
       "id": 8,
       "type": "stat",
-      "title": "TRAVELSERVER — CPU",
-      "description": "Minisforum S100 TrueNAS SCALE — Package temperatuur",
+      "title": "TRAVELSERVER â€” CPU",
+      "description": "Minisforum S100 TrueNAS SCALE â€” Package temperatuur",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -364,8 +364,8 @@
     {
       "id": 43,
       "type": "stat",
-      "title": "METRICSSERVER — CPU",
-      "description": "Dell OptiPlex 3050 SFF — Intel i5-7500 Package temperatuur",
+      "title": "METRICSSERVER â€” CPU",
+      "description": "Dell OptiPlex 3050 SFF â€” Intel i5-7500 Package temperatuur",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -420,8 +420,8 @@
     {
       "id": 40,
       "type": "stat",
-      "title": "HAOS NUC — CPU",
-      "description": "Intel NUC i3 — Home Assistant OS, via System Monitor integratie",
+      "title": "HAOS NUC â€” CPU",
+      "description": "Intel NUC i3 â€” Home Assistant OS, via System Monitor integratie",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -475,8 +475,8 @@
     {
       "id": 44,
       "type": "stat",
-      "title": "PROXMOXMANAGER — CPU",
-      "description": "NUC Celeron — Package temperatuur",
+      "title": "PROXMOXMANAGER â€” CPU",
+      "description": "NUC Celeron â€” Package temperatuur",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -531,8 +531,8 @@
     {
       "id": 45,
       "type": "stat",
-      "title": "FANSERVER — CPU",
-      "description": "Raspberry Pi 4 8GB — PWM fan controller netwerkkast",
+      "title": "FANSERVER â€” CPU",
+      "description": "Raspberry Pi 4 8GB â€” PWM fan controller netwerkkast",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -587,8 +587,8 @@
     {
       "id": 41,
       "type": "stat",
-      "title": "WINDOWSSERVER2025 — CPU Socket 0",
-      "description": "Intel Xeon Silver 4114 Socket 0 — Package temperatuur (LibreHardwareMonitor)",
+      "title": "WINDOWSSERVER2025 â€” CPU Socket 0",
+      "description": "Intel Xeon Silver 4114 Socket 0 â€” Package temperatuur (LibreHardwareMonitor)",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -643,8 +643,8 @@
     {
       "id": 42,
       "type": "stat",
-      "title": "WINDOWSSERVER2025 — CPU Socket 1",
-      "description": "Intel Xeon Silver 4114 Socket 1 — Package temperatuur (LibreHardwareMonitor)",
+      "title": "WINDOWSSERVER2025 â€” CPU Socket 1",
+      "description": "Intel Xeon Silver 4114 Socket 1 â€” Package temperatuur (LibreHardwareMonitor)",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -699,7 +699,7 @@
     {
       "id": 10,
       "type": "row",
-      "title": "CPU Temperaturen — tijdreeks",
+      "title": "CPU Temperaturen â€” tijdreeks",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -711,7 +711,7 @@
     {
       "id": 11,
       "type": "timeseries",
-      "title": "CPU Temperaturen — alle hosts",
+      "title": "CPU Temperaturen â€” alle hosts",
       "gridPos": {
         "h": 8,
         "w": 24,
@@ -789,6 +789,11 @@
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.tp357_9f54_temperature\", job=\"smarthomeserver\"}",
           "legendFormat": "Rack Berging (ambient)",
           "refId": "F"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.temperatuur\", job=\"smarthomeserver\"}",
+          "legendFormat": "Buiten",
+          "refId": "G"
         }
       ]
     },
@@ -807,7 +812,7 @@
     {
       "id": 21,
       "type": "stat",
-      "title": "AI-NODE-I9 — NVMe",
+      "title": "AI-NODE-I9 â€” NVMe",
       "description": "Composite temperatuur (hoogste NVMe)",
       "gridPos": {
         "h": 4,
@@ -862,7 +867,7 @@
     {
       "id": 22,
       "type": "stat",
-      "title": "AI-NODE-I5 — NVMe",
+      "title": "AI-NODE-I5 â€” NVMe",
       "description": "Composite temperatuur (hoogste NVMe)",
       "gridPos": {
         "h": 4,
@@ -917,7 +922,7 @@
     {
       "id": 23,
       "type": "stat",
-      "title": "NETWORKSERVER — NVMe",
+      "title": "NETWORKSERVER â€” NVMe",
       "description": "Composite temperatuur",
       "gridPos": {
         "h": 4,
@@ -972,7 +977,7 @@
     {
       "id": 24,
       "type": "stat",
-      "title": "MEDIASERVER — NVMe",
+      "title": "MEDIASERVER â€” NVMe",
       "description": "Composite temperatuur",
       "gridPos": {
         "h": 4,
@@ -1027,7 +1032,7 @@
     {
       "id": 25,
       "type": "timeseries",
-      "title": "NVMe Temperaturen — tijdreeks",
+      "title": "NVMe Temperaturen â€” tijdreeks",
       "gridPos": {
         "h": 8,
         "w": 24,
@@ -1086,7 +1091,7 @@
     {
       "id": 30,
       "type": "row",
-      "title": "Alle CPU cores — gedetailleerd",
+      "title": "Alle CPU cores â€” gedetailleerd",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1098,7 +1103,7 @@
         {
           "id": 31,
           "type": "timeseries",
-          "title": "AI-NODE-I9 — alle cores",
+          "title": "AI-NODE-I9 â€” alle cores",
           "gridPos": {
             "h": 8,
             "w": 12,
@@ -1140,7 +1145,7 @@
         {
           "id": 32,
           "type": "timeseries",
-          "title": "AI-NODE-I5 — alle cores",
+          "title": "AI-NODE-I5 â€” alle cores",
           "gridPos": {
             "h": 8,
             "w": 12,
@@ -1184,8 +1189,8 @@
     {
       "id": 47,
       "type": "stat",
-      "title": "Serverrack — Ambient",
-      "description": "Thermo Berging (TP357) — omgevingstemperatuur in de netwerkkast/berging",
+      "title": "Serverrack â€” Ambient",
+      "description": "Thermo Berging (TP357) â€” omgevingstemperatuur in de netwerkkast/berging",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -1243,8 +1248,8 @@
     {
       "id": 48,
       "type": "stat",
-      "title": "FILESERVER — Disks max",
-      "description": "Synology DS423+ — hoogste schijftemperatuur (4x HDD + 2x M.2 via HAOS)",
+      "title": "FILESERVER â€” Disks max",
+      "description": "Synology DS423+ â€” hoogste schijftemperatuur (4x HDD + 2x M.2 via HAOS)",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -1299,8 +1304,8 @@
     {
       "id": 46,
       "type": "stat",
-      "title": "FILESERVER — CPU",
-      "description": "Synology DS423+ Intel Celeron J4125 — CPU temperatuur",
+      "title": "FILESERVER â€” CPU",
+      "description": "Synology DS423+ Intel Celeron J4125 â€” CPU temperatuur",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -1356,7 +1361,7 @@
       ]
     },
     {
-      "description": "Intel Celeron N5105 — thermalzone TZ00",
+      "description": "Intel Celeron N5105 â€” thermalzone TZ00",
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -1408,7 +1413,7 @@
           "refId": "A"
         }
       ],
-      "title": "KIOSK-TOUCH — CPU Temp",
+      "title": "KIOSK-TOUCH â€” CPU Temp",
       "type": "stat"
     }
   ]
