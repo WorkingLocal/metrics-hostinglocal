@@ -16,8 +16,8 @@ $timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
 
 # Targets: niet naar zichzelf testen
 $Targets = @(
-    @{ Ip = "192.168.111.30"; Name = "fileserver"     },
-    @{ Ip = "100.119.137.54"; Name = "networkserver"  }
+    @{ Ip = "192.168.111.30"; Name = "fileserver"    },
+    @{ Ip = "192.168.111.16"; Name = "networkserver" }
 )
 
 function Get-IfaceInfo {
