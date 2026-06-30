@@ -80,6 +80,28 @@ for d in dirs:
     if os.path.exists(lp):
         upload_dir(lp, f"{REMOTE_DIR}/{d}")
 
+# snmp.yml — getemplate uit snmp.yml.template (SNMPv3 credentials niet in git)
+snmp_template_path = os.path.join(LOCAL_REPO, "snmp.yml.template")
+if os.path.exists(snmp_template_path):
+    with open(snmp_template_path, "r", encoding="utf-8") as f:
+        snmp_content = f.read()
+    snmp_user = os.environ.get("SNMP_UNIFI_USER")
+    snmp_pass = os.environ.get("SNMP_UNIFI_PASS")
+    if snmp_user and snmp_pass:
+        snmp_content = snmp_content.replace("SNMP_UNIFI_USER_PLACEHOLDER", snmp_user)
+        snmp_content = snmp_content.replace("SNMP_UNIFI_PASS_PLACEHOLDER", snmp_pass)
+    else:
+        # geen credentials meegegeven — reeds ingevulde server-versie behouden i.p.v. overschrijven met placeholders
+        try:
+            existing_snmp = sftp.open(f"{REMOTE_DIR}/snmp.yml", "r").read().decode("utf-8")
+            if "SNMP_UNIFI_USER_PLACEHOLDER" not in existing_snmp:
+                snmp_content = existing_snmp
+        except Exception:
+            pass
+    with sftp.open(f"{REMOTE_DIR}/snmp.yml", "w") as f:
+        f.write(snmp_content)
+    print("  snmp.yml")
+
 # .env bijwerken — ontbrekende vars toevoegen, bestaande behouden
 env_defaults = {
     "GRAFANA_ADMIN_PASSWORD": "",    # zie Vaultwarden
@@ -121,6 +143,7 @@ run(f"cd {REMOTE_DIR} && docker compose -f compose.hostinglocal.yml up -d 2>&1",
 # tenzij de container herstart wordt.
 print("\nPrometheus herstarten (inode fix)...")
 run("docker restart prometheus-metrics", 30)
+run("docker restart snmp-exporter", 30)
 
 # Exporter scripts uitvoerbaar maken
 print("\nScripts uitvoerbaar maken...")

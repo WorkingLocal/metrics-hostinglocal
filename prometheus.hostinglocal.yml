@@ -206,12 +206,15 @@ scrape_configs:
           instance: 'UNIFI-GATEWAY'
 
   # UNIFI Gateway (via SNMP Exporter op METRICSSERVER — host network, localhost:9116)
-  # SNMP inschakelen op Unifi: Settings → System → Traffic Logging → SNMP Monitoring v1/2C
+  # SNMPv3 inschakelen op UDM Pro Max: Settings → System → Integrations → SNMP → v3,
+  # lokale user aanmaken (auth + priv wachtwoord zijn hetzelfde veld in de Unifi UI)
+  # auth-profiel 'unifi_v3' staat in snmp.yml (credentials via deploy_sftp.py getemplate, niet in git)
   - job_name: 'unifi-snmp'
     scrape_interval: 60s
     metrics_path: /snmp
     params:
       module: [if_mib]
+      auth: [unifi_v3]
     static_configs:
       - targets: ['192.168.111.1']
         labels:
@@ -222,10 +225,10 @@ scrape_configs:
       - target_label: __address__
         replacement: 'localhost:9116'
 
-  # TRAVELSERVER (TrueNAS SCALE, Minisforum S100, Tailscale 100.83.29.41)
+  # TRAVELSERVER (TrueNAS SCALE, Minisforum S100, Tailscale 100.113.215.17 -- herinstalleerd 2026-06-30)
   - job_name: 'travelserver'
     static_configs:
-      - targets: ['100.83.29.41:9100']
+      - targets: ['100.113.215.17:9100']
         labels:
           instance: 'TRAVELSERVER'
 
@@ -282,15 +285,16 @@ scrape_configs:
         labels:
           instance: 'PROXMOXMANAGER'
 
-  # KIOSK-TOUCH (Mele Quieter 3, Windows 10 IoT Enterprise LTSC)
+  # ====== CONTROLLERS (Xibo signage + kiosk displays) ======
+
+  # KIOSK-TOUCH (Mele Quieter 3, Windows 10 IoT Enterprise LTSC, Working Local Focus Kiosk)
   # IP nu .34 — na Unifi DHCP migratie wijzigen naar 192.168.111.120
   - job_name: 'kiosk-touch'
     static_configs:
       - targets: ['192.168.111.34:9182']
         labels:
           instance: 'KIOSK-TOUCH'
-
-  # ====== CONTROLLERS (Xibo signage + kiosk displays) ======
+          group: 'controllers'
 
   # XIBO-SURFACE-WOONKAMER (Microsoft Surface Pro 4, Ubuntu 22.04, Working Local)
   - job_name: 'xibo-surface'

@@ -114,7 +114,10 @@ services:
     container_name: snmp-exporter
     network_mode: host
     restart: unless-stopped
+    volumes:
+      - ./snmp.yml:/etc/snmp_exporter/snmp.yml:ro
     command:
+      - '--config.file=/etc/snmp_exporter/snmp.yml'
       - '--web.listen-address=0.0.0.0:9116'
 
   # SMART disk health monitoring (lokale schijven van de metrics server)
