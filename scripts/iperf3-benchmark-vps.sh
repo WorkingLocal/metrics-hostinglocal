@@ -1,20 +1,31 @@
 #!/bin/bash
-# iPerf3 multi-target bandbreedte benchmark — VPS variant (Tailscale-only)
+# iPerf3 multi-target bandbreedte benchmark — VPS variant
 # Voor hosts zonder LAN-toegang (192.168.111.0/24), bv. VPS-HOSTINGLOCAL/VPS-WORKINGLOCAL
 # Schrijft Prometheus textfile metrics voor node_exporter textfile_collector
 # Uitvoeren via systemd timer (elk uur) of handmatig
+#
+# Targets-beleid (zie feedback_iperf_no_tailscale): nooit Tailscale tenzij geen alternatief.
+# - VPS<->VPS: publiek IP (beide hebben vast IP, geen firewall-wijziging nodig)
+# - VPS->homelab (fileserver/networkserver/windowsserver): Tailscale, BEWUSTE UITZONDERING —
+#   deze hosts hebben geen publiek IP en poort 5201 staat niet publiek open op de UDM Pro firewall
 
 TEXTFILE_DIR="${TEXTFILE_DIR:-/var/lib/node_exporter/textfile_collector}"
 PROM_FILE="$TEXTFILE_DIR/iperf3_benchmark.prom"
 DURATION="${IPERF3_DURATION:-10}"
 HOST=$(hostname -s | tr '[:upper:]' '[:lower:]')
 
-# Targets: "Tailscale-IP:naam" — servers luisteren op alle interfaces (0.0.0.0)
+# Homelab targets: Tailscale-only uitzondering (geen publieke route beschikbaar)
 TARGETS=(
     "100.72.50.41:fileserver"
     "100.119.137.54:networkserver"
     "100.92.201.100:windowsserver"
 )
+
+# VPS<->VPS: publiek IP, eigen target per host (sluit zichzelf uit)
+case "$HOST" in
+    vps-hostinglocal) TARGETS+=("23.94.220.181:vps-workinglocal") ;;
+    vps-workinglocal) TARGETS+=("172.245.52.210:vps-hostinglocal") ;;
+esac
 
 detect_iface_type() {
     local iface="$1"
@@ -53,6 +64,7 @@ for TARGET_DEF in "${TARGETS[@]}"; do
 
     IFACE=$(ip route get "$TARGET_IP" 2>/dev/null | grep -oP 'dev \K\S+' | head -1 || echo "")
     IFACE_TYPE=$(detect_iface_type "$IFACE")
+    [[ "$TARGET_NAME" == vps-* ]] && IFACE_TYPE="wan"
 
     RESULT=$(iperf3 -c "$TARGET_IP" -t "$DURATION" -J 2>/dev/null || echo "")
     BPS=0; SUCCESS=0
