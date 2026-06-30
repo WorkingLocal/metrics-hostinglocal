@@ -5,7 +5,7 @@
   "timezone": "browser",
   "refresh": "1m",
   "schemaVersion": 38,
-  "version": 1,
+  "version": 2,
   "time": { "from": "now-3h", "to": "now" },
   "tags": ["controllers", "xibo", "signage", "workinglocal"],
 
@@ -514,6 +514,338 @@
         },
         {
           "expr": "node_memory_MemAvailable_bytes{instance=\"XIBO-SURFACE\"}",
+          "legendFormat": "RAM Vrij",
+          "refId": "B",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        }
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+    },
+
+    {
+      "id": 20,
+      "type": "row",
+      "title": "KIOSK-TOUCH — Mele Quieter 3 (Working Local Focus Kiosk)",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
+      "collapsed": false
+    },
+
+    {
+      "id": 21,
+      "type": "stat",
+      "title": "Status",
+      "gridPos": { "h": 3, "w": 3, "x": 0, "y": 19 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": { "mode": "thresholds" },
+          "mappings": [
+            { "type": "value", "options": { "1": { "text": "Online", "color": "green" }, "0": { "text": "Offline", "color": "red" } } }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "up{instance=\"KIOSK-TOUCH\"}",
+          "legendFormat": "Status",
+          "refId": "A",
+          "instant": true,
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        }
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+    },
+
+    {
+      "id": 22,
+      "type": "stat",
+      "title": "CPU Gebruik",
+      "gridPos": { "h": 3, "w": 3, "x": 3, "y": 19 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg by (instance) (rate(windows_cpu_time_total{instance=\"KIOSK-TOUCH\", mode=\"idle\"}[2m])) * 100)",
+          "legendFormat": "CPU %",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        }
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+    },
+
+    {
+      "id": 23,
+      "type": "stat",
+      "title": "RAM Gebruik",
+      "gridPos": { "h": 3, "w": 3, "x": 6, "y": 19 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 75 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "(1 - (windows_memory_physical_free_bytes{instance=\"KIOSK-TOUCH\"} / windows_memory_physical_total_bytes{instance=\"KIOSK-TOUCH\"})) * 100",
+          "legendFormat": "RAM %",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        }
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+    },
+
+    {
+      "id": 24,
+      "type": "stat",
+      "title": "Temperatuur",
+      "gridPos": { "h": 3, "w": 3, "x": 9, "y": 19 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "min": 0,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 65 },
+              { "color": "orange", "value": 80 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max(windows_thermalzone_temperature_celsius{instance=\"KIOSK-TOUCH\"})",
+          "legendFormat": "Temp °C",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        }
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+    },
+
+    {
+      "id": 25,
+      "type": "stat",
+      "title": "RAM Vrij",
+      "gridPos": { "h": 3, "w": 3, "x": 12, "y": 19 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "value",
+        "graphMode": "none",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 209715200 },
+              { "color": "green", "value": 524288000 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_memory_physical_free_bytes{instance=\"KIOSK-TOUCH\"}",
+          "legendFormat": "Vrij",
+          "refId": "A",
+          "instant": true,
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        }
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+    },
+
+    {
+      "id": 26,
+      "type": "stat",
+      "title": "Disk Gebruik C:",
+      "gridPos": { "h": 3, "w": 3, "x": 15, "y": 19 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 - (windows_logical_disk_free_bytes{instance=\"KIOSK-TOUCH\", volume=\"C:\"} / windows_logical_disk_size_bytes{instance=\"KIOSK-TOUCH\", volume=\"C:\"} * 100)",
+          "legendFormat": "Disk %",
+          "refId": "A",
+          "instant": true,
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        }
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+    },
+
+    {
+      "id": 27,
+      "type": "timeseries",
+      "title": "KIOSK-TOUCH — CPU & Temperatuur (trend)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 22 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Temp °C" },
+            "properties": [
+              { "id": "unit", "value": "celsius" },
+              { "id": "custom.axisPlacement", "value": "right" },
+              { "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "CPU %" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg by (instance) (rate(windows_cpu_time_total{instance=\"KIOSK-TOUCH\", mode=\"idle\"}[2m])) * 100)",
+          "legendFormat": "CPU %",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        },
+        {
+          "expr": "max(windows_thermalzone_temperature_celsius{instance=\"KIOSK-TOUCH\"})",
+          "legendFormat": "Temp °C",
+          "refId": "B",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        }
+      ],
+      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+    },
+
+    {
+      "id": 28,
+      "type": "timeseries",
+      "title": "KIOSK-TOUCH — RAM Gebruik (trend)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 22 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "min": 0,
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 15
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "windows_memory_physical_total_bytes{instance=\"KIOSK-TOUCH\"} - windows_memory_physical_free_bytes{instance=\"KIOSK-TOUCH\"}",
+          "legendFormat": "RAM Gebruikt",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+        },
+        {
+          "expr": "windows_memory_physical_free_bytes{instance=\"KIOSK-TOUCH\"}",
           "legendFormat": "RAM Vrij",
           "refId": "B",
           "datasource": { "type": "prometheus", "uid": "${datasource}" }
