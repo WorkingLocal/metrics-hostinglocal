@@ -108,8 +108,8 @@ env_defaults = {
     "SMTP_PASSWORD": "",             # Hostinger SMTP
     "NTFY_PUBLISHER_TOKEN": "",      # zie Vaultwarden
     "NTFY_URL": "http://100.125.153.71:2586",
-    "UNIFI_POLLER_USER": "",         # lokale UniFi admin (no SSO) — zie Vaultwarden
-    "UNIFI_POLLER_PASS": "",         # lokale UniFi admin password
+    "UNIFI_POLLER_USER": os.environ.get("UNIFI_POLLER_USER", ""),  # via env of handmatig in .env
+    "UNIFI_POLLER_PASS": os.environ.get("UNIFI_POLLER_PASS", ""),
 }
 try:
     existing = sftp.open(f"{REMOTE_DIR}/.env", "r").read().decode("utf-8")
@@ -161,10 +161,12 @@ run("systemctl is-active display-api")
 # Cron jobs instellen (idempotent — bestaande regels overschrijven)
 print("\nCron jobs instellen...")
 cron_cmd = (
-    f"(crontab -u {USER} -l 2>/dev/null | grep -v 'netbox-exporter\\|litellm-exporter\\|ntfy-exporter' || true; "
+    f"(crontab -u {USER} -l 2>/dev/null | grep -v 'netbox-exporter\\|litellm-exporter\\|ntfy-exporter\\|ollama-exporter\\|pbs-metrics' || true; "
     f"echo '*/5 * * * * /usr/bin/python3 {REMOTE_DIR}/scripts/netbox-exporter.py >> /tmp/netbox-exporter.log 2>&1'; "
     f"echo '*/5 * * * * /usr/bin/python3 {REMOTE_DIR}/scripts/litellm-exporter.py >> /tmp/litellm-exporter.log 2>&1'; "
-    f"echo '*/5 * * * * /usr/bin/python3 {REMOTE_DIR}/scripts/ntfy-exporter.py >> /tmp/ntfy-exporter.log 2>&1') "
+    f"echo '*/5 * * * * /usr/bin/python3 {REMOTE_DIR}/scripts/ntfy-exporter.py >> /tmp/ntfy-exporter.log 2>&1'; "
+    f"echo '*/5 * * * * /usr/bin/python3 {REMOTE_DIR}/scripts/ollama-exporter.py >> /tmp/ollama-exporter.log 2>&1'; "
+    f"echo '*/5 * * * * /usr/bin/python3 {REMOTE_DIR}/scripts/pbs-metrics.py >> /tmp/pbs-metrics.log 2>&1') "
     f"| crontab -u {USER} -"
 )
 run(cron_cmd)

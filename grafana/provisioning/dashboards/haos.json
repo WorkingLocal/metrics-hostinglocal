@@ -6,25 +6,43 @@
   "refresh": "2m",
   "schemaVersion": 38,
   "version": 2,
-  "time": { "from": "now-3h", "to": "now" },
-  "tags": ["haos", "home-assistant"],
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "tags": [
+    "haos",
+    "home-assistant"
+  ],
   "panels": [
-
     {
       "id": 1,
       "type": "row",
       "title": "Systeem",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
       "collapsed": false
     },
-
     {
       "id": 2,
       "type": "stat",
       "title": "CPU Gebruik",
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
         "colorMode": "background",
         "graphMode": "area",
         "orientation": "auto"
@@ -34,13 +52,24 @@
           "unit": "percent",
           "min": 0,
           "max": 100,
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 90 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
             ]
           }
         },
@@ -50,19 +79,33 @@
         {
           "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_processor_use\", job=\"smarthomeserver\"}",
           "legendFormat": "CPU %",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         }
       ],
-      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      }
     },
-
     {
       "id": 3,
       "type": "stat",
       "title": "CPU Temperatuur",
-      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
         "colorMode": "background",
         "graphMode": "area",
         "orientation": "auto"
@@ -71,14 +114,28 @@
         "defaults": {
           "unit": "celsius",
           "min": 0,
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "orange", "value": 80 },
-              { "color": "red", "value": 90 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "orange",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
             ]
           }
         },
@@ -88,19 +145,33 @@
         {
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.system_monitor_processortemperatuur\", job=\"smarthomeserver\"}",
           "legendFormat": "°C",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         }
       ],
-      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      }
     },
-
     {
       "id": 4,
       "type": "stat",
       "title": "RAM Gebruik",
-      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
         "colorMode": "background",
         "graphMode": "area",
         "orientation": "auto"
@@ -111,13 +182,24 @@
           "min": 0,
           "max": 100,
           "decimals": 1,
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 90 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
             ]
           }
         },
@@ -127,19 +209,33 @@
         {
           "expr": "homeassistant_sensor_data_size_mib{entity=\"sensor.system_monitor_memory_use\", job=\"smarthomeserver\"} / (homeassistant_sensor_data_size_mib{entity=\"sensor.system_monitor_memory_use\", job=\"smarthomeserver\"} + homeassistant_sensor_data_size_mib{entity=\"sensor.system_monitor_memory_free\", job=\"smarthomeserver\"}) * 100",
           "legendFormat": "RAM %",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         }
       ],
-      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      }
     },
-
     {
       "id": 5,
       "type": "stat",
       "title": "RAM Gebruikt",
-      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 1
+      },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
         "colorMode": "value",
         "graphMode": "none",
         "orientation": "auto"
@@ -148,10 +244,17 @@
         "defaults": {
           "unit": "mebibytes",
           "decimals": 0,
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
-            "steps": [{ "color": "blue", "value": null }]
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
           }
         },
         "overrides": []
@@ -160,19 +263,33 @@
         {
           "expr": "homeassistant_sensor_data_size_mib{entity=\"sensor.system_monitor_memory_use\", job=\"smarthomeserver\"}",
           "legendFormat": "MiB",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         }
       ],
-      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      }
     },
-
     {
       "id": 6,
       "type": "stat",
       "title": "Schijf Gebruikt",
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
         "colorMode": "background",
         "graphMode": "none",
         "orientation": "auto"
@@ -183,13 +300,24 @@
           "min": 0,
           "max": 100,
           "decimals": 1,
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 85 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
             ]
           }
         },
@@ -199,19 +327,33 @@
         {
           "expr": "homeassistant_sensor_data_size_gib{entity=\"sensor.system_monitor_disk_use\", job=\"smarthomeserver\"} / (homeassistant_sensor_data_size_gib{entity=\"sensor.system_monitor_disk_use\", job=\"smarthomeserver\"} + homeassistant_sensor_data_size_gib{entity=\"sensor.system_monitor_disk_free\", job=\"smarthomeserver\"}) * 100",
           "legendFormat": "Disk %",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         }
       ],
-      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      }
     },
-
     {
       "id": 7,
       "type": "stat",
       "title": "Schijf Vrij",
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
         "colorMode": "value",
         "graphMode": "none",
         "orientation": "auto"
@@ -220,14 +362,28 @@
         "defaults": {
           "unit": "gibibytes",
           "decimals": 1,
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red", "value": null },
-              { "color": "orange", "value": 5 },
-              { "color": "yellow", "value": 10 },
-              { "color": "green", "value": 20 }
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 5
+              },
+              {
+                "color": "yellow",
+                "value": 10
+              },
+              {
+                "color": "green",
+                "value": 20
+              }
             ]
           }
         },
@@ -237,47 +393,97 @@
         {
           "expr": "homeassistant_sensor_data_size_gib{entity=\"sensor.system_monitor_disk_free\", job=\"smarthomeserver\"}",
           "legendFormat": "GiB",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         }
       ],
-      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      }
     },
-
     {
       "id": 10,
       "type": "row",
       "title": "CPU & Temperatuur over tijd",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
       "collapsed": false
     },
-
     {
       "id": 11,
       "type": "timeseries",
       "title": "CPU Gebruik & Temperatuur",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
       "options": {
-        "tooltip": { "mode": "multi" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "multi"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       },
       "fieldConfig": {
         "defaults": {
-          "custom": { "lineWidth": 2, "fillOpacity": 10, "spanNulls": false }
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          }
         },
         "overrides": [
           {
-            "matcher": { "id": "byName", "options": "CPU %" },
+            "matcher": {
+              "id": "byName",
+              "options": "CPU %"
+            },
             "properties": [
-              { "id": "unit", "value": "percent" },
-              { "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
             ]
           },
           {
-            "matcher": { "id": "byName", "options": "Temperatuur °C" },
+            "matcher": {
+              "id": "byName",
+              "options": "Temperatuur °C"
+            },
             "properties": [
-              { "id": "unit", "value": "celsius" },
-              { "id": "custom.axisPlacement", "value": "right" },
-              { "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }
+              {
+                "id": "unit",
+                "value": "celsius"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
             ]
           }
         ]
@@ -286,42 +492,82 @@
         {
           "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_processor_use\", job=\"smarthomeserver\"}",
           "legendFormat": "CPU %",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         },
         {
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.system_monitor_processortemperatuur\", job=\"smarthomeserver\"}",
           "legendFormat": "Temperatuur °C",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         }
       ],
-      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      }
     },
-
     {
       "id": 12,
       "type": "timeseries",
       "title": "RAM Gebruik over tijd",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
       "options": {
-        "tooltip": { "mode": "multi" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "multi"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       },
       "fieldConfig": {
         "defaults": {
           "unit": "mebibytes",
-          "custom": { "lineWidth": 2, "fillOpacity": 15, "spanNulls": false }
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "spanNulls": false
+          }
         },
         "overrides": [
           {
-            "matcher": { "id": "byName", "options": "Vrij" },
+            "matcher": {
+              "id": "byName",
+              "options": "Vrij"
+            },
             "properties": [
-              { "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
             ]
           },
           {
-            "matcher": { "id": "byName", "options": "Gebruikt" },
+            "matcher": {
+              "id": "byName",
+              "options": "Gebruikt"
+            },
             "properties": [
-              { "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
             ]
           }
         ]
@@ -330,50 +576,94 @@
         {
           "expr": "homeassistant_sensor_data_size_mib{entity=\"sensor.system_monitor_memory_use\", job=\"smarthomeserver\"}",
           "legendFormat": "Gebruikt",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         },
         {
           "expr": "homeassistant_sensor_data_size_mib{entity=\"sensor.system_monitor_memory_free\", job=\"smarthomeserver\"}",
           "legendFormat": "Vrij",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         }
       ],
-      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      }
     },
-
     {
       "id": 20,
       "type": "row",
       "title": "Netwerk",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
       "collapsed": false
     },
-
     {
       "id": 21,
       "type": "timeseries",
       "title": "Netwerk Doorvoer (eno1)",
-      "gridPos": { "h": 7, "w": 24, "x": 0, "y": 15 },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
       "options": {
-        "tooltip": { "mode": "multi" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "multi"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       },
       "fieldConfig": {
         "defaults": {
           "unit": "MBs",
-          "custom": { "lineWidth": 2, "fillOpacity": 10, "spanNulls": false }
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          }
         },
         "overrides": [
           {
-            "matcher": { "id": "byName", "options": "Ontvangen" },
+            "matcher": {
+              "id": "byName",
+              "options": "Ontvangen"
+            },
             "properties": [
-              { "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
             ]
           },
           {
-            "matcher": { "id": "byName", "options": "Verzonden" },
+            "matcher": {
+              "id": "byName",
+              "options": "Verzonden"
+            },
             "properties": [
-              { "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
             ]
           }
         ]
@@ -382,32 +672,53 @@
         {
           "expr": "homeassistant_sensor_data_rate_mb_per_s{entity=\"sensor.system_monitor_network_throughput_in_eno1\", job=\"smarthomeserver\"}",
           "legendFormat": "Ontvangen",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         },
         {
           "expr": "homeassistant_sensor_data_rate_mb_per_s{entity=\"sensor.system_monitor_network_throughput_out_eno1\", job=\"smarthomeserver\"}",
           "legendFormat": "Verzonden",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         }
       ],
-      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      }
     },
-
     {
       "id": 30,
       "type": "row",
       "title": "Backup",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
       "collapsed": false
     },
-
     {
       "id": 31,
       "type": "stat",
       "title": "Laatste HA Backup",
-      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 23 },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 0,
+        "y": 23
+      },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
         "colorMode": "background",
         "graphMode": "none",
         "orientation": "auto",
@@ -416,12 +727,20 @@
       "fieldConfig": {
         "defaults": {
           "unit": "dateTimeFromNow",
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red", "value": null },
-              { "color": "green", "value": 0 }
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              }
             ]
           }
         },
@@ -431,14 +750,619 @@
         {
           "expr": "homeassistant_sensor_timestamp_seconds{entity=\"sensor.backup_last_attempted_automatic_backup\", job=\"smarthomeserver\"} * 1000",
           "legendFormat": "Backup",
-          "datasource": { "type": "prometheus", "uid": "${datasource}" }
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          }
         }
       ],
-      "datasource": { "type": "prometheus", "uid": "${datasource}" }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "id": 32,
+      "title": "Energie & Vermogen",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 100
+              },
+              {
+                "color": "green",
+                "value": 500
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 28
+      },
+      "id": 33,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_power_w{friendly_name=\"Beem Energy Thomas Vandromme Current Power\"}",
+          "refId": "A"
+        }
+      ],
+      "title": "Zonnepanelen Huidig",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 28
+      },
+      "id": 34,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_power_w{friendly_name=\"EatonUPS Real power\"}",
+          "refId": "A"
+        }
+      ],
+      "title": "UPS Real Power",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "green"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 28
+      },
+      "id": 35,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_energy_kwh{friendly_name=\"Beem Zonnepanelen kWh Totaal\"}",
+          "refId": "A"
+        }
+      ],
+      "title": "Zonnepanelen Totaal kWh",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 28
+      },
+      "id": 36,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_energy_kwh{friendly_name=\"Homelab Verbruik kWh Totaal\"}",
+          "refId": "A"
+        }
+      ],
+      "title": "Homelab Verbruik kWh",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 37,
+      "options": {
+        "tooltip": {
+          "mode": "multi"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_power_w{friendly_name=\"Beem Energy Thomas Vandromme Current Power\"}",
+          "legendFormat": "Zonnepanelen",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_power_w{friendly_name=\"EatonUPS Real power\"}",
+          "legendFormat": "UPS (homelab)",
+          "refId": "B"
+        }
+      ],
+      "title": "Vermogen over Tijd",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 39
+      },
+      "id": 38,
+      "title": "Vochtigheid — Ruimtes & Rack",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 40
+      },
+      "id": 39,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_humidity_percent{friendly_name=\"Rack AI-nodes Vochtigheid\"}",
+          "refId": "A"
+        }
+      ],
+      "title": "Rack AI-Nodes",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 40
+      },
+      "id": 40,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_humidity_percent{friendly_name=\"Rack Mediaserver Vochtigheid\"}",
+          "refId": "A"
+        }
+      ],
+      "title": "Rack Mediaserver",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 40
+      },
+      "id": 41,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_humidity_percent{friendly_name=\"Thermo Slaapkamer Humidity\"}",
+          "refId": "A"
+        }
+      ],
+      "title": "Slaapkamer",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 40
+      },
+      "id": 42,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_humidity_percent{friendly_name=\"Thermo Kinderkamer Humidity\"}",
+          "refId": "A"
+        }
+      ],
+      "title": "Kinderkamer",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 44
+      },
+      "id": 43,
+      "options": {
+        "tooltip": {
+          "mode": "multi"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_humidity_percent{friendly_name=\"Rack AI-nodes Vochtigheid\"}",
+          "legendFormat": "Rack AI-Nodes",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_humidity_percent{friendly_name=\"Rack Mediaserver Vochtigheid\"}",
+          "legendFormat": "Rack Mediaserver",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_humidity_percent{friendly_name=\"Thermo Slaapkamer Humidity\"}",
+          "legendFormat": "Slaapkamer",
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_humidity_percent{friendly_name=\"Thermo Kinderkamer Humidity\"}",
+          "legendFormat": "Kinderkamer",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "homeassistant_sensor_humidity_percent{friendly_name=\"Thermo Terras Beneden Humidity\"}",
+          "legendFormat": "Terras",
+          "refId": "E"
+        }
+      ],
+      "title": "Vochtigheid over Tijd",
+      "type": "timeseries"
     }
-
   ],
-
   "templating": {
     "list": [
       {

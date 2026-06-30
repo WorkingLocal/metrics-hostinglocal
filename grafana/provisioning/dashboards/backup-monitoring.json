@@ -1236,7 +1236,7 @@
             "uid": "prometheus"
           },
           "expr": "pbs_backup_task_last_status",
-          "legendFormat": "VM {{vmid}} ({{datastore}})",
+          "legendFormat": "VM {{guest}} ({{datastore}})",
           "refId": "A"
         }
       ]
@@ -1356,6 +1356,100 @@
           "refId": "B"
         }
       ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 52
+      },
+      "id": 104,
+      "title": "PBS — Backup Status Overzicht",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 53
+      },
+      "id": 105,
+      "options": {
+        "sortBy": [
+          {
+            "displayName": "Guest",
+            "desc": false
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "pbs_backup_task_last_status",
+          "legendFormat": "{{guest}} / {{datastore}}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "PBS Backup Status per Guest",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 53
+      },
+      "id": 106,
+      "options": {
+        "tooltip": {
+          "mode": "multi"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "expr": "pbs_backup_task_last_duration_seconds",
+          "legendFormat": "{{guest}}",
+          "refId": "A"
+        }
+      ],
+      "title": "PBS Backup Duur per Guest",
+      "type": "timeseries"
     }
   ]
 }

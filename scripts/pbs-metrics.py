@@ -2,6 +2,9 @@
 # PBS (Proxmox Backup Server) Prometheus exporter
 # Queries PBS REST API and writes metrics to textfile_collector
 # Credentials read from /etc/metrics/pbs_token (format: user@pbs!tokenid:secret)
+#
+# worker_id format from PBS API: "DATASTORE:host/guest"
+# e.g. "PBS-STORAGE:proxmox/vm-openclaw"
 
 import urllib.request, urllib.error, json, ssl, os, sys, time
 
@@ -36,6 +39,16 @@ def write_metrics(lines):
         f.write("\n".join(lines) + "\n")
     os.rename(tmp, PROM_FILE)
 
+def parse_worker_id(worker_id):
+    """PBS worker_id format: 'DATASTORE:host/guest' e.g. 'PBS-STORAGE:proxmox/vm-openclaw'"""
+    if ":" in worker_id:
+        datastore, rest = worker_id.split(":", 1)
+        guest = rest.split("/")[-1] if "/" in rest else rest
+    else:
+        datastore = worker_id
+        guest = "unknown"
+    return datastore, guest
+
 def main():
     token = load_token()
     now = int(time.time())
@@ -60,8 +73,8 @@ def main():
             lines.append(f'pbs_datastore_used_bytes{{datastore="{name}"}} {used}')
             lines.append(f'pbs_datastore_total_bytes{{datastore="{name}"}} {total}')
 
-    # Recent backup tasks (last 24h)
-    lines.append("# HELP pbs_backup_task_last_status 1=OK 0=error for most recent backup per VM+datastore")
+    # Recent backup tasks (last 7 days)
+    lines.append("# HELP pbs_backup_task_last_status 1=OK 0=error for most recent backup per guest+datastore")
     lines.append("# TYPE pbs_backup_task_last_status gauge")
     lines.append("# HELP pbs_backup_task_last_timestamp Unix timestamp of most recent backup task")
     lines.append("# TYPE pbs_backup_task_last_timestamp gauge")
@@ -71,28 +84,24 @@ def main():
     since = now - 7 * 24 * 3600
     tasks = api_get(f"/api2/json/nodes/localhost/tasks?start=0&limit=500&since={since}&typefilter=backup", token)
 
-    # Track most recent task per (vmid, store)
+    # Track most recent task per (guest, datastore)
     best = {}
     if tasks and "data" in tasks:
         for t in tasks["data"]:
-            vmid = str(t.get("id", "unknown"))
-            store = t.get("store", t.get("worker_id", "unknown"))
-            # worker_id looks like "backup/ct/100/ds1" — extract parts
-            if "/" in store:
-                parts = store.split("/")
-                vmid = parts[2] if len(parts) > 2 else vmid
-                store = parts[3] if len(parts) > 3 else parts[-1]
-            key = (vmid, store)
+            worker_id = t.get("worker_id", "")
+            datastore, guest = parse_worker_id(worker_id)
+            key = (guest, datastore)
             ts = t.get("starttime", 0)
             if key not in best or ts > best[key]["starttime"]:
                 best[key] = t
 
-    for (vmid, store), t in best.items():
+    for (guest, datastore), t in best.items():
         status = t.get("status", "")
         success = 1 if status == "OK" else 0
         ts = t.get("starttime", 0)
-        duration = t.get("duration", 0) or 0
-        labels = f'vmid="{vmid}",datastore="{store}"'
+        endtime = t.get("endtime", ts)
+        duration = max(0, endtime - ts)
+        labels = f'guest="{guest}",datastore="{datastore}"'
         lines.append(f"pbs_backup_task_last_status{{{labels}}} {success}")
         lines.append(f"pbs_backup_task_last_timestamp{{{labels}}} {ts}")
         lines.append(f"pbs_backup_task_last_duration_seconds{{{labels}}} {duration}")
