@@ -33,21 +33,19 @@ scrape_configs:
         labels:
           instance: 'METRICSSERVER'
 
-  # SMART disk health — AI-NODE-I9 (MS-01 bare metal, NVMe, Tailscale 100.126.121.11)
-  # Vereist: smartctl_exporter als systemd service op poort 9633
-  - job_name: 'smartctl-ai-node-i9'
+  # SMART disk health — PVE-MS01-I9 (Proxmox host, Tailscale 100.81.170.58)
+  - job_name: 'smartctl-pve-ms01-i9'
     static_configs:
-      - targets: ['100.126.121.11:9633']
+      - targets: ['100.81.170.58:9633']
         labels:
-          instance: 'AI-NODE-I9'
+          instance: 'PVE-MS01-I9'
 
-  # SMART disk health — AI-NODE-I5 (MS-01 bare metal, NVMe, Tailscale 100.78.175.49)
-  # Vereist: smartctl_exporter als systemd service op poort 9633
-  - job_name: 'smartctl-ai-node-i5'
+  # SMART disk health — PVE-MS01-I5 (Proxmox host, Tailscale 100.94.188.94)
+  - job_name: 'smartctl-pve-ms01-i5'
     static_configs:
-      - targets: ['100.78.175.49:9633']
+      - targets: ['100.94.188.94:9633']
         labels:
-          instance: 'AI-NODE-I5'
+          instance: 'PVE-MS01-I5'
 
   # SMART disk health — MEDIASERVER (Proxmox NUC, 192.168.111.20 — geen Tailscale scrape)
   # Vereist: smartctl_exporter als systemd service op poort 9633
@@ -111,19 +109,33 @@ scrape_configs:
         labels:
           instance: 'NUT-SERVER'
 
-  # AI Node i9 (MS-01, bare metal, Tailscale 100.126.121.11)
-  - job_name: 'ai-node-i9'
+  # PVE-MS01-I9 (Proxmox host, ex ai-node-i9, Tailscale 100.81.170.58)
+  - job_name: 'pve-ms01-i9'
     static_configs:
-      - targets: ['100.126.121.11:9100']
+      - targets: ['100.81.170.58:9100']
         labels:
-          instance: 'AI-NODE-I9'
+          instance: 'PVE-MS01-I9'
 
-  # AI Node i5 (MS-01, bare metal, Tailscale 100.78.175.49)
-  - job_name: 'ai-node-i5'
+  # VM-AI-NODE-I9 (Ubuntu 24.04 VM op PVE-MS01-I9, Tailscale 100.64.1.25)
+  - job_name: 'vm-ai-node-i9'
     static_configs:
-      - targets: ['100.78.175.49:9100']
+      - targets: ['100.64.1.25:9100']
         labels:
-          instance: 'AI-NODE-I5'
+          instance: 'VM-AI-NODE-I9'
+
+  # PVE-MS01-I5 (Proxmox host, ex ai-node-i5, Tailscale 100.94.188.94)
+  - job_name: 'pve-ms01-i5'
+    static_configs:
+      - targets: ['100.94.188.94:9100']
+        labels:
+          instance: 'PVE-MS01-I5'
+
+  # VM-AI-NODE-I5 (Ubuntu 24.04 VM op PVE-MS01-I5, Tailscale 100.101.48.4)
+  - job_name: 'vm-ai-node-i5'
+    static_configs:
+      - targets: ['100.101.48.4:9100']
+        labels:
+          instance: 'VM-AI-NODE-I5'
 
   # VM-IMMICH (Ubuntu 24.04, 192.168.111.51 — geen Tailscale)
   - job_name: 'vm-immich'
