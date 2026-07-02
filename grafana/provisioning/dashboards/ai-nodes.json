@@ -1,7 +1,7 @@
-{
+﻿{
   "title": "AI Nodes — Load Monitor",
   "uid": "2ca2c5e5-ca9a-49e7-8010-017d804f4678",
-  "description": "CPU, RAM, Network, Disk en temperatuur voor AI-NODE-I9 en AI-NODE-I5 (MS-01)",
+  "description": "CPU, RAM, Network, Disk en temperatuur voor VM-AI-NODE-I9 en VM-AI-NODE-I5 (MS-01)",
   "timezone": "browser",
   "refresh": "30s",
   "schemaVersion": 38,
@@ -31,7 +31,7 @@
     {
       "id": 2,
       "type": "stat",
-      "title": "AI-NODE-I9 — CPU %",
+      "title": "VM-AI-NODE-I9 — CPU %",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -74,8 +74,8 @@
       },
       "targets": [
         {
-          "expr": "100 - (avg(rate(node_cpu_seconds_total{instance=\"AI-NODE-I9\", mode=\"idle\"}[5m])) * 100)",
-          "legendFormat": "AI-NODE-I9",
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{instance=\"VM-AI-NODE-I9\", mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "VM-AI-NODE-I9",
           "refId": "A"
         }
       ]
@@ -83,7 +83,7 @@
     {
       "id": 3,
       "type": "stat",
-      "title": "AI-NODE-I5 — CPU %",
+      "title": "VM-AI-NODE-I5 — CPU %",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -126,8 +126,8 @@
       },
       "targets": [
         {
-          "expr": "100 - (avg(rate(node_cpu_seconds_total{instance=\"AI-NODE-I5\", mode=\"idle\"}[5m])) * 100)",
-          "legendFormat": "AI-NODE-I5",
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{instance=\"VM-AI-NODE-I5\", mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "VM-AI-NODE-I5",
           "refId": "A"
         }
       ]
@@ -184,12 +184,12 @@
       },
       "targets": [
         {
-          "expr": "100 - (avg(rate(node_cpu_seconds_total{instance=\"AI-NODE-I9\", mode=\"idle\"}[5m])) * 100)",
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{instance=\"VM-AI-NODE-I9\", mode=\"idle\"}[5m])) * 100)",
           "legendFormat": "I9 — CPU",
           "refId": "A"
         },
         {
-          "expr": "100 - (avg(rate(node_cpu_seconds_total{instance=\"AI-NODE-I5\", mode=\"idle\"}[5m])) * 100)",
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{instance=\"VM-AI-NODE-I5\", mode=\"idle\"}[5m])) * 100)",
           "legendFormat": "I5 — CPU",
           "refId": "B"
         }
@@ -198,7 +198,7 @@
     {
       "id": 5,
       "type": "timeseries",
-      "title": "CPU per core — AI-NODE-I9",
+      "title": "CPU per core — VM-AI-NODE-I9",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -228,7 +228,7 @@
       },
       "targets": [
         {
-          "expr": "rate(node_cpu_seconds_total{instance=\"AI-NODE-I9\", mode!=\"idle\"}[5m]) * 100",
+          "expr": "rate(node_cpu_seconds_total{instance=\"VM-AI-NODE-I9\", mode!=\"idle\"}[5m]) * 100",
           "legendFormat": "{{cpu}} {{mode}}",
           "refId": "A"
         }
@@ -237,7 +237,7 @@
     {
       "id": 6,
       "type": "timeseries",
-      "title": "CPU per core — AI-NODE-I5",
+      "title": "CPU per core — VM-AI-NODE-I5",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -267,7 +267,7 @@
       },
       "targets": [
         {
-          "expr": "rate(node_cpu_seconds_total{instance=\"AI-NODE-I5\", mode!=\"idle\"}[5m]) * 100",
+          "expr": "rate(node_cpu_seconds_total{instance=\"VM-AI-NODE-I5\", mode!=\"idle\"}[5m]) * 100",
           "legendFormat": "{{cpu}} {{mode}}",
           "refId": "A"
         }
@@ -288,7 +288,7 @@
     {
       "id": 11,
       "type": "stat",
-      "title": "AI-NODE-I9 — RAM %",
+      "title": "VM-AI-NODE-I9 — RAM %",
       "gridPos": {
         "h": 3,
         "w": 4,
@@ -331,8 +331,8 @@
       },
       "targets": [
         {
-          "expr": "(1 - node_memory_MemAvailable_bytes{instance=\"AI-NODE-I9\"} / node_memory_MemTotal_bytes{instance=\"AI-NODE-I9\"}) * 100",
-          "legendFormat": "AI-NODE-I9",
+          "expr": "(1 - node_memory_MemAvailable_bytes{instance=\"VM-AI-NODE-I9\"} / node_memory_MemTotal_bytes{instance=\"VM-AI-NODE-I9\"}) * 100",
+          "legendFormat": "VM-AI-NODE-I9",
           "refId": "A"
         }
       ]
@@ -340,7 +340,7 @@
     {
       "id": 12,
       "type": "stat",
-      "title": "AI-NODE-I5 — RAM %",
+      "title": "VM-AI-NODE-I5 — RAM %",
       "gridPos": {
         "h": 3,
         "w": 4,
@@ -383,8 +383,8 @@
       },
       "targets": [
         {
-          "expr": "(1 - node_memory_MemAvailable_bytes{instance=\"AI-NODE-I5\"} / node_memory_MemTotal_bytes{instance=\"AI-NODE-I5\"}) * 100",
-          "legendFormat": "AI-NODE-I5",
+          "expr": "(1 - node_memory_MemAvailable_bytes{instance=\"VM-AI-NODE-I5\"} / node_memory_MemTotal_bytes{instance=\"VM-AI-NODE-I5\"}) * 100",
+          "legendFormat": "VM-AI-NODE-I5",
           "refId": "A"
         }
       ]
@@ -425,22 +425,22 @@
       },
       "targets": [
         {
-          "expr": "node_memory_MemTotal_bytes{instance=\"AI-NODE-I9\"} - node_memory_MemAvailable_bytes{instance=\"AI-NODE-I9\"}",
+          "expr": "node_memory_MemTotal_bytes{instance=\"VM-AI-NODE-I9\"} - node_memory_MemAvailable_bytes{instance=\"VM-AI-NODE-I9\"}",
           "legendFormat": "I9 — gebruikt",
           "refId": "A"
         },
         {
-          "expr": "node_memory_MemTotal_bytes{instance=\"AI-NODE-I9\"}",
+          "expr": "node_memory_MemTotal_bytes{instance=\"VM-AI-NODE-I9\"}",
           "legendFormat": "I9 — totaal",
           "refId": "B"
         },
         {
-          "expr": "node_memory_MemTotal_bytes{instance=\"AI-NODE-I5\"} - node_memory_MemAvailable_bytes{instance=\"AI-NODE-I5\"}",
+          "expr": "node_memory_MemTotal_bytes{instance=\"VM-AI-NODE-I5\"} - node_memory_MemAvailable_bytes{instance=\"VM-AI-NODE-I5\"}",
           "legendFormat": "I5 — gebruikt",
           "refId": "C"
         },
         {
-          "expr": "node_memory_MemTotal_bytes{instance=\"AI-NODE-I5\"}",
+          "expr": "node_memory_MemTotal_bytes{instance=\"VM-AI-NODE-I5\"}",
           "legendFormat": "I5 — totaal",
           "refId": "D"
         }
@@ -449,7 +449,7 @@
     {
       "id": 14,
       "type": "gauge",
-      "title": "AI-NODE-I9 — RAM detail",
+      "title": "VM-AI-NODE-I9 — RAM detail",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -487,12 +487,12 @@
       },
       "targets": [
         {
-          "expr": "node_memory_MemAvailable_bytes{instance=\"AI-NODE-I9\"}",
+          "expr": "node_memory_MemAvailable_bytes{instance=\"VM-AI-NODE-I9\"}",
           "legendFormat": "Vrij",
           "refId": "A"
         },
         {
-          "expr": "node_memory_MemTotal_bytes{instance=\"AI-NODE-I9\"} - node_memory_MemAvailable_bytes{instance=\"AI-NODE-I9\"}",
+          "expr": "node_memory_MemTotal_bytes{instance=\"VM-AI-NODE-I9\"} - node_memory_MemAvailable_bytes{instance=\"VM-AI-NODE-I9\"}",
           "legendFormat": "Gebruikt",
           "refId": "B"
         }
@@ -501,7 +501,7 @@
     {
       "id": 15,
       "type": "gauge",
-      "title": "AI-NODE-I5 — RAM detail",
+      "title": "VM-AI-NODE-I5 — RAM detail",
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -539,12 +539,12 @@
       },
       "targets": [
         {
-          "expr": "node_memory_MemAvailable_bytes{instance=\"AI-NODE-I5\"}",
+          "expr": "node_memory_MemAvailable_bytes{instance=\"VM-AI-NODE-I5\"}",
           "legendFormat": "Vrij",
           "refId": "A"
         },
         {
-          "expr": "node_memory_MemTotal_bytes{instance=\"AI-NODE-I5\"} - node_memory_MemAvailable_bytes{instance=\"AI-NODE-I5\"}",
+          "expr": "node_memory_MemTotal_bytes{instance=\"VM-AI-NODE-I5\"} - node_memory_MemAvailable_bytes{instance=\"VM-AI-NODE-I5\"}",
           "legendFormat": "Gebruikt",
           "refId": "B"
         }
@@ -598,12 +598,12 @@
       },
       "targets": [
         {
-          "expr": "rate(node_network_receive_bytes_total{instance=\"AI-NODE-I9\", device!=\"lo\"}[5m])",
+          "expr": "rate(node_network_receive_bytes_total{instance=\"VM-AI-NODE-I9\", device!=\"lo\"}[5m])",
           "legendFormat": "I9 — {{device}}",
           "refId": "A"
         },
         {
-          "expr": "rate(node_network_receive_bytes_total{instance=\"AI-NODE-I5\", device!=\"lo\"}[5m])",
+          "expr": "rate(node_network_receive_bytes_total{instance=\"VM-AI-NODE-I5\", device!=\"lo\"}[5m])",
           "legendFormat": "I5 — {{device}}",
           "refId": "B"
         }
@@ -645,12 +645,12 @@
       },
       "targets": [
         {
-          "expr": "rate(node_network_transmit_bytes_total{instance=\"AI-NODE-I9\", device!=\"lo\"}[5m])",
+          "expr": "rate(node_network_transmit_bytes_total{instance=\"VM-AI-NODE-I9\", device!=\"lo\"}[5m])",
           "legendFormat": "I9 — {{device}}",
           "refId": "A"
         },
         {
-          "expr": "rate(node_network_transmit_bytes_total{instance=\"AI-NODE-I5\", device!=\"lo\"}[5m])",
+          "expr": "rate(node_network_transmit_bytes_total{instance=\"VM-AI-NODE-I5\", device!=\"lo\"}[5m])",
           "legendFormat": "I5 — {{device}}",
           "refId": "B"
         }
@@ -671,7 +671,7 @@
     {
       "id": 31,
       "type": "stat",
-      "title": "AI-NODE-I9 — Disk /",
+      "title": "VM-AI-NODE-I9 — Disk /",
       "gridPos": {
         "h": 3,
         "w": 4,
@@ -714,7 +714,7 @@
       },
       "targets": [
         {
-          "expr": "(node_filesystem_size_bytes{instance=\"AI-NODE-I9\", mountpoint=\"/\", fstype!=\"tmpfs\"} - node_filesystem_avail_bytes{instance=\"AI-NODE-I9\", mountpoint=\"/\", fstype!=\"tmpfs\"}) / node_filesystem_size_bytes{instance=\"AI-NODE-I9\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100",
+          "expr": "(node_filesystem_size_bytes{instance=\"VM-AI-NODE-I9\", mountpoint=\"/\", fstype!=\"tmpfs\"} - node_filesystem_avail_bytes{instance=\"VM-AI-NODE-I9\", mountpoint=\"/\", fstype!=\"tmpfs\"}) / node_filesystem_size_bytes{instance=\"VM-AI-NODE-I9\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100",
           "legendFormat": "I9 /",
           "refId": "A"
         }
@@ -723,7 +723,7 @@
     {
       "id": 32,
       "type": "stat",
-      "title": "AI-NODE-I5 — Disk /",
+      "title": "VM-AI-NODE-I5 — Disk /",
       "gridPos": {
         "h": 3,
         "w": 4,
@@ -766,7 +766,7 @@
       },
       "targets": [
         {
-          "expr": "(node_filesystem_size_bytes{instance=\"AI-NODE-I5\", mountpoint=\"/\", fstype!=\"tmpfs\"} - node_filesystem_avail_bytes{instance=\"AI-NODE-I5\", mountpoint=\"/\", fstype!=\"tmpfs\"}) / node_filesystem_size_bytes{instance=\"AI-NODE-I5\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100",
+          "expr": "(node_filesystem_size_bytes{instance=\"VM-AI-NODE-I5\", mountpoint=\"/\", fstype!=\"tmpfs\"} - node_filesystem_avail_bytes{instance=\"VM-AI-NODE-I5\", mountpoint=\"/\", fstype!=\"tmpfs\"}) / node_filesystem_size_bytes{instance=\"VM-AI-NODE-I5\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100",
           "legendFormat": "I5 /",
           "refId": "A"
         }
@@ -808,22 +808,22 @@
       },
       "targets": [
         {
-          "expr": "rate(node_disk_read_bytes_total{instance=\"AI-NODE-I9\"}[5m])",
+          "expr": "rate(node_disk_read_bytes_total{instance=\"VM-AI-NODE-I9\"}[5m])",
           "legendFormat": "I9 — lezen {{device}}",
           "refId": "A"
         },
         {
-          "expr": "rate(node_disk_written_bytes_total{instance=\"AI-NODE-I9\"}[5m])",
+          "expr": "rate(node_disk_written_bytes_total{instance=\"VM-AI-NODE-I9\"}[5m])",
           "legendFormat": "I9 — schrijven {{device}}",
           "refId": "B"
         },
         {
-          "expr": "rate(node_disk_read_bytes_total{instance=\"AI-NODE-I5\"}[5m])",
+          "expr": "rate(node_disk_read_bytes_total{instance=\"VM-AI-NODE-I5\"}[5m])",
           "legendFormat": "I5 — lezen {{device}}",
           "refId": "C"
         },
         {
-          "expr": "rate(node_disk_written_bytes_total{instance=\"AI-NODE-I5\"}[5m])",
+          "expr": "rate(node_disk_written_bytes_total{instance=\"VM-AI-NODE-I5\"}[5m])",
           "legendFormat": "I5 — schrijven {{device}}",
           "refId": "D"
         }
@@ -860,12 +860,12 @@
       },
       "targets": [
         {
-          "expr": "node_filesystem_size_bytes{instance=\"AI-NODE-I9\", fstype!=\"tmpfs\", fstype!=\"overlay\"} - node_filesystem_avail_bytes{instance=\"AI-NODE-I9\", fstype!=\"tmpfs\", fstype!=\"overlay\"}",
+          "expr": "node_filesystem_size_bytes{instance=\"VM-AI-NODE-I9\", fstype!=\"tmpfs\", fstype!=\"overlay\"} - node_filesystem_avail_bytes{instance=\"VM-AI-NODE-I9\", fstype!=\"tmpfs\", fstype!=\"overlay\"}",
           "legendFormat": "I9 {{mountpoint}}",
           "refId": "A"
         },
         {
-          "expr": "node_filesystem_size_bytes{instance=\"AI-NODE-I5\", fstype!=\"tmpfs\", fstype!=\"overlay\"} - node_filesystem_avail_bytes{instance=\"AI-NODE-I5\", fstype!=\"tmpfs\", fstype!=\"overlay\"}",
+          "expr": "node_filesystem_size_bytes{instance=\"VM-AI-NODE-I5\", fstype!=\"tmpfs\", fstype!=\"overlay\"} - node_filesystem_avail_bytes{instance=\"VM-AI-NODE-I5\", fstype!=\"tmpfs\", fstype!=\"overlay\"}",
           "legendFormat": "I5 {{mountpoint}}",
           "refId": "B"
         }
@@ -902,12 +902,12 @@
       },
       "targets": [
         {
-          "expr": "rate(node_disk_io_time_seconds_total{instance=\"AI-NODE-I9\"}[5m])",
+          "expr": "rate(node_disk_io_time_seconds_total{instance=\"VM-AI-NODE-I9\"}[5m])",
           "legendFormat": "I9 {{device}}",
           "refId": "A"
         },
         {
-          "expr": "rate(node_disk_io_time_seconds_total{instance=\"AI-NODE-I5\"}[5m])",
+          "expr": "rate(node_disk_io_time_seconds_total{instance=\"VM-AI-NODE-I5\"}[5m])",
           "legendFormat": "I5 {{device}}",
           "refId": "B"
         }
@@ -928,7 +928,7 @@
     {
       "id": 41,
       "type": "stat",
-      "title": "AI-NODE-I9 — CPU Package",
+      "title": "VM-AI-NODE-I9 — CPU Package",
       "gridPos": {
         "h": 3,
         "w": 6,
@@ -973,7 +973,7 @@
       },
       "targets": [
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}",
+          "expr": "node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I9\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}",
           "legendFormat": "I9 CPU Package",
           "refId": "A"
         }
@@ -982,7 +982,7 @@
     {
       "id": 42,
       "type": "stat",
-      "title": "AI-NODE-I5 — CPU Package",
+      "title": "VM-AI-NODE-I5 — CPU Package",
       "gridPos": {
         "h": 3,
         "w": 6,
@@ -1027,7 +1027,7 @@
       },
       "targets": [
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}",
+          "expr": "node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I5\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}",
           "legendFormat": "I5 CPU Package",
           "refId": "A"
         }
@@ -1036,7 +1036,7 @@
     {
       "id": 44,
       "type": "stat",
-      "title": "AI-NODE-I9 — NVMe max",
+      "title": "VM-AI-NODE-I9 — NVMe max",
       "gridPos": {
         "h": 3,
         "w": 6,
@@ -1081,7 +1081,7 @@
       },
       "targets": [
         {
-          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I9\", chip=~\"nvme.*\", sensor=\"temp1\"})",
           "legendFormat": "I9 NVMe max",
           "refId": "A"
         }
@@ -1090,7 +1090,7 @@
     {
       "id": 45,
       "type": "stat",
-      "title": "AI-NODE-I5 — NVMe max",
+      "title": "VM-AI-NODE-I5 — NVMe max",
       "gridPos": {
         "h": 3,
         "w": 6,
@@ -1135,7 +1135,7 @@
       },
       "targets": [
         {
-          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I5\", chip=~\"nvme.*\", sensor=\"temp1\"})",
           "legendFormat": "I5 NVMe max",
           "refId": "A"
         }
@@ -1144,7 +1144,7 @@
     {
       "id": 43,
       "type": "timeseries",
-      "title": "CPU cores — AI-NODE-I9",
+      "title": "CPU cores — VM-AI-NODE-I9",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -1177,7 +1177,7 @@
       },
       "targets": [
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=\"platform_coretemp_0\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"AI-NODE-I9\", chip=\"platform_coretemp_0\"}",
+          "expr": "node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I9\", chip=\"platform_coretemp_0\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"VM-AI-NODE-I9\", chip=\"platform_coretemp_0\"}",
           "legendFormat": "{{label}}",
           "refId": "A"
         }
@@ -1186,7 +1186,7 @@
     {
       "id": 46,
       "type": "timeseries",
-      "title": "CPU cores — AI-NODE-I5",
+      "title": "CPU cores — VM-AI-NODE-I5",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -1219,7 +1219,7 @@
       },
       "targets": [
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=\"platform_coretemp_0\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"AI-NODE-I5\", chip=\"platform_coretemp_0\"}",
+          "expr": "node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I5\", chip=\"platform_coretemp_0\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"VM-AI-NODE-I5\", chip=\"platform_coretemp_0\"}",
           "legendFormat": "{{label}}",
           "refId": "A"
         }
@@ -1228,7 +1228,7 @@
     {
       "id": 47,
       "type": "timeseries",
-      "title": "NVMe temperaturen — AI-NODE-I9",
+      "title": "NVMe temperaturen — VM-AI-NODE-I9",
       "gridPos": {
         "h": 7,
         "w": 12,
@@ -1282,7 +1282,7 @@
       },
       "targets": [
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\"nvme.*\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"AI-NODE-I9\", chip=~\"nvme.*\"}",
+          "expr": "node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I9\", chip=~\"nvme.*\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"VM-AI-NODE-I9\", chip=~\"nvme.*\"}",
           "legendFormat": "{{chip}} {{label}}",
           "refId": "A"
         }
@@ -1291,7 +1291,7 @@
     {
       "id": 48,
       "type": "timeseries",
-      "title": "NVMe temperaturen — AI-NODE-I5",
+      "title": "NVMe temperaturen — VM-AI-NODE-I5",
       "gridPos": {
         "h": 7,
         "w": 12,
@@ -1345,7 +1345,7 @@
       },
       "targets": [
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\"nvme.*\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"AI-NODE-I5\", chip=~\"nvme.*\"}",
+          "expr": "node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I5\", chip=~\"nvme.*\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"VM-AI-NODE-I5\", chip=~\"nvme.*\"}",
           "legendFormat": "{{chip}} {{label}}",
           "refId": "A"
         }
@@ -1366,7 +1366,7 @@
     {
       "id": 51,
       "type": "stat",
-      "title": "AI-NODE-I9 — Ollama bereikbaar",
+      "title": "VM-AI-NODE-I9 — Ollama bereikbaar",
       "gridPos": {
         "h": 3,
         "w": 4,
@@ -1416,7 +1416,7 @@
       },
       "targets": [
         {
-          "expr": "up{instance=\"AI-NODE-I9\", job=\"ai-node-i9\"}",
+          "expr": "up{instance=\"VM-AI-NODE-I9\", job=\"VM-AI-NODE-I9\"}",
           "legendFormat": "I9",
           "refId": "A"
         }
@@ -1425,7 +1425,7 @@
     {
       "id": 52,
       "type": "stat",
-      "title": "AI-NODE-I5 — Ollama bereikbaar",
+      "title": "VM-AI-NODE-I5 — Ollama bereikbaar",
       "gridPos": {
         "h": 3,
         "w": 4,
@@ -1475,7 +1475,7 @@
       },
       "targets": [
         {
-          "expr": "up{instance=\"AI-NODE-I5\", job=\"ai-node-i5\"}",
+          "expr": "up{instance=\"VM-AI-NODE-I5\", job=\"VM-AI-NODE-I5\"}",
           "legendFormat": "I5",
           "refId": "A"
         }
@@ -1512,12 +1512,12 @@
       },
       "targets": [
         {
-          "expr": "node_time_seconds{instance=\"AI-NODE-I9\"} - node_boot_time_seconds{instance=\"AI-NODE-I9\"}",
+          "expr": "node_time_seconds{instance=\"VM-AI-NODE-I9\"} - node_boot_time_seconds{instance=\"VM-AI-NODE-I9\"}",
           "legendFormat": "I9 uptime",
           "refId": "A"
         },
         {
-          "expr": "node_time_seconds{instance=\"AI-NODE-I5\"} - node_boot_time_seconds{instance=\"AI-NODE-I5\"}",
+          "expr": "node_time_seconds{instance=\"VM-AI-NODE-I5\"} - node_boot_time_seconds{instance=\"VM-AI-NODE-I5\"}",
           "legendFormat": "I5 uptime",
           "refId": "B"
         }
@@ -1587,7 +1587,7 @@
           "datasource": {
             "type": "prometheus"
           },
-          "expr": "ollama_up{node=\"AI-NODE-I9\"}",
+          "expr": "ollama_up{node=\"VM-AI-NODE-I9\"}",
           "refId": "A"
         }
       ],
@@ -1646,7 +1646,7 @@
           "datasource": {
             "type": "prometheus"
           },
-          "expr": "ollama_up{node=\"AI-NODE-I5\"}",
+          "expr": "ollama_up{node=\"VM-AI-NODE-I5\"}",
           "refId": "A"
         }
       ],
@@ -1701,7 +1701,7 @@
           "datasource": {
             "type": "prometheus"
           },
-          "expr": "ollama_loaded_models{node=\"AI-NODE-I9\"}",
+          "expr": "ollama_loaded_models{node=\"VM-AI-NODE-I9\"}",
           "refId": "A"
         }
       ],
@@ -1756,7 +1756,7 @@
           "datasource": {
             "type": "prometheus"
           },
-          "expr": "ollama_loaded_models{node=\"AI-NODE-I5\"}",
+          "expr": "ollama_loaded_models{node=\"VM-AI-NODE-I5\"}",
           "refId": "A"
         }
       ],
@@ -1811,7 +1811,7 @@
           "datasource": {
             "type": "prometheus"
           },
-          "expr": "ollama_available_models{node=\"AI-NODE-I9\"}",
+          "expr": "ollama_available_models{node=\"VM-AI-NODE-I9\"}",
           "refId": "A"
         }
       ],
@@ -1866,7 +1866,7 @@
           "datasource": {
             "type": "prometheus"
           },
-          "expr": "ollama_available_models{node=\"AI-NODE-I5\"}",
+          "expr": "ollama_available_models{node=\"VM-AI-NODE-I5\"}",
           "refId": "A"
         }
       ],
@@ -1912,7 +1912,7 @@
           "datasource": {
             "type": "prometheus"
           },
-          "expr": "ollama_model_vram_bytes{node=\"AI-NODE-I9\"} > 0",
+          "expr": "ollama_model_vram_bytes{node=\"VM-AI-NODE-I9\"} > 0",
           "legendFormat": "I9: {{model}}",
           "refId": "A"
         },
@@ -1920,7 +1920,7 @@
           "datasource": {
             "type": "prometheus"
           },
-          "expr": "ollama_model_vram_bytes{node=\"AI-NODE-I5\"} > 0",
+          "expr": "ollama_model_vram_bytes{node=\"VM-AI-NODE-I5\"} > 0",
           "legendFormat": "I5: {{model}}",
           "refId": "B"
         }

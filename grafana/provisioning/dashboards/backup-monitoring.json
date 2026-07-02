@@ -1,4 +1,4 @@
-{
+﻿{
   "__inputs": [],
   "__requires": [],
   "annotations": {
@@ -96,7 +96,7 @@
           ]
         }
       },
-      "title": "Muziek (ai-node-i9 → /volume1/muziek)",
+      "title": "Muziek (VM-AI-NODE-I9 → /volume1/muziek)",
       "type": "stat",
       "targets": [
         {
@@ -169,7 +169,7 @@
           ]
         }
       },
-      "title": "Ebooks (ai-node-i5 → /volume1/documents/ebooks)",
+      "title": "Ebooks (VM-AI-NODE-I5 → /volume1/documents/ebooks)",
       "type": "stat",
       "targets": [
         {
@@ -242,7 +242,7 @@
           ]
         }
       },
-      "title": "Paperless (ai-node-i5 → /volume1/documents/paperless)",
+      "title": "Paperless (VM-AI-NODE-I5 → /volume1/documents/paperless)",
       "type": "stat",
       "targets": [
         {
@@ -315,7 +315,7 @@
           ]
         }
       },
-      "title": "Homelab docs (ai-node-i5 → /volume1/documents/homelab)",
+      "title": "Homelab docs (VM-AI-NODE-I5 → /volume1/documents/homelab)",
       "type": "stat",
       "targets": [
         {
@@ -643,7 +643,7 @@
           ]
         }
       },
-      "title": "ai-node-i9 NVMe gebruik",
+      "title": "VM-AI-NODE-I9 NVMe gebruik",
       "type": "stat",
       "targets": [
         {
@@ -651,8 +651,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 - (node_filesystem_avail_bytes{instance=\"AI-NODE-I9\",mountpoint=\"/\"} / node_filesystem_size_bytes{instance=\"AI-NODE-I9\",mountpoint=\"/\"} * 100)",
-          "legendFormat": "AI-NODE-I9 /"
+          "expr": "100 - (node_filesystem_avail_bytes{instance=\"VM-AI-NODE-I9\",mountpoint=\"/\"} / node_filesystem_size_bytes{instance=\"VM-AI-NODE-I9\",mountpoint=\"/\"} * 100)",
+          "legendFormat": "VM-AI-NODE-I9 /"
         }
       ]
     },
@@ -707,7 +707,7 @@
           ]
         }
       },
-      "title": "ai-node-i5 NVMe gebruik",
+      "title": "VM-AI-NODE-I5 NVMe gebruik",
       "type": "stat",
       "targets": [
         {
@@ -715,8 +715,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 - (node_filesystem_avail_bytes{instance=\"AI-NODE-I5\",mountpoint=\"/\"} / node_filesystem_size_bytes{instance=\"AI-NODE-I5\",mountpoint=\"/\"} * 100)",
-          "legendFormat": "AI-NODE-I5 /"
+          "expr": "100 - (node_filesystem_avail_bytes{instance=\"VM-AI-NODE-I5\",mountpoint=\"/\"} / node_filesystem_size_bytes{instance=\"VM-AI-NODE-I5\",mountpoint=\"/\"} * 100)",
+          "legendFormat": "VM-AI-NODE-I5 /"
         }
       ]
     },
@@ -835,7 +835,7 @@
           ]
         }
       },
-      "title": "TEMP-FILESERVER gebruik (ai-node-i9)",
+      "title": "TEMP-FILESERVER gebruik (VM-AI-NODE-I9)",
       "type": "stat",
       "targets": [
         {
@@ -843,7 +843,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 - (node_filesystem_avail_bytes{instance=\"AI-NODE-I9\",mountpoint=\"/mnt/TEMP-FILESERVER\"} / node_filesystem_size_bytes{instance=\"AI-NODE-I9\",mountpoint=\"/mnt/TEMP-FILESERVER\"} * 100)",
+          "expr": "100 - (node_filesystem_avail_bytes{instance=\"VM-AI-NODE-I9\",mountpoint=\"/mnt/TEMP-FILESERVER\"} / node_filesystem_size_bytes{instance=\"VM-AI-NODE-I9\",mountpoint=\"/mnt/TEMP-FILESERVER\"} * 100)",
           "legendFormat": "TEMP-FILESERVER"
         }
       ]
@@ -956,16 +956,16 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "node_filesystem_avail_bytes{instance=\"AI-NODE-I9\",mountpoint=\"/\"}",
-          "legendFormat": "AI-NODE-I9 NVMe"
+          "expr": "node_filesystem_avail_bytes{instance=\"VM-AI-NODE-I9\",mountpoint=\"/\"}",
+          "legendFormat": "VM-AI-NODE-I9 NVMe"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "node_filesystem_avail_bytes{instance=\"AI-NODE-I5\",mountpoint=\"/\"}",
-          "legendFormat": "AI-NODE-I5 NVMe"
+          "expr": "node_filesystem_avail_bytes{instance=\"VM-AI-NODE-I5\",mountpoint=\"/\"}",
+          "legendFormat": "VM-AI-NODE-I5 NVMe"
         }
       ]
     },

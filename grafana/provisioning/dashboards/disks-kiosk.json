@@ -1,4 +1,4 @@
-{
+﻿{
   "title": "Serverrack Kiosk \u00e2\u20ac\u201d NVMe & Schijven",
   "uid": "serverrack-disks",
   "description": "FHD kiosk scherm 2 \u00e2\u20ac\u201d NVMe temperaturen, FILESERVER schijven, tijdreeks",
@@ -95,7 +95,7 @@
       },
       "targets": [
         {
-          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"PVE-MS01-I9\", chip=~\"nvme.*\", sensor=\"temp1\"})",
           "legendFormat": "AI-I9 NVMe",
           "refId": "A"
         }
@@ -156,7 +156,7 @@
       },
       "targets": [
         {
-          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"PVE-MS01-I5\", chip=~\"nvme.*\", sensor=\"temp1\"})",
           "legendFormat": "AI-I5 NVMe",
           "refId": "A"
         }
@@ -509,7 +509,7 @@
       },
       "targets": [
         {
-          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=~\"AI-NODE-I9|AI-NODE-I5|NETWORKSERVER|MEDIASERVER\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=~\"PVE-MS01-I9|PVE-MS01-I5|NETWORKSERVER|MEDIASERVER\", chip=~\"nvme.*\", sensor=\"temp1\"})",
           "legendFormat": "{{instance}} NVMe",
           "refId": "A"
         },

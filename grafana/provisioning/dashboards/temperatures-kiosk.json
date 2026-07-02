@@ -1,4 +1,4 @@
-{
+﻿{
   "title": "Serverrack Kiosk â€” Temperaturen",
   "uid": "serverrack-kiosk",
   "description": "FHD kiosk scherm 1 â€” CPU + Rack temperaturen + tijdreeks",
@@ -43,7 +43,7 @@
     {
       "id": 2,
       "type": "stat",
-      "title": "AI-NODE-I9",
+      "title": "PVE-MS01-I9",
       "description": "Intel i9 MS-01 â€” Package Â°C",
       "gridPos": {
         "h": 5,
@@ -95,8 +95,8 @@
       },
       "targets": [
         {
-          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I9\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
-          "legendFormat": "AI-NODE-I9",
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"PVE-MS01-I9\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "legendFormat": "PVE-MS01-I9",
           "refId": "A"
         }
       ]
@@ -104,7 +104,7 @@
     {
       "id": 3,
       "type": "stat",
-      "title": "AI-NODE-I5",
+      "title": "PVE-MS01-I5",
       "description": "Intel i5 MS-01 â€” Package Â°C",
       "gridPos": {
         "h": 5,
@@ -156,8 +156,8 @@
       },
       "targets": [
         {
-          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"AI-NODE-I5\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
-          "legendFormat": "AI-NODE-I5",
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"PVE-MS01-I5\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "legendFormat": "PVE-MS01-I5",
           "refId": "A"
         }
       ]
@@ -1123,7 +1123,7 @@
       },
       "targets": [
         {
-          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=~\"AI-NODE-I9|AI-NODE-I5|NETWORKSERVER|MEDIASERVER|METRICSSERVER|PROXMOXMANAGER|TRAVELSERVER|FILESERVER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=~\"PVE-MS01-I9|PVE-MS01-I5|NETWORKSERVER|MEDIASERVER|METRICSSERVER|PROXMOXMANAGER|TRAVELSERVER|FILESERVER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
           "legendFormat": "{{instance}} CPU",
           "refId": "A"
         },
