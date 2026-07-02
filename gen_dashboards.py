@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Generate all 4 kiosk dashboard JSONs with:
 - Reverted text sizes (titleSize halved)
 - Row panels → text panels (h=2) for bigger section titles
@@ -87,10 +87,10 @@ temps = {
     "tags": ["kiosk", "temperatures"],
     "panels": [
         header(1, "CPU Temperaturen", 0),
-        cpu_stat(2,"AI-NODE-I9","Intel i9 MS-01 — Package °C",0,2,
-            'max by (instance) (node_hwmon_temp_celsius{instance="AI-NODE-I9", chip=~".*coretemp.*", sensor="temp1"})','AI-NODE-I9'),
-        cpu_stat(3,"AI-NODE-I5","Intel i5 MS-01 — Package °C",4,2,
-            'max by (instance) (node_hwmon_temp_celsius{instance="AI-NODE-I5", chip=~".*coretemp.*", sensor="temp1"})','AI-NODE-I5'),
+        cpu_stat(2,"PVE-MS01-I9","Intel i9 MS-01 — Package °C",0,2,
+            'max by (instance) (node_hwmon_temp_celsius{instance="PVE-MS01-I9", chip=~".*coretemp.*", sensor="temp1"})','AI-NODE-I9'),
+        cpu_stat(3,"PVE-MS01-I5","Intel i5 MS-01 — Package °C",4,2,
+            'max by (instance) (node_hwmon_temp_celsius{instance="PVE-MS01-I5", chip=~".*coretemp.*", sensor="temp1"})','AI-NODE-I5'),
         cpu_stat(4,"NETWORKSERVER","Proxmox i3-N305 — Package °C",8,2,
             'max by (instance) (node_hwmon_temp_celsius{instance="NETWORKSERVER", chip=~".*coretemp.*", sensor="temp1"})','NETWORKSERVER'),
         cpu_stat(5,"MEDIASERVER","Proxmox NUC i5-8259U — Package °C",12,2,
@@ -159,7 +159,7 @@ temps = {
                 }, "overrides": []
             },
             "targets": [
-                {"expr": 'max by (instance) (node_hwmon_temp_celsius{instance=~"AI-NODE-I9|AI-NODE-I5|NETWORKSERVER|MEDIASERVER|METRICSSERVER|PROXMOXMANAGER|TRAVELSERVER|FILESERVER", chip=~".*coretemp.*", sensor="temp1"})',
+                {"expr": 'max by (instance) (node_hwmon_temp_celsius{instance=~"PVE-MS01-I9|PVE-MS01-I5|NETWORKSERVER|MEDIASERVER|METRICSSERVER|PROXMOXMANAGER|TRAVELSERVER|FILESERVER", chip=~".*coretemp.*", sensor="temp1"})',
                  "legendFormat": "{{instance}} CPU", "refId": "A"},
                 {"expr": 'node_hwmon_temp_celsius{instance=~"NUT-SERVER|FANSERVER", chip="thermal_thermal_zone0", sensor="temp0"}',
                  "legendFormat": "{{instance}} CPU", "refId": "B"},
@@ -207,8 +207,8 @@ disks = {
     "tags": ["kiosk", "disks"],
     "panels": [
         header(1, "NVMe Temperaturen", 0),
-        nvme_stat(2,"AI-I9 — NVMe",0,'max by (instance) (node_hwmon_temp_celsius{instance="AI-NODE-I9", chip=~"nvme.*", sensor="temp1"})','AI-I9 NVMe'),
-        nvme_stat(3,"AI-I5 — NVMe",6,'max by (instance) (node_hwmon_temp_celsius{instance="AI-NODE-I5", chip=~"nvme.*", sensor="temp1"})','AI-I5 NVMe'),
+        nvme_stat(2,"AI-I9 — NVMe",0,'max by (instance) (node_hwmon_temp_celsius{instance="PVE-MS01-I9", chip=~"nvme.*", sensor="temp1"})','AI-I9 NVMe'),
+        nvme_stat(3,"AI-I5 — NVMe",6,'max by (instance) (node_hwmon_temp_celsius{instance="PVE-MS01-I5", chip=~"nvme.*", sensor="temp1"})','AI-I5 NVMe'),
         nvme_stat(4,"NETWORK — NVMe",12,'max by (instance) (node_hwmon_temp_celsius{instance="NETWORKSERVER", chip=~"nvme.*", sensor="temp1"})','NETWORK NVMe'),
         nvme_stat(5,"MEDIA — NVMe",18,'max by (instance) (node_hwmon_temp_celsius{instance="MEDIASERVER", chip=~"nvme.*", sensor="temp1"})','MEDIA NVMe'),
         header(6, "FILESERVER Schijven", 7),
@@ -277,7 +277,7 @@ disks = {
                 }, "overrides": []
             },
             "targets": [
-                {"expr": 'max by (instance) (node_hwmon_temp_celsius{instance=~"AI-NODE-I9|AI-NODE-I5|NETWORKSERVER|MEDIASERVER", chip=~"nvme.*", sensor="temp1"})',
+                {"expr": 'max by (instance) (node_hwmon_temp_celsius{instance=~"PVE-MS01-I9|PVE-MS01-I5|NETWORKSERVER|MEDIASERVER", chip=~"nvme.*", sensor="temp1"})',
                  "legendFormat": "{{instance}} NVMe", "refId": "A"},
                 {"expr": 'homeassistant_sensor_temperature_celsius{entity=~"sensor.fileserver_(m_2_)?drive_[0-9]_temperatuur", job="smarthomeserver"}',
                  "legendFormat": "FILE {{entity}}", "refId": "B"}

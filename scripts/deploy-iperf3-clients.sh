@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Deploy iperf3 multi-target benchmark naar alle Linux clients
 # Gebruik: bash scripts/deploy-iperf3-clients.sh
 # Uitvoeren vanuit de root van de metrics-hostinglocal repo
@@ -13,8 +13,8 @@ INSTALL_SCRIPT="scripts/install-iperf3-benchmark.sh"
 
 # Format: "ssh-target:label"
 LINUX_CLIENTS=(
-    "root@100.126.121.11:AI-NODE-I9"
-    "root@100.78.175.49:AI-NODE-I5"
+    "root@100.81.170.58:PVE-MS01-I9"
+    "root@100.94.188.94:PVE-MS01-I5"
     "root@100.119.137.54:NETWORKSERVER"
     "root@100.97.195.23:NUT-SERVER"
     "root@100.103.226.56:FANSERVER"

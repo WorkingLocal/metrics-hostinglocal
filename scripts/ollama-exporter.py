@@ -7,8 +7,8 @@ Cron: */5 * * * * /usr/bin/python3 /opt/metrics-hostinglocal/scripts/ollama-expo
 import json, time, urllib.request, urllib.error, os
 
 NODES = {
-    "AI-NODE-I9": "http://100.126.121.11:11434",
-    "AI-NODE-I5": "http://100.78.175.49:11434",
+    "VM-AI-NODE-I9": "http://100.64.1.25:11434",
+    "VM-AI-NODE-I5": "http://100.101.48.4:11434",
 }
 OUTPUT_FILE = "/var/lib/node_exporter/textfile_collector/ollama.prom"
 

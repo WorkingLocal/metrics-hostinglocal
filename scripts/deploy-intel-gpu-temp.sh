@@ -1,8 +1,8 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Deploy Intel GPU temp collector naar een AI node (i9 of i5 MS-01)
 # Gebruik: bash scripts/deploy-intel-gpu-temp.sh <tailscale-ip>
-# Voorbeeld: bash scripts/deploy-intel-gpu-temp.sh 100.126.121.11   (AI-NODE-I9)
-#            bash scripts/deploy-intel-gpu-temp.sh 100.78.175.49    (AI-NODE-I5)
+# Voorbeeld: bash scripts/deploy-intel-gpu-temp.sh 100.81.170.58   (PVE-MS01-I9)
+#            bash scripts/deploy-intel-gpu-temp.sh 100.94.188.94    (PVE-MS01-I5)
 
 set -e
 
@@ -13,8 +13,8 @@ log() { echo -e "${GREEN}✓${NC} $1"; }
 HOST="${1}"
 if [[ -z "$HOST" ]]; then
     echo "Gebruik: bash scripts/deploy-intel-gpu-temp.sh <tailscale-ip>"
-    echo "  AI-NODE-I9: 100.126.121.11"
-    echo "  AI-NODE-I5: 100.78.175.49"
+    echo "  PVE-MS01-I9: 100.81.170.58"
+    echo "  PVE-MS01-I5: 100.94.188.94"
     exit 1
 fi
 

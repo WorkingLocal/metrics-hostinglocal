@@ -928,7 +928,7 @@
     {
       "id": 41,
       "type": "stat",
-      "title": "VM-AI-NODE-I9 — CPU Package",
+      "title": "PVE-MS01-I9 — CPU Package",
       "gridPos": {
         "h": 3,
         "w": 6,
@@ -973,7 +973,7 @@
       },
       "targets": [
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I9\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}",
+          "expr": "node_hwmon_temp_celsius{instance=\"PVE-MS01-I9\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}",
           "legendFormat": "I9 CPU Package",
           "refId": "A"
         }
@@ -982,7 +982,7 @@
     {
       "id": 42,
       "type": "stat",
-      "title": "VM-AI-NODE-I5 — CPU Package",
+      "title": "PVE-MS01-I5 — CPU Package",
       "gridPos": {
         "h": 3,
         "w": 6,
@@ -1027,7 +1027,7 @@
       },
       "targets": [
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I5\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}",
+          "expr": "node_hwmon_temp_celsius{instance=\"PVE-MS01-I5\", chip=\"platform_coretemp_0\", sensor=\"temp1\"}",
           "legendFormat": "I5 CPU Package",
           "refId": "A"
         }
@@ -1036,7 +1036,7 @@
     {
       "id": 44,
       "type": "stat",
-      "title": "VM-AI-NODE-I9 — NVMe max",
+      "title": "PVE-MS01-I9 — NVMe max",
       "gridPos": {
         "h": 3,
         "w": 6,
@@ -1081,7 +1081,7 @@
       },
       "targets": [
         {
-          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I9\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"PVE-MS01-I9\", chip=~\"nvme.*\", sensor=\"temp1\"})",
           "legendFormat": "I9 NVMe max",
           "refId": "A"
         }
@@ -1090,7 +1090,7 @@
     {
       "id": 45,
       "type": "stat",
-      "title": "VM-AI-NODE-I5 — NVMe max",
+      "title": "PVE-MS01-I5 — NVMe max",
       "gridPos": {
         "h": 3,
         "w": 6,
@@ -1135,7 +1135,7 @@
       },
       "targets": [
         {
-          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I5\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"PVE-MS01-I5\", chip=~\"nvme.*\", sensor=\"temp1\"})",
           "legendFormat": "I5 NVMe max",
           "refId": "A"
         }
@@ -1144,7 +1144,7 @@
     {
       "id": 43,
       "type": "timeseries",
-      "title": "CPU cores — VM-AI-NODE-I9",
+      "title": "CPU cores — PVE-MS01-I9",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -1177,7 +1177,7 @@
       },
       "targets": [
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I9\", chip=\"platform_coretemp_0\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"VM-AI-NODE-I9\", chip=\"platform_coretemp_0\"}",
+          "expr": "node_hwmon_temp_celsius{instance=\"PVE-MS01-I9\", chip=\"platform_coretemp_0\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"PVE-MS01-I9\", chip=\"platform_coretemp_0\"}",
           "legendFormat": "{{label}}",
           "refId": "A"
         }
@@ -1186,7 +1186,7 @@
     {
       "id": 46,
       "type": "timeseries",
-      "title": "CPU cores — VM-AI-NODE-I5",
+      "title": "CPU cores — PVE-MS01-I5",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -1219,7 +1219,7 @@
       },
       "targets": [
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I5\", chip=\"platform_coretemp_0\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"VM-AI-NODE-I5\", chip=\"platform_coretemp_0\"}",
+          "expr": "node_hwmon_temp_celsius{instance=\"PVE-MS01-I5\", chip=\"platform_coretemp_0\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"PVE-MS01-I5\", chip=\"platform_coretemp_0\"}",
           "legendFormat": "{{label}}",
           "refId": "A"
         }
@@ -1228,7 +1228,7 @@
     {
       "id": 47,
       "type": "timeseries",
-      "title": "NVMe temperaturen — VM-AI-NODE-I9",
+      "title": "NVMe temperaturen — PVE-MS01-I9",
       "gridPos": {
         "h": 7,
         "w": 12,
@@ -1282,7 +1282,7 @@
       },
       "targets": [
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I9\", chip=~\"nvme.*\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"VM-AI-NODE-I9\", chip=~\"nvme.*\"}",
+          "expr": "node_hwmon_temp_celsius{instance=\"PVE-MS01-I9\", chip=~\"nvme.*\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"PVE-MS01-I9\", chip=~\"nvme.*\"}",
           "legendFormat": "{{chip}} {{label}}",
           "refId": "A"
         }
@@ -1291,7 +1291,7 @@
     {
       "id": 48,
       "type": "timeseries",
-      "title": "NVMe temperaturen — VM-AI-NODE-I5",
+      "title": "NVMe temperaturen — PVE-MS01-I5",
       "gridPos": {
         "h": 7,
         "w": 12,
@@ -1345,7 +1345,7 @@
       },
       "targets": [
         {
-          "expr": "node_hwmon_temp_celsius{instance=\"VM-AI-NODE-I5\", chip=~\"nvme.*\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"VM-AI-NODE-I5\", chip=~\"nvme.*\"}",
+          "expr": "node_hwmon_temp_celsius{instance=\"PVE-MS01-I5\", chip=~\"nvme.*\"} * on(chip, sensor, instance) group_left(label) node_hwmon_sensor_label{instance=\"PVE-MS01-I5\", chip=~\"nvme.*\"}",
           "legendFormat": "{{chip}} {{label}}",
           "refId": "A"
         }
