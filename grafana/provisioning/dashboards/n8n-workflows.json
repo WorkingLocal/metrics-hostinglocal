@@ -1,0 +1,311 @@
+{
+  "__inputs": [],
+  "__requires": [],
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "title": "n8n Workflow Monitoring",
+  "uid": "n8n-workflows-hl",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "5m",
+  "time": { "from": "now-24h", "to": "now" },
+  "timepicker": {},
+  "tags": ["n8n", "automation", "homelab"],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "n8n Status",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] },
+          "mappings": [{ "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }],
+          "noValue": "?"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "id": 2,
+      "title": "n8n Status",
+      "type": "stat",
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "up{job=\"n8n\"}", "instant": true, "legendFormat": "" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "id": 3,
+      "title": "Actieve Workflows",
+      "type": "stat",
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "value" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "n8n_active_workflow_count{job=\"n8n\"}", "instant": true, "legendFormat": "" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 500000000 }, { "color": "red", "value": 800000000 }] },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "id": 4,
+      "title": "n8n Geheugen",
+      "type": "stat",
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "value" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "n8n_process_resident_memory_bytes{job=\"n8n\"}", "instant": true, "legendFormat": "" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 5 }] },
+          "unit": "short",
+          "mappings": [{ "type": "value", "options": { "0": { "text": "Geen fouten ✓", "color": "green" } } }]
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "id": 5,
+      "title": "Fouten afgelopen 25u (totaal)",
+      "type": "stat",
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "background" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(n8n_workflow_error_25h{job=\"vm-autoba\"})", "instant": true, "legendFormat": "" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "id": 6,
+      "title": "Successen afgelopen 25u (totaal)",
+      "type": "stat",
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto", "colorMode": "value" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(n8n_workflow_success_25h{job=\"vm-autoba\"})", "instant": true, "legendFormat": "" }]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "id": 10,
+      "title": "Workflow Status per Workflow (afgelopen 25u)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "align": "left", "displayMode": "auto", "filterable": false },
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "text", "value": null }] }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "OK (25u)" },
+            "properties": [
+              { "id": "custom.displayMode", "value": "color-text" },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "orange", "value": null }, { "color": "green", "value": 1 }] } },
+              { "id": "custom.width", "value": 100 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Fouten (25u)" },
+            "properties": [
+              { "id": "custom.displayMode", "value": "color-text" },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] } },
+              { "id": "custom.width", "value": 110 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Laatste success" },
+            "properties": [
+              { "id": "unit", "value": "dateTimeAsLocal" },
+              { "id": "custom.width", "value": 180 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Laatste fout" },
+            "properties": [
+              { "id": "unit", "value": "dateTimeAsLocal" },
+              { "id": "custom.width", "value": 180 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Workflow" },
+            "properties": [{ "id": "custom.width", "value": 320 }]
+          }
+        ]
+      },
+      "gridPos": { "h": 10, "x": 0, "w": 24, "y": 6 },
+      "id": 11,
+      "title": "Workflow overzicht",
+      "type": "table",
+      "options": { "sortBy": [{ "displayName": "Workflow", "desc": false }] },
+      "transformations": [
+        {
+          "id": "joinByLabels",
+          "options": { "join": ["workflow_name"], "value": "" }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "workflow_name": "Workflow",
+              "Value #n8n_workflow_success_25h": "OK (25u)",
+              "Value #n8n_workflow_error_25h": "Fouten (25u)",
+              "Value #n8n_workflow_last_success_timestamp": "Laatste success",
+              "Value #n8n_workflow_last_error_timestamp": "Laatste fout"
+            },
+            "excludeByName": { "Time": true }
+          }
+        }
+      ],
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "n8n_workflow_success_25h{job=\"vm-autoba\"}",
+          "instant": true,
+          "legendFormat": "{{workflow_name}}",
+          "refId": "n8n_workflow_success_25h"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "n8n_workflow_error_25h{job=\"vm-autoba\"}",
+          "instant": true,
+          "legendFormat": "{{workflow_name}}",
+          "refId": "n8n_workflow_error_25h"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "n8n_workflow_last_success_timestamp{job=\"vm-autoba\"} * 1000",
+          "instant": true,
+          "legendFormat": "{{workflow_name}}",
+          "refId": "n8n_workflow_last_success_timestamp"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "n8n_workflow_last_error_timestamp{job=\"vm-autoba\"} * 1000",
+          "instant": true,
+          "legendFormat": "{{workflow_name}}",
+          "refId": "n8n_workflow_last_error_timestamp"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 },
+      "id": 20,
+      "title": "Tijdreeksen — Executions",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2, "fillOpacity": 10 }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 17 },
+      "id": 21,
+      "title": "Successen per workflow (5m scrape)",
+      "type": "timeseries",
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "n8n_workflow_success_25h{job=\"vm-autoba\"}",
+          "legendFormat": "{{workflow_name}}"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2, "fillOpacity": 10 }, "unit": "short" },
+        "overrides": [
+          { "matcher": { "id": "byFrameRefID", "options": "errors" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 17 },
+      "id": 22,
+      "title": "Fouten per workflow (5m scrape)",
+      "type": "timeseries",
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "n8n_workflow_error_25h{job=\"vm-autoba\"}",
+          "legendFormat": "{{workflow_name}}",
+          "refId": "errors"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 25 },
+      "id": 30,
+      "title": "n8n Process Gezondheid",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2, "fillOpacity": 10 }, "unit": "bytes" },
+        "overrides": []
+      },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 26 },
+      "id": 31,
+      "title": "n8n Geheugengebruik",
+      "type": "timeseries",
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "n8n_process_resident_memory_bytes{job=\"n8n\"}", "legendFormat": "RSS" },
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "n8n_nodejs_heap_size_used_bytes{job=\"n8n\"}", "legendFormat": "Heap gebruikt" },
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "n8n_nodejs_heap_size_total_bytes{job=\"n8n\"}", "legendFormat": "Heap totaal" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 2, "fillOpacity": 10 }, "unit": "percentunit" },
+        "overrides": []
+      },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 26 },
+      "id": 32,
+      "title": "n8n CPU gebruik",
+      "type": "timeseries",
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "rate(n8n_process_cpu_seconds_total{job=\"n8n\"}[5m])", "legendFormat": "CPU rate" }
+      ]
+    }
+  ]
+}
