@@ -26,9 +26,9 @@ NEW_MONITORS = [
     # ── INFRASTRUCTUUR ────────────────────────────────────────────────────────
 
     # Proxmox hosts (zelf-getekend TLS)
-    ("Proxmox PDM",          MonitorType.HTTPS, "https://100.86.178.45:8006",   None, {"ignoreTls": True, "interval": 120}),
-    ("Proxmox PVE-MS01-i9",  MonitorType.HTTPS, "https://100.81.170.58:8006",  None, {"ignoreTls": True, "interval": 120}),
-    ("Proxmox PVE-MS01-i5",  MonitorType.HTTPS, "https://100.94.188.94:8006",  None, {"ignoreTls": True, "interval": 120}),
+    ("Proxmox PDM",          MonitorType.HTTP, "https://100.86.178.45:8006",   None, {"ignoreTls": True, "interval": 120}),
+    ("Proxmox PVE-MS01-i9",  MonitorType.HTTP, "https://100.81.170.58:8006",  None, {"ignoreTls": True, "interval": 120}),
+    ("Proxmox PVE-MS01-i5",  MonitorType.HTTP, "https://100.94.188.94:8006",  None, {"ignoreTls": True, "interval": 120}),
 
     # AI nodes (Ollama draait in VM)
     ("VM-AI-NODE-I9 Ollama",    MonitorType.HTTP,  "http://100.64.1.25:11434",     None, {"interval": 60}),
@@ -46,7 +46,7 @@ NEW_MONITORS = [
     ("Alertmanager",         MonitorType.HTTP,  "http://100.67.19.40:9093/-/healthy", None, {"interval": 120}),
 
     # Backup server
-    ("TrueNAS TRAVELSERVER", MonitorType.HTTPS, "https://100.83.29.41",         None, {"ignoreTls": True, "interval": 120}),
+    ("TrueNAS TRAVELSERVER", MonitorType.HTTP, "https://100.83.29.41",         None, {"ignoreTls": True, "interval": 120}),
 
     # Power management
     ("Power Control FANSERVER", MonitorType.HTTP, "http://100.103.226.56:8765/health", None, {"interval": 120}),
@@ -63,20 +63,20 @@ NEW_MONITORS = [
 
     # ── WORKINGLOCAL / AUTOBA ─────────────────────────────────────────────────
 
-    ("Xibo CMS",             MonitorType.HTTPS, "https://signage.workinglocal.be",  None, {"interval": 120}),
-    ("WordPress WorkingLocal",MonitorType.HTTPS,"https://workinglocal.be",      None, {"interval": 120}),
-    ("Coolify WorkingLocal", MonitorType.HTTPS, "https://coolify.workinglocal.be",  None, {"interval": 120}),
-    ("Metrics WorkingLocal", MonitorType.HTTPS, "https://metrics.workinglocal.be",  None, {"interval": 120}),
-    ("Focus App",            MonitorType.HTTPS, "https://focus.workinglocal.be",    None, {"interval": 120}),
-    ("Photoframe",           MonitorType.HTTPS, "https://frame.workinglocal.be",    None, {"interval": 120}),
+    ("Xibo CMS",             MonitorType.HTTP, "https://signage.workinglocal.be",  None, {"interval": 120}),
+    ("WordPress WorkingLocal",MonitorType.HTTP,"https://workinglocal.be",      None, {"interval": 120}),
+    ("Coolify WorkingLocal", MonitorType.HTTP, "https://coolify.workinglocal.be",  None, {"interval": 120}),
+    ("Metrics WorkingLocal", MonitorType.HTTP, "https://metrics.workinglocal.be",  None, {"interval": 120}),
+    ("Focus App",            MonitorType.HTTP, "https://focus.workinglocal.be",    None, {"interval": 120}),
+    ("Photoframe",           MonitorType.HTTP, "https://frame.workinglocal.be",    None, {"interval": 120}),
 
     # AutoBA platform (via Cloudflare tunnel)
-    ("AutoBA Platform",      MonitorType.HTTPS, "https://autoba.hostinglocal.be",   None, {"interval": 60}),
-    ("BMS Portal",           MonitorType.HTTPS, "https://bms.thinkinglocal.be",     None, {"interval": 60}),
-    ("AutoBA Plane",         MonitorType.HTTPS, "https://autoba-plane.hostinglocal.be", None, {"interval": 120}),
-    ("AutoBA Gitea",         MonitorType.HTTPS, "https://autoba.hostinglocal.be/gitea/", None, {"interval": 120}),
-    ("AutoBA n8n",           MonitorType.HTTPS, "https://autoba.hostinglocal.be/n8n/",  None, {"interval": 120}),
-    ("AutoBA Metabase",      MonitorType.HTTPS, "https://autoba.hostinglocal.be/metabase/", None, {"interval": 120}),
+    ("AutoBA Platform",      MonitorType.HTTP, "https://autoba.hostinglocal.be",   None, {"interval": 60}),
+    ("BMS Portal",           MonitorType.HTTP, "https://bms.thinkinglocal.be",     None, {"interval": 60}),
+    ("AutoBA Plane",         MonitorType.HTTP, "https://autoba-plane.hostinglocal.be", None, {"interval": 120}),
+    ("AutoBA Gitea",         MonitorType.HTTP, "https://autoba.hostinglocal.be/gitea/", None, {"interval": 120}),
+    ("AutoBA n8n",           MonitorType.HTTP, "https://autoba.hostinglocal.be/n8n/",  None, {"interval": 120}),
+    ("AutoBA Metabase",      MonitorType.HTTP, "https://autoba.hostinglocal.be/metabase/", None, {"interval": 120}),
 
     # ── PERSOONLIJK ───────────────────────────────────────────────────────────
 
@@ -84,12 +84,12 @@ NEW_MONITORS = [
 
     # ── TCP PORT CHECKS ───────────────────────────────────────────────────────
 
-    ("AI-ENGINE SSH",        MonitorType.TCP_PORT, "100.80.180.55",  22,   {"interval": 120}),
-    ("VM-AUTOBA SSH",        MonitorType.TCP_PORT, "100.107.82.21",  22,   {"interval": 120}),
-    ("VM-OPENCLAW SSH",      MonitorType.TCP_PORT, "100.92.71.9",    22,   {"interval": 120}),
-    ("NETWORKSERVER SSH",    MonitorType.TCP_PORT, "100.119.137.54", 22,   {"interval": 120}),
-    ("MEDIASERVER SSH",      MonitorType.TCP_PORT, "100.111.62.69",  22,   {"interval": 120}),
-    ("WINDOWSSERVER SSH",    MonitorType.TCP_PORT, "100.92.201.100", 22,   {"interval": 120}),
+    ("AI-ENGINE SSH",        MonitorType.PORT, "100.80.180.55",  22,   {"interval": 120}),
+    ("VM-AUTOBA SSH",        MonitorType.PORT, "100.107.82.21",  22,   {"interval": 120}),
+    ("VM-OPENCLAW SSH",      MonitorType.PORT, "100.92.71.9",    22,   {"interval": 120}),
+    ("NETWORKSERVER SSH",    MonitorType.PORT, "100.119.137.54", 22,   {"interval": 120}),
+    ("MEDIASERVER SSH",      MonitorType.PORT, "100.111.62.69",  22,   {"interval": 120}),
+    ("WINDOWSSERVER SSH",    MonitorType.PORT, "100.92.201.100", 22,   {"interval": 120}),
 ]
 
 
@@ -123,7 +123,7 @@ def main():
                     **kwargs,
                 }
 
-                if mon_type == MonitorType.TCP_PORT:
+                if mon_type == MonitorType.PORT:
                     params["hostname"] = url_or_host
                     params["port"]     = port
                 else:

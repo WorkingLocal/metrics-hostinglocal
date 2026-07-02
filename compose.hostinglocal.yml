@@ -37,8 +37,11 @@ services:
     restart: unless-stopped
     environment:
       NTFY_URL: ${NTFY_URL:-https://ntfy.hostinglocal.be}
-      NTFY_TOPIC: homelab
       NTFY_TOKEN: ${NTFY_PUBLISHER_TOKEN}
+      NTFY_TOPIC_CRITICAL: hl-critical
+      NTFY_TOPIC_WARNING: hl-warning
+      NTFY_TOPIC_RESOLVED: hl-resolved
+      NTFY_TOPIC_BACKUP: hl-backup
     ports:
       - "9095:9095"
     networks:
