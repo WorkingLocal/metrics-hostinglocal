@@ -66,7 +66,7 @@ files = [
     "alert.rules.yml",
     "alertmanager.yml",
 ]
-dirs = ["grafana", "thermal-shutdown", "alertmanager-ntfy", "snmp", "kiosk", "scripts", "unifi"]
+dirs = ["grafana", "thermal-shutdown", "alertmanager-ntfy", "snmp", "kiosk", "scripts", "unifi", "loki"]
 
 print(f"\nUploaden naar {REMOTE_DIR}...")
 for f in files:

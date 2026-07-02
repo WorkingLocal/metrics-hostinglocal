@@ -144,11 +144,43 @@ services:
     networks:
       - metrics_internal
 
+  loki:
+    image: grafana/loki:3.3.2
+    container_name: loki-metrics
+    restart: unless-stopped
+    volumes:
+      - loki_data:/loki
+      - ./loki/loki.yml:/etc/loki/local-config.yaml:ro
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    networks:
+      - proxy
+
+  promtail:
+    image: grafana/promtail:3.3.2
+    container_name: promtail-metrics
+    restart: unless-stopped
+    user: root
+    volumes:
+      - ./loki/promtail.yml:/etc/promtail/config.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/log:/var/log:ro
+      - promtail_positions:/tmp/promtail
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - proxy
+
 volumes:
   prometheus_data:
     name: metrics_prometheus_data
   grafana_data:
     name: metrics_grafana_data
+  loki_data:
+    name: metrics_loki_data
+  promtail_positions:
+    name: metrics_promtail_positions
 
 networks:
   proxy:
