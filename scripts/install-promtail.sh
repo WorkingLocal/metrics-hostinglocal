@@ -16,7 +16,12 @@ set -e
 HOSTNAME="${1:-$(hostname)}"
 LOKI_URL="http://100.67.19.40:3100/loki/api/v1/push"
 PROMTAIL_VERSION="3.3.2"
-INSTALL_DIR="/opt/promtail"
+# TrueNAS SCALE heeft read-only /opt — gebruik /var/lib/promtail/bin
+if [ -f /etc/version ] && grep -q "TrueNAS" /etc/version 2>/dev/null; then
+    INSTALL_DIR="/var/lib/promtail/bin"
+else
+    INSTALL_DIR="/opt/promtail"
+fi
 CONFIG_FILE="/etc/promtail/config.yml"
 
 echo "=== Promtail installer voor host: $HOSTNAME ==="
@@ -137,7 +142,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/opt/promtail/promtail -config.file=/etc/promtail/config.yml
+ExecStart=${INSTALL_DIR}/promtail -config.file=/etc/promtail/config.yml
 Restart=always
 RestartSec=5
 User=root
