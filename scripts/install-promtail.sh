@@ -31,9 +31,10 @@ if [ ! -f "$INSTALL_DIR/promtail" ]; then
         *)       echo "Onbekend arch: $ARCH"; exit 1 ;;
     esac
     echo "Downloaden promtail $PROMTAIL_VERSION ($ARCH_SUFFIX)..."
-    curl -fsSL -o /tmp/promtail.gz \
+    which unzip >/dev/null 2>&1 || apt-get install -y unzip 2>/dev/null || yum install -y unzip 2>/dev/null || true
+    curl -fsSL -o /tmp/promtail.zip \
         "https://github.com/grafana/loki/releases/download/v${PROMTAIL_VERSION}/promtail-linux-${ARCH_SUFFIX}.zip"
-    cd /tmp && unzip -o promtail.gz "promtail-linux-${ARCH_SUFFIX}" -d "$INSTALL_DIR"
+    cd /tmp && unzip -o promtail.zip "promtail-linux-${ARCH_SUFFIX}" -d "$INSTALL_DIR"
     mv "$INSTALL_DIR/promtail-linux-${ARCH_SUFFIX}" "$INSTALL_DIR/promtail"
     chmod +x "$INSTALL_DIR/promtail"
     cd -
