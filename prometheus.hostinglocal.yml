@@ -327,6 +327,13 @@ scrape_configs:
 
   # ====== SMARTHOMESERVER ======
 
+  # VM-WORKINGLOCAL (Hyper-V Gen2 Ubuntu 24.04 op WINDOWSSERVER2025, Tailscale 100.69.76.52)
+  - job_name: 'vm-workinglocal'
+    static_configs:
+      - targets: ['100.69.76.52:9100']
+        labels:
+          instance: 'VM-WORKINGLOCAL'
+
   # SMARTHOMESERVER (HAOS Intel NUC i3) — native HA Prometheus integration (alle numerieke entiteiten)
   # Endpoint: /api/prometheus met Bearer token (long-lived access token)
   # METRICSSERVER bereikt HAOS via lokaal netwerk 192.168.111.75

@@ -307,12 +307,12 @@ scrape_configs:
           instance: 'KIOSK-TOUCH'
           group: 'controllers'
 
-  # XIBO-SURFACE-WOONKAMER (Microsoft Surface Pro 4, Ubuntu 22.04, Working Local)
-  - job_name: 'xibo-surface'
+  # PHOTOFRAME (Microsoft Surface Pro 4, Ubuntu 22.04, Hosting Local fotoframe thuis)
+  - job_name: 'photoframe'
     static_configs:
       - targets: ['100.77.163.65:9100']
         labels:
-          instance: 'XIBO-SURFACE'
+          instance: 'PHOTOFRAME'
           group: 'controllers'
 
   # ====== SMARTHOMESERVER ======
