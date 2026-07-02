@@ -21,7 +21,7 @@ import urllib.error
 
 NTFY_URL   = os.environ.get("NTFY_URL",    "http://100.125.153.71:2586").rstrip("/")
 NTFY_TOKEN = os.environ.get("NTFY_TOKEN",  "tk_okm65mem9fj8by2w2w48uoz14j630")
-TOPICS     = [t.strip() for t in os.environ.get("NTFY_TOPICS", "hl-critical,hl-uptime,hl-warning,hl-backup,hl-resolved").split(",") if t.strip()]
+TOPICS     = [t.strip() for t in os.environ.get("NTFY_TOPICS", "hl-critical,hl-uptime,hl-warning,hl-backup,hl-resolved,wl-uptime").split(",") if t.strip()]
 PROM_OUT   = os.environ.get("NTFY_PROM_OUT",
              "/var/lib/node_exporter/textfile_collector/ntfy.prom")
 

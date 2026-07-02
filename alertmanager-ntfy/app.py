@@ -154,7 +154,7 @@ def ntfy_messages():
     """
     import datetime
     since         = request.args.get("since", "12h")
-    default_topics = f"{TOPIC_CRITICAL},{TOPIC_WARNING},{TOPIC_RESOLVED},{TOPIC_BACKUP}"
+    default_topics = f"{TOPIC_CRITICAL},{TOPIC_WARNING},{TOPIC_RESOLVED},{TOPIC_BACKUP},hl-uptime,wl-uptime"
     topics_param  = request.args.get("topics", default_topics)
     topics        = [t.strip() for t in topics_param.split(",") if t.strip()]
 
