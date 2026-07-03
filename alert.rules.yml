@@ -95,7 +95,8 @@ groups:
           description: "CPU gebruik is {{ $value | humanize }}% op {{ $labels.instance }} (drempel: 50%)"
 
       - alert: HighCpuUsageCritical
-        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        expr: >
+          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle",instance!~"VM-AI-NODE-I9|VM-AI-NODE-I5"}[5m])) * 100) > 80
         for: 5m
         labels:
           severity: critical
