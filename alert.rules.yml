@@ -104,6 +104,18 @@ groups:
           summary: "KRITIEK CPU gebruik op {{ $labels.instance }}"
           description: "CPU gebruik is {{ $value | humanize }}% op {{ $labels.instance }} (drempel: 80%)"
 
+      # AI-nodes apart: hogere drempel (95%) + langere wachttijd (15m) om normale inference te negeren
+      # maar aanhoudende overbelasting (zoals vandaag: 99% gedurende 20+ min) toch te melden
+      - alert: AiNodeOverloadCritical
+        expr: >
+          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle",instance=~"VM-AI-NODE-I9|VM-AI-NODE-I5"}[5m])) * 100) > 95
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "AI-NODE overbelast: {{ $labels.instance }} ({{ $value | humanize }}% CPU gedurende 15+ min)"
+          description: "CPU gebruik is {{ $value | humanize }}% op {{ $labels.instance }} — aanhoudende overbelasting, Ollama mogelijk vastgelopen"
+
       - alert: HighMemoryUsageWarning
         expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 80
         for: 5m
