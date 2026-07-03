@@ -1,1035 +1,229 @@
 {
   "uid": "unifi-poller-hl",
-  "title": "UniFi Poller — APs & Switches",
-  "tags": [
-    "unifi",
-    "network",
-    "hostinglocal"
-  ],
+  "title": "UniFi Poller — Netwerk Overzicht",
+  "tags": ["unifi", "network", "hostinglocal"],
   "timezone": "browser",
   "schemaVersion": 38,
-  "version": 1,
+  "version": 2,
   "refresh": "1m",
-  "time": {
-    "from": "now-3h",
-    "to": "now"
-  },
+  "time": { "from": "now-3h", "to": "now" },
   "panels": [
-    {
-      "id": 1,
-      "type": "text",
-      "transparent": true,
-      "gridPos": {
-        "x": 0,
-        "y": 0,
-        "w": 24,
-        "h": 2
-      },
-      "options": {
-        "mode": "markdown",
-        "content": "## Netwerk Overzicht"
-      }
-    },
-    {
-      "id": 2,
-      "type": "stat",
-      "title": "Verbonden clients",
-      "gridPos": {
-        "x": 0,
-        "y": 2,
-        "w": 4,
-        "h": 5
-      },
+
+    { "id": 1, "type": "text", "transparent": true, "gridPos": {"x":0,"y":0,"w":24,"h":1},
+      "options": {"mode":"markdown","content":"## Overzicht"} },
+
+    { "id": 2, "type": "stat", "title": "Draadloze clients",
+      "gridPos": {"x":0,"y":1,"w":3,"h":4},
+      "targets": [{"expr":"sum(unifi_topology_connections_wireless)","refId":"A"}],
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"colorMode":"background","graphMode":"area","textMode":"auto"},
+      "fieldConfig": {"defaults": {"unit":"short","color":{"mode":"fixed","fixedColor":"blue"},"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null}]}}} },
+
+    { "id": 3, "type": "stat", "title": "Bekabelde clients",
+      "gridPos": {"x":3,"y":1,"w":3,"h":4},
+      "targets": [{"expr":"sum(unifi_topology_connections_wired)","refId":"A"}],
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"colorMode":"background","graphMode":"area","textMode":"auto"},
+      "fieldConfig": {"defaults": {"unit":"short","color":{"mode":"fixed","fixedColor":"#5794F2"},"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null}]}}} },
+
+    { "id": 4, "type": "stat", "title": "WAN Download",
+      "gridPos": {"x":6,"y":1,"w":4,"h":4},
+      "targets": [{"expr":"sum(rate(unifi_device_wan_receive_bytes_total[2m])) * 8","refId":"A"}],
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"colorMode":"background","graphMode":"area","textMode":"auto"},
+      "fieldConfig": {"defaults": {"unit":"bps","color":{"mode":"thresholds"},"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":500000000},{"color":"red","value":900000000}]}}} },
+
+    { "id": 5, "type": "stat", "title": "WAN Upload",
+      "gridPos": {"x":10,"y":1,"w":4,"h":4},
+      "targets": [{"expr":"sum(rate(unifi_device_wan_transmit_bytes_total[2m])) * 8","refId":"A"}],
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"colorMode":"background","graphMode":"area","textMode":"auto"},
+      "fieldConfig": {"defaults": {"unit":"bps","color":{"mode":"thresholds"},"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":200000000},{"color":"red","value":450000000}]}}} },
+
+    { "id": 6, "type": "stat", "title": "Devices online",
+      "gridPos": {"x":14,"y":1,"w":3,"h":4},
+      "targets": [{"expr":"sum(unifi_topology_devices_total)","refId":"A"}],
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"colorMode":"background","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {"defaults": {"unit":"short","color":{"mode":"fixed","fixedColor":"green"},"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null}]}}} },
+
+    { "id": 7, "type": "stat", "title": "Updates beschikbaar",
+      "gridPos": {"x":17,"y":1,"w":3,"h":4},
+      "targets": [{"expr":"sum(unifi_device_upgradable)","refId":"A"}],
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"colorMode":"background","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {"defaults": {"unit":"short","color":{"mode":"thresholds"},"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":1},{"color":"red","value":3}]}}} },
+
+    { "id": 8, "type": "stat", "title": "Internet drops (24u)",
+      "gridPos": {"x":20,"y":1,"w":4,"h":4},
+      "targets": [{"expr":"increase(unifi_site_intenet_drops_total[24h])","refId":"A"}],
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"colorMode":"background","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {"defaults": {"unit":"short","color":{"mode":"thresholds"},"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":1},{"color":"red","value":5}]}}} },
+
+    { "id": 9, "type": "text", "transparent": true, "gridPos": {"x":0,"y":5,"w":24,"h":1},
+      "options": {"mode":"markdown","content":"## WAN & Internet"} },
+
+    { "id": 10, "type": "timeseries", "title": "WAN Doorvoer",
+      "gridPos": {"x":0,"y":6,"w":14,"h":8},
       "targets": [
-        {
-          "expr": "sum(unifi_site_num_sta)",
-          "legendFormat": "",
-          "refId": "A"
-        }
+        {"expr":"sum(rate(unifi_device_wan_receive_bytes_total[2m])) * 8","legendFormat":"↓ Download","refId":"A"},
+        {"expr":"sum(rate(unifi_device_wan_transmit_bytes_total[2m])) * 8","legendFormat":"↑ Upload","refId":"B"}
       ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 40,
-          "titleSize": 14
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "color": {
-            "mode": "fixed",
-            "fixedColor": "blue"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 3,
-      "type": "stat",
-      "title": "Clients 2.4 GHz",
-      "gridPos": {
-        "x": 4,
-        "y": 2,
-        "w": 4,
-        "h": 5
-      },
+      "options": {"tooltip":{"mode":"multi","sort":"desc"},"legend":{"showLegend":true,"displayMode":"table","placement":"bottom","calcs":["lastNotNull","max"]}},
+      "fieldConfig": {"defaults": {"unit":"bps","custom":{"lineWidth":2,"fillOpacity":15,"showPoints":"never"}},
+        "overrides":[{"matcher":{"id":"byName","options":"↓ Download"},"properties":[{"id":"color","value":{"mode":"fixed","fixedColor":"#F2495C"}}]},
+                     {"matcher":{"id":"byName","options":"↑ Upload"},"properties":[{"id":"color","value":{"mode":"fixed","fixedColor":"#FF780A"}}]}]} },
+
+    { "id": 11, "type": "timeseries", "title": "Speedtest Geschiedenis",
+      "gridPos": {"x":14,"y":6,"w":10,"h":8},
       "targets": [
-        {
-          "expr": "sum(unifi_uap_num_sta{radio=\"ng\"})",
-          "legendFormat": "",
-          "refId": "A"
-        }
+        {"expr":"unifi_device_speedtest_download * 1000000","legendFormat":"Download","refId":"A"},
+        {"expr":"unifi_device_speedtest_upload * 1000000","legendFormat":"Upload","refId":"B"}
       ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 40,
-          "titleSize": 14
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "color": {
-            "mode": "fixed",
-            "fixedColor": "#5794F2"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 4,
-      "type": "stat",
-      "title": "Clients 5 GHz",
-      "gridPos": {
-        "x": 8,
-        "y": 2,
-        "w": 4,
-        "h": 5
-      },
+      "options": {"tooltip":{"mode":"multi","sort":"desc"},"legend":{"showLegend":true,"displayMode":"table","placement":"bottom","calcs":["lastNotNull","max"]}},
+      "fieldConfig": {"defaults": {"unit":"bps","custom":{"lineWidth":1,"fillOpacity":10,"showPoints":"always","pointSize":6}},
+        "overrides":[{"matcher":{"id":"byName","options":"Download"},"properties":[{"id":"color","value":{"mode":"fixed","fixedColor":"#F2495C"}}]},
+                     {"matcher":{"id":"byName","options":"Upload"},"properties":[{"id":"color","value":{"mode":"fixed","fixedColor":"#FF780A"}}]}]} },
+
+    { "id": 12, "type": "text", "transparent": true, "gridPos": {"x":0,"y":14,"w":24,"h":1},
+      "options": {"mode":"markdown","content":"## Client Overzicht"} },
+
+    { "id": 13, "type": "table", "title": "Verbonden clients — RSSI & doorvoer",
+      "gridPos": {"x":0,"y":15,"w":16,"h":10},
       "targets": [
-        {
-          "expr": "sum(unifi_uap_num_sta{radio=\"na\"})",
-          "legendFormat": "",
-          "refId": "A"
-        }
+        {"expr":"unifi_client_rssi_db","legendFormat":"","refId":"A","instant":true},
+        {"expr":"unifi_client_signal_db","legendFormat":"","refId":"B","instant":true},
+        {"expr":"unifi_client_satisfaction_ratio * 100","legendFormat":"","refId":"C","instant":true},
+        {"expr":"unifi_client_receive_rate_bytes * 8","legendFormat":"","refId":"D","instant":true},
+        {"expr":"unifi_client_transmit_rate_bytes * 8","legendFormat":"","refId":"E","instant":true}
       ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 40,
-          "titleSize": 14
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "color": {
-            "mode": "fixed",
-            "fixedColor": "#56A64B"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 5,
-      "type": "stat",
-      "title": "Clients 6 GHz",
-      "gridPos": {
-        "x": 12,
-        "y": 2,
-        "w": 4,
-        "h": 5
-      },
+      "options": {"sortBy":[{"displayName":"RSSI","desc":true}],"footer":{"show":false}},
+      "fieldConfig": {"defaults":{"custom":{"align":"auto","displayMode":"auto"}},
+        "overrides":[
+          {"matcher":{"id":"byName","options":"Value #A"},"properties":[{"id":"displayName","value":"RSSI (dBm)"},{"id":"unit","value":"dBm"}]},
+          {"matcher":{"id":"byName","options":"Value #B"},"properties":[{"id":"displayName","value":"Signal (dBm)"},{"id":"unit","value":"dBm"}]},
+          {"matcher":{"id":"byName","options":"Value #C"},"properties":[{"id":"displayName","value":"Tevredenheid %"},{"id":"unit","value":"percent"},{"id":"custom.displayMode","value":"color-background"}]},
+          {"matcher":{"id":"byName","options":"Value #D"},"properties":[{"id":"displayName","value":"RX"},{"id":"unit","value":"bps"}]},
+          {"matcher":{"id":"byName","options":"Value #E"},"properties":[{"id":"displayName","value":"TX"},{"id":"unit","value":"bps"}]}
+        ]},
+      "transformations":[
+        {"id":"merge","options":{}},
+        {"id":"organize","options":{"excludeByName":{"Time":true,"__name__":true,"job":true,"instance":true,"id":true,"site_id":true,"site_name":true},"renameByName":{"name":"Client","mac":"MAC","ap_name":"AP","radio":"Band","network":"VLAN"}}}
+      ] },
+
+    { "id": 14, "type": "timeseries", "title": "Clients over tijd",
+      "gridPos": {"x":16,"y":15,"w":8,"h":10},
       "targets": [
-        {
-          "expr": "sum(unifi_uap_num_sta{radio=\"6e\"})",
-          "legendFormat": "",
-          "refId": "A"
-        }
+        {"expr":"sum(unifi_topology_connections_wireless)","legendFormat":"Draadloos","refId":"A"},
+        {"expr":"sum(unifi_topology_connections_wired)","legendFormat":"Bekabeld","refId":"B"}
       ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 40,
-          "titleSize": 14
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "color": {
-            "mode": "fixed",
-            "fixedColor": "#37872D"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 6,
-      "type": "stat",
-      "title": "WAN Download",
-      "gridPos": {
-        "x": 16,
-        "y": 2,
-        "w": 4,
-        "h": 5
-      },
+      "options": {"tooltip":{"mode":"multi","sort":"desc"},"legend":{"showLegend":true,"displayMode":"table","placement":"bottom","calcs":["lastNotNull","max"]}},
+      "fieldConfig": {"defaults": {"unit":"short","custom":{"lineWidth":2,"fillOpacity":15,"showPoints":"never","stacking":{"mode":"none"}}}} },
+
+    { "id": 15, "type": "table", "title": "DHCP Pool Bezetting",
+      "gridPos": {"x":0,"y":25,"w":12,"h":5},
       "targets": [
-        {
-          "expr": "sum(rate(unifi_site_wan_rx_bytes_total[5m])) * 8",
-          "legendFormat": "",
-          "refId": "A"
-        }
+        {"expr":"unifi_dhcp_utilization_percent","legendFormat":"","refId":"A","instant":true},
+        {"expr":"unifi_dhcp_active_leases","legendFormat":"","refId":"B","instant":true},
+        {"expr":"unifi_dhcp_pool_size","legendFormat":"","refId":"C","instant":true}
       ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 40,
-          "titleSize": 14
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bps",
-          "color": {
-            "mode": "fixed",
-            "fixedColor": "#F2495C"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 500000000
-              },
-              {
-                "color": "red",
-                "value": 900000000
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 7,
-      "type": "stat",
-      "title": "WAN Upload",
-      "gridPos": {
-        "x": 20,
-        "y": 2,
-        "w": 4,
-        "h": 5
-      },
+      "options": {"sortBy":[{"displayName":"Bezetting %","desc":true}],"footer":{"show":false}},
+      "fieldConfig": {"defaults":{"custom":{"align":"auto","displayMode":"auto"}},
+        "overrides":[
+          {"matcher":{"id":"byName","options":"Value #A"},"properties":[{"id":"displayName","value":"Bezetting %"},{"id":"unit","value":"percent"},{"id":"custom.displayMode","value":"color-background"},{"id":"thresholds","value":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":70},{"color":"red","value":90}]}}]},
+          {"matcher":{"id":"byName","options":"Value #B"},"properties":[{"id":"displayName","value":"Actieve leases"}]},
+          {"matcher":{"id":"byName","options":"Value #C"},"properties":[{"id":"displayName","value":"Pool grootte"}]}
+        ]},
+      "transformations":[
+        {"id":"merge","options":{}},
+        {"id":"organize","options":{"excludeByName":{"Time":true,"__name__":true,"job":true,"instance":true},"renameByName":{"network_name":"Netwerk","network":"Subnet"}}}
+      ] },
+
+    { "id": 16, "type": "timeseries", "title": "DHCP Bezetting over tijd",
+      "gridPos": {"x":12,"y":25,"w":12,"h":5},
       "targets": [
-        {
-          "expr": "sum(rate(unifi_site_wan_tx_bytes_total[5m])) * 8",
-          "legendFormat": "",
-          "refId": "A"
-        }
+        {"expr":"unifi_dhcp_utilization_percent","legendFormat":"{{network_name}}","refId":"A"}
       ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 40,
-          "titleSize": 14
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bps",
-          "color": {
-            "mode": "fixed",
-            "fixedColor": "#FF780A"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 200000000
-              },
-              {
-                "color": "red",
-                "value": 450000000
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 8,
-      "type": "text",
-      "transparent": true,
-      "gridPos": {
-        "x": 0,
-        "y": 7,
-        "w": 24,
-        "h": 2
-      },
-      "options": {
-        "mode": "markdown",
-        "content": "## Access Points"
-      }
-    },
-    {
-      "id": 9,
-      "type": "table",
-      "title": "AP Status",
-      "gridPos": {
-        "x": 0,
-        "y": 9,
-        "w": 14,
-        "h": 7
-      },
+      "options": {"tooltip":{"mode":"multi","sort":"desc"},"legend":{"showLegend":true,"displayMode":"table","placement":"bottom","calcs":["lastNotNull"]}},
+      "fieldConfig": {"defaults": {"unit":"percent","max":100,"custom":{"lineWidth":1,"fillOpacity":10,"showPoints":"never"}}} },
+
+    { "id": 17, "type": "text", "transparent": true, "gridPos": {"x":0,"y":30,"w":24,"h":1},
+      "options": {"mode":"markdown","content":"## Device Health (UDM, APs, Switches)"} },
+
+    { "id": 18, "type": "table", "title": "Devices — Status & Resources",
+      "gridPos": {"x":0,"y":31,"w":24,"h":8},
       "targets": [
-        {
-          "expr": "unifi_uap_info",
-          "legendFormat": "{{name}}",
-          "refId": "A",
-          "instant": true
-        }
+        {"expr":"unifi_device_info","legendFormat":"","refId":"A","instant":true},
+        {"expr":"unifi_device_cpu_utilization_ratio * 100","legendFormat":"","refId":"B","instant":true},
+        {"expr":"unifi_device_memory_utilization_ratio * 100","legendFormat":"","refId":"C","instant":true},
+        {"expr":"unifi_device_temperature_celsius","legendFormat":"","refId":"D","instant":true},
+        {"expr":"unifi_device_uptime_seconds","legendFormat":"","refId":"E","instant":true},
+        {"expr":"unifi_device_upgradable","legendFormat":"","refId":"F","instant":true}
       ],
-      "options": {
-        "sortBy": [
-          {
-            "displayName": "Name",
-            "desc": false
-          }
-        ],
-        "footer": {
-          "show": false
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto"
-          }
-        },
-        "overrides": []
-      },
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "job": true,
-              "instance": true
-            },
-            "renameByName": {
-              "name": "AP",
-              "model": "Model",
-              "ip": "IP",
-              "mac": "MAC",
-              "version": "Firmware",
-              "state": "Status"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": 10,
-      "type": "timeseries",
-      "title": "Clients per AP",
-      "gridPos": {
-        "x": 14,
-        "y": 9,
-        "w": 10,
-        "h": 7
-      },
-      "targets": [
-        {
-          "expr": "sum by (name) (unifi_uap_num_sta)",
-          "legendFormat": "{{name}}",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "showLegend": true,
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "stacking": {
-              "mode": "none"
-            },
-            "showPoints": "never"
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 11,
-      "type": "timeseries",
-      "title": "AP Uptime",
-      "gridPos": {
-        "x": 0,
-        "y": 16,
-        "w": 12,
-        "h": 6
-      },
-      "targets": [
-        {
-          "expr": "unifi_uap_uptime_seconds",
-          "legendFormat": "{{name}}",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "showLegend": true,
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "s",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "stacking": {
-              "mode": "none"
-            },
-            "showPoints": "never"
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 12,
-      "type": "timeseries",
-      "title": "Wireless Satisfaction (%)",
-      "gridPos": {
-        "x": 12,
-        "y": 16,
-        "w": 12,
-        "h": 6
-      },
-      "targets": [
-        {
-          "expr": "avg by (name, radio) (unifi_uap_radio_satisfaction_ratio * 100)",
-          "legendFormat": "{{name}} {{radio}}",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "showLegend": true,
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "stacking": {
-              "mode": "none"
-            },
-            "showPoints": "never"
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 13,
-      "type": "text",
-      "transparent": true,
-      "gridPos": {
-        "x": 0,
-        "y": 22,
-        "w": 24,
-        "h": 2
-      },
-      "options": {
-        "mode": "markdown",
-        "content": "## Wireless Traffic"
-      }
-    },
-    {
-      "id": 14,
-      "type": "timeseries",
-      "title": "AP Radio Traffic — Download (RX)",
-      "gridPos": {
-        "x": 0,
-        "y": 24,
-        "w": 12,
-        "h": 8
-      },
-      "targets": [
-        {
-          "expr": "sum by (name, radio) (rate(unifi_uap_radio_rx_bytes_total[5m])) * 8",
-          "legendFormat": "{{name}} {{radio}} ↓",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "showLegend": true,
-          "displayMode": "table",
-          "placement": "right",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bps",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "stacking": {
-              "mode": "none"
-            },
-            "showPoints": "never"
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 15,
-      "type": "timeseries",
-      "title": "AP Radio Traffic — Upload (TX)",
-      "gridPos": {
-        "x": 12,
-        "y": 24,
-        "w": 12,
-        "h": 8
-      },
-      "targets": [
-        {
-          "expr": "sum by (name, radio) (rate(unifi_uap_radio_tx_bytes_total[5m])) * 8",
-          "legendFormat": "{{name}} {{radio}} ↑",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "showLegend": true,
-          "displayMode": "table",
-          "placement": "right",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bps",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "stacking": {
-              "mode": "none"
-            },
-            "showPoints": "never"
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 16,
-      "type": "timeseries",
-      "title": "Channel Utilization — Self (%)",
-      "gridPos": {
-        "x": 0,
-        "y": 32,
-        "w": 12,
-        "h": 6
-      },
-      "targets": [
-        {
-          "expr": "avg by (name, radio) (unifi_uap_radio_cu_self_ratio * 100)",
-          "legendFormat": "{{name}} {{radio}}",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "showLegend": true,
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "stacking": {
-              "mode": "none"
-            },
-            "showPoints": "never"
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 17,
-      "type": "timeseries",
-      "title": "TX Power (dBm)",
-      "gridPos": {
-        "x": 12,
-        "y": 32,
-        "w": 12,
-        "h": 6
-      },
-      "targets": [
-        {
-          "expr": "unifi_uap_radio_tx_power_dbm",
-          "legendFormat": "{{name}} {{radio}}",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "showLegend": true,
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "dBm",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "stacking": {
-              "mode": "none"
-            },
-            "showPoints": "never"
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 18,
-      "type": "text",
-      "transparent": true,
-      "gridPos": {
-        "x": 0,
-        "y": 38,
-        "w": 24,
-        "h": 2
-      },
-      "options": {
-        "mode": "markdown",
-        "content": "## Switches — PoE & Port Traffic"
-      }
-    },
-    {
-      "id": 19,
-      "type": "stat",
-      "title": "Totaal PoE Vermogen",
-      "gridPos": {
-        "x": 0,
-        "y": 40,
-        "w": 6,
-        "h": 4
-      },
-      "targets": [
-        {
-          "expr": "sum(unifi_usw_port_poe_watts)",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 40,
-          "titleSize": 14
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "watt",
-          "color": {
-            "mode": "fixed",
-            "fixedColor": "#FF780A"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 100
-              },
-              {
-                "color": "red",
-                "value": 180
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 20,
-      "type": "timeseries",
-      "title": "PoE Vermogen per Poort (W)",
-      "gridPos": {
-        "x": 6,
-        "y": 40,
-        "w": 18,
-        "h": 8
-      },
-      "targets": [
-        {
-          "expr": "unifi_usw_port_poe_watts > 0",
-          "legendFormat": "{{name}} port {{port_name}}",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "showLegend": true,
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "watt",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "stacking": {
-              "mode": "none"
-            },
-            "showPoints": "never"
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 21,
-      "type": "timeseries",
-      "title": "Switch Port Traffic — Download (RX)",
-      "gridPos": {
-        "x": 0,
-        "y": 48,
-        "w": 12,
-        "h": 6
-      },
-      "targets": [
-        {
-          "expr": "sum by (name, port_name) (rate(unifi_usw_port_rx_bytes_total[5m])) * 8 > 1000",
-          "legendFormat": "{{name}} p{{port_name}} ↓",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "showLegend": true,
-          "displayMode": "table",
-          "placement": "right",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bps",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "stacking": {
-              "mode": "none"
-            },
-            "showPoints": "never"
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 22,
-      "type": "timeseries",
-      "title": "Switch Port Traffic — Upload (TX)",
-      "gridPos": {
-        "x": 12,
-        "y": 48,
-        "w": 12,
-        "h": 6
-      },
-      "targets": [
-        {
-          "expr": "sum by (name, port_name) (rate(unifi_usw_port_tx_bytes_total[5m])) * 8 > 1000",
-          "legendFormat": "{{name}} p{{port_name}} ↑",
-          "refId": "A"
-        }
-      ],
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "showLegend": true,
-          "displayMode": "table",
-          "placement": "right",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bps",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "stacking": {
-              "mode": "none"
-            },
-            "showPoints": "never"
-          }
-        },
-        "overrides": []
-      }
-    }
+      "options": {"sortBy":[{"displayName":"CPU %","desc":true}],"footer":{"show":false}},
+      "fieldConfig": {"defaults":{"custom":{"align":"auto","displayMode":"auto"}},
+        "overrides":[
+          {"matcher":{"id":"byName","options":"Value #A"},"properties":[{"id":"displayName","value":"Info"},{"id":"custom.hidden","value":true}]},
+          {"matcher":{"id":"byName","options":"Value #B"},"properties":[{"id":"displayName","value":"CPU %"},{"id":"unit","value":"percent"},{"id":"custom.displayMode","value":"color-background"},{"id":"thresholds","value":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":60},{"color":"red","value":85}]}}]},
+          {"matcher":{"id":"byName","options":"Value #C"},"properties":[{"id":"displayName","value":"RAM %"},{"id":"unit","value":"percent"},{"id":"custom.displayMode","value":"color-background"},{"id":"thresholds","value":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":75},{"color":"red","value":90}]}}]},
+          {"matcher":{"id":"byName","options":"Value #D"},"properties":[{"id":"displayName","value":"Temp °C"},{"id":"unit","value":"celsius"},{"id":"custom.displayMode","value":"color-background"},{"id":"thresholds","value":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":60},{"color":"red","value":75}]}}]},
+          {"matcher":{"id":"byName","options":"Value #E"},"properties":[{"id":"displayName","value":"Uptime"},{"id":"unit","value":"s"}]},
+          {"matcher":{"id":"byName","options":"Value #F"},"properties":[{"id":"displayName","value":"Update?"},{"id":"mappings","value":[{"type":"value","options":{"0":{"text":"✓"},"1":{"text":"⚠️ Update beschikbaar"}}}]}]}
+        ]},
+      "transformations":[
+        {"id":"merge","options":{}},
+        {"id":"organize","options":{"excludeByName":{"Time":true,"__name__":true,"job":true,"instance":true,"id":true,"site_id":true,"site_name":true},"renameByName":{"name":"Device","model":"Model","type":"Type","version":"Firmware","ip":"IP"}}}
+      ] },
+
+    { "id": 19, "type": "timeseries", "title": "CPU Gebruik per Device",
+      "gridPos": {"x":0,"y":39,"w":12,"h":7},
+      "targets": [{"expr":"unifi_device_cpu_utilization_ratio * 100","legendFormat":"{{name}}","refId":"A"}],
+      "options": {"tooltip":{"mode":"multi","sort":"desc"},"legend":{"showLegend":true,"displayMode":"table","placement":"bottom","calcs":["lastNotNull","max"]}},
+      "fieldConfig": {"defaults": {"unit":"percent","max":100,"custom":{"lineWidth":1,"fillOpacity":10,"showPoints":"never"}}} },
+
+    { "id": 20, "type": "timeseries", "title": "Memory per Device",
+      "gridPos": {"x":12,"y":39,"w":12,"h":7},
+      "targets": [{"expr":"unifi_device_memory_utilization_ratio * 100","legendFormat":"{{name}}","refId":"A"}],
+      "options": {"tooltip":{"mode":"multi","sort":"desc"},"legend":{"showLegend":true,"displayMode":"table","placement":"bottom","calcs":["lastNotNull","max"]}},
+      "fieldConfig": {"defaults": {"unit":"percent","max":100,"custom":{"lineWidth":1,"fillOpacity":10,"showPoints":"never"}}} },
+
+    { "id": 21, "type": "text", "transparent": true, "gridPos": {"x":0,"y":46,"w":24,"h":1},
+      "options": {"mode":"markdown","content":"## Wireless"} },
+
+    { "id": 22, "type": "timeseries", "title": "Clients per Radio",
+      "gridPos": {"x":0,"y":47,"w":12,"h":7},
+      "targets": [{"expr":"unifi_device_radio_stations","legendFormat":"{{name}} {{radio}}","refId":"A"}],
+      "options": {"tooltip":{"mode":"multi","sort":"desc"},"legend":{"showLegend":true,"displayMode":"table","placement":"bottom","calcs":["lastNotNull","max"]}},
+      "fieldConfig": {"defaults": {"unit":"short","custom":{"lineWidth":1,"fillOpacity":10,"showPoints":"never","stacking":{"mode":"none"}}}} },
+
+    { "id": 23, "type": "timeseries", "title": "Channel Utilization per Radio (%)",
+      "gridPos": {"x":12,"y":47,"w":12,"h":7},
+      "targets": [{"expr":"unifi_device_radio_channel_utilization_total_ratio * 100","legendFormat":"{{name}} {{radio}}","refId":"A"}],
+      "options": {"tooltip":{"mode":"multi","sort":"desc"},"legend":{"showLegend":true,"displayMode":"table","placement":"bottom","calcs":["lastNotNull","max"]}},
+      "fieldConfig": {"defaults": {"unit":"percent","max":100,"custom":{"lineWidth":1,"fillOpacity":10,"showPoints":"never"}}} },
+
+    { "id": 24, "type": "text", "transparent": true, "gridPos": {"x":0,"y":54,"w":24,"h":1},
+      "options": {"mode":"markdown","content":"## PoE & Switch Port Traffic"} },
+
+    { "id": 25, "type": "stat", "title": "Totaal PoE Vermogen",
+      "gridPos": {"x":0,"y":55,"w":4,"h":4},
+      "targets": [{"expr":"sum(unifi_device_port_poe_watts)","refId":"A"}],
+      "options": {"reduceOptions":{"calcs":["lastNotNull"]},"colorMode":"background","graphMode":"none","textMode":"auto"},
+      "fieldConfig": {"defaults": {"unit":"watt","color":{"mode":"thresholds"},"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"yellow","value":100},{"color":"red","value":180}]}}} },
+
+    { "id": 26, "type": "timeseries", "title": "PoE Vermogen per Poort (W)",
+      "gridPos": {"x":4,"y":55,"w":20,"h":8},
+      "targets": [{"expr":"unifi_device_port_poe_watts > 0","legendFormat":"{{name}} p{{port_id}}","refId":"A"}],
+      "options": {"tooltip":{"mode":"multi","sort":"desc"},"legend":{"showLegend":true,"displayMode":"table","placement":"right","calcs":["lastNotNull","max"]}},
+      "fieldConfig": {"defaults": {"unit":"watt","custom":{"lineWidth":1,"fillOpacity":10,"showPoints":"never"}}} },
+
+    { "id": 27, "type": "timeseries", "title": "Port Traffic — Download (RX)",
+      "gridPos": {"x":0,"y":63,"w":12,"h":6},
+      "targets": [{"expr":"sum by (name, port_id) (rate(unifi_device_port_receive_bytes_total[5m])) * 8 > 10000","legendFormat":"{{name}} p{{port_id}} ↓","refId":"A"}],
+      "options": {"tooltip":{"mode":"multi","sort":"desc"},"legend":{"showLegend":true,"displayMode":"table","placement":"right","calcs":["lastNotNull","max"]}},
+      "fieldConfig": {"defaults": {"unit":"bps","custom":{"lineWidth":1,"fillOpacity":10,"showPoints":"never"}}} },
+
+    { "id": 28, "type": "timeseries", "title": "Port Traffic — Upload (TX)",
+      "gridPos": {"x":12,"y":63,"w":12,"h":6},
+      "targets": [{"expr":"sum by (name, port_id) (rate(unifi_device_port_transmit_bytes_total[5m])) * 8 > 10000","legendFormat":"{{name}} p{{port_id}} ↑","refId":"A"}],
+      "options": {"tooltip":{"mode":"multi","sort":"desc"},"legend":{"showLegend":true,"displayMode":"table","placement":"right","calcs":["lastNotNull","max"]}},
+      "fieldConfig": {"defaults": {"unit":"bps","custom":{"lineWidth":1,"fillOpacity":10,"showPoints":"never"}}} }
+
   ],
-  "templating": {
-    "list": []
-  },
-  "annotations": {
-    "list": []
-  }
+  "templating": {"list": []},
+  "annotations": {"list": []}
 }
