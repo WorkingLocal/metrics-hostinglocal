@@ -326,6 +326,13 @@ scrape_configs:
         labels:
           instance: 'VM-WORKINGLOCAL'
 
+  # SMARTHOMESERVER host-level metrics (node_exporter HAOS addon, Tailscale 100.109.230.93)
+  - job_name: 'smarthomeserver-node'
+    static_configs:
+      - targets: ['100.109.230.93:9100']
+        labels:
+          instance: 'SMARTHOMESERVER'
+
   # SMARTHOMESERVER (HAOS Intel NUC i3) — native HA Prometheus integration (alle numerieke entiteiten)
   # Endpoint: /api/prometheus met Bearer token (long-lived access token)
   # METRICSSERVER bereikt HAOS via lokaal netwerk 192.168.111.75
