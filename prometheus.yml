@@ -93,14 +93,6 @@ scrape_configs:
         labels:
           instance: 'VM-AUTOBA'
 
-  # n8n workflow metrics (VM-AUTOBA, poort 5678)
-  # Tijdelijk op VM-AUTOBA — migreert naar HA cluster
-  - job_name: 'n8n'
-    metrics_path: '/metrics'
-    static_configs:
-      - targets: ['192.168.111.207:5678']
-        labels:
-          instance: 'N8N'
 
   # VM-AI-Engine
   # Vereist: node_exporter op 100.80.180.55:9100
@@ -316,6 +308,13 @@ scrape_configs:
           group: 'controllers'
 
   # ====== SMARTHOMESERVER ======
+
+  # SMARTHOMESERVER host-level metrics (node_exporter HAOS addon, Tailscale 100.109.230.93)
+  - job_name: 'smarthomeserver-node'
+    static_configs:
+      - targets: ['100.109.230.93:9100']
+        labels:
+          instance: 'SMARTHOMESERVER'
 
   # SMARTHOMESERVER (HAOS Intel NUC i3) — native HA Prometheus integration (alle numerieke entiteiten)
   # Endpoint: /api/prometheus met Bearer token (long-lived access token)
