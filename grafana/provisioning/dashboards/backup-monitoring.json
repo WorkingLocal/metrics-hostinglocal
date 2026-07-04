@@ -1,4 +1,4 @@
-﻿{
+{
   "__inputs": [],
   "__requires": [],
   "annotations": {
@@ -12,7 +12,7 @@
   "title": "Backup Monitoring",
   "uid": "backup-monitoring-hl",
   "schemaVersion": 38,
-  "version": 2,
+  "version": 3,
   "refresh": "5m",
   "time": {
     "from": "now-24h",
@@ -80,7 +80,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 6,
+        "w": 4,
         "x": 0,
         "y": 1
       },
@@ -104,7 +104,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rclone_backup_job_success{instance=\"FILESERVER\",job=\"muziek\"}",
+          "expr": "rclone_backup_job_success{instance=\"FILESERVER\",exported_job=\"muziek\"}",
           "legendFormat": "muziek"
         }
       ]
@@ -153,8 +153,81 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 6,
-        "x": 6,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "id": 107,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "title": "Fotos (ai-node-i9 -> /volume1/fotos)",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "rclone_backup_job_success{instance=\"FILESERVER\",exported_job=\"fotos\"}",
+          "legendFormat": "fotos"
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "FOUT",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "OK",
+                  "color": "green"
+                }
+              }
+            }
+          ],
+          "noValue": "Nog niet gedraaid"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
         "y": 1
       },
       "id": 2,
@@ -177,7 +250,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rclone_backup_job_success{instance=\"FILESERVER\",job=\"ebooks\"}",
+          "expr": "rclone_backup_job_success{instance=\"FILESERVER\",exported_job=\"ebooks\"}",
           "legendFormat": "ebooks"
         }
       ]
@@ -226,7 +299,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 6,
+        "w": 4,
         "x": 12,
         "y": 1
       },
@@ -250,7 +323,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rclone_backup_job_success{instance=\"FILESERVER\",job=\"paperless\"}",
+          "expr": "rclone_backup_job_success{instance=\"FILESERVER\",exported_job=\"paperless\"}",
           "legendFormat": "paperless"
         }
       ]
@@ -299,8 +372,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 6,
-        "x": 18,
+        "w": 4,
+        "x": 16,
         "y": 1
       },
       "id": 4,
@@ -323,7 +396,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rclone_backup_job_success{instance=\"FILESERVER\",job=\"homelab\"}",
+          "expr": "rclone_backup_job_success{instance=\"FILESERVER\",exported_job=\"homelab\"}",
           "legendFormat": "homelab"
         }
       ]
@@ -387,7 +460,7 @@
             "uid": "prometheus"
           },
           "expr": "rclone_backup_job_duration_seconds{instance=\"FILESERVER\"}",
-          "legendFormat": "{{job}}"
+          "legendFormat": "{{exported_job}}"
         }
       ]
     },
@@ -450,7 +523,7 @@
             "uid": "prometheus"
           },
           "expr": "rclone_backup_job_last_run_timestamp{instance=\"FILESERVER\"} * 1000",
-          "legendFormat": "{{job}}"
+          "legendFormat": "{{exported_job}}"
         }
       ]
     },
@@ -902,7 +975,7 @@
             "uid": "prometheus"
           },
           "expr": "rclone_backup_job_success{instance=\"FILESERVER\"}",
-          "legendFormat": "{{job}}"
+          "legendFormat": "{{exported_job}}"
         }
       ]
     },
@@ -1012,7 +1085,7 @@
             "uid": "prometheus"
           },
           "expr": "rclone_backup_job_duration_seconds{instance=\"FILESERVER\"}",
-          "legendFormat": "{{job}}"
+          "legendFormat": "{{exported_job}}"
         }
       ]
     },
