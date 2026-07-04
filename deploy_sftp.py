@@ -133,7 +133,7 @@ run("docker network create proxy 2>/dev/null || true")
 run("docker network create metrics_internal 2>/dev/null || true")
 
 print("\nCustom images bouwen (alertmanager-ntfy, thermal-shutdown)...")
-run(f"cd {REMOTE_DIR} && docker compose -f compose.hostinglocal.yml build alertmanager-ntfy thermal-shutdown 2>&1 | tail -5", 120)
+run(f"cd {REMOTE_DIR} && docker compose -f compose.hostinglocal.yml build alertmanager-ntfy thermal-shutdown grafana 2>&1 | tail -5", 180)
 
 print("\nStack starten...")
 run(f"cd {REMOTE_DIR} && docker compose -f compose.hostinglocal.yml up -d 2>&1", 180)

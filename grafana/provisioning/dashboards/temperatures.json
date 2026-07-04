@@ -5,7 +5,7 @@
   "timezone": "browser",
   "refresh": "1m",
   "schemaVersion": 38,
-  "version": 4,
+  "version": 5,
   "time": {
     "from": "now-6h",
     "to": "now"
@@ -781,6 +781,11 @@
           "refId": "D"
         },
         {
+          "expr": "windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", hardware=~\"Intel_Xeon_Silver_4114.*\", sensor=\"CPU_Package\"}",
+          "legendFormat": "WINDOWSSERVER {{hardware}} CPU",
+          "refId": "H"
+        },
+        {
           "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"FILESERVER\", chip=~\".*coretemp.*\"})",
           "legendFormat": "FILESERVER",
           "refId": "E"
@@ -1082,7 +1087,7 @@
       },
       "targets": [
         {
-          "expr": "max by (instance, chip) (node_hwmon_temp_celsius{instance=~\"PVE-MS01-I9|PVE-MS01-I5|NETWORKSERVER|MEDIASERVER\", chip=~\"nvme.*\", sensor=\"temp1\"})",
+          "expr": "max by (instance, chip) (node_hwmon_temp_celsius{instance=~\"PVE-MS01-I9|PVE-MS01-I5|NETWORKSERVER|MEDIASERVER|TRAVELSERVER|METRICSSERVER\", chip=~\"nvme.*\", sensor=\"temp1\"})",
           "legendFormat": "{{instance}} {{chip}}",
           "refId": "A"
         }
@@ -1248,8 +1253,8 @@
     {
       "id": 48,
       "type": "stat",
-      "title": "FILESERVER â€” Disks max",
-      "description": "Synology DS423+ â€” hoogste schijftemperatuur (4x HDD + 2x M.2 via HAOS)",
+      “title”: “FILESERVER â€” Disks max”,
+      “description”: “Synology DS423+ â€” schijftemperatuur via Synology SNMP (nog niet geconfigureerd â€” HAOS entities ontbreken)”,
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -1413,8 +1418,78 @@
           "refId": "A"
         }
       ],
-      "title": "KIOSK-TOUCH â€” CPU Temp",
-      "type": "stat"
+      “title”: “KIOSK-TOUCH â€” CPU Temp”,
+      “type”: “stat”
+    },
+    {
+      “id”: 50,
+      “type”: “stat”,
+      “title”: “WINDOWSSERVER â€” CPU Socket 0”,
+      “description”: “Intel Xeon Silver 4114 â€” socket 0 Package temperatuur (LibreHardwareMonitor)”,
+      “gridPos”: { “h”: 4, “w”: 4, “x”: 16, “y”: 9 },
+      “options”: {
+        “reduceOptions”: { “calcs”: [“lastNotNull”] },
+        “colorMode”: “background”,
+        “graphMode”: “area”
+      },
+      “fieldConfig”: {
+        “defaults”: {
+          “unit”: “celsius”,
+          “thresholds”: {
+            “mode”: “absolute”,
+            “steps”: [
+              { “color”: “green”, “value”: null },
+              { “color”: “yellow”, “value”: 60 },
+              { “color”: “orange”, “value”: 75 },
+              { “color”: “red”, “value”: 85 }
+            ]
+          },
+          “mappings”: []
+        },
+        “overrides”: []
+      },
+      “targets”: [
+        {
+          “expr”: “windows_hardware_temperature_celsius{instance=\”WINDOWSSERVER2025\”, hardware=\”Intel_Xeon_Silver_4114\”, sensor=\”CPU_Package\”}”,
+          “legendFormat”: “Socket 0”,
+          “refId”: “A”
+        }
+      ]
+    },
+    {
+      “id”: 51,
+      “type”: “stat”,
+      “title”: “WINDOWSSERVER â€” CPU Socket 1”,
+      “description”: “Intel Xeon Silver 4114 â€” socket 1 Package temperatuur (LibreHardwareMonitor)”,
+      “gridPos”: { “h”: 4, “w”: 4, “x”: 20, “y”: 9 },
+      “options”: {
+        “reduceOptions”: { “calcs”: [“lastNotNull”] },
+        “colorMode”: “background”,
+        “graphMode”: “area”
+      },
+      “fieldConfig”: {
+        “defaults”: {
+          “unit”: “celsius”,
+          “thresholds”: {
+            “mode”: “absolute”,
+            “steps”: [
+              { “color”: “green”, “value”: null },
+              { “color”: “yellow”, “value”: 60 },
+              { “color”: “orange”, “value”: 75 },
+              { “color”: “red”, “value”: 85 }
+            ]
+          },
+          “mappings”: []
+        },
+        “overrides”: []
+      },
+      “targets”: [
+        {
+          “expr”: “windows_hardware_temperature_celsius{instance=\”WINDOWSSERVER2025\”, hardware=\”Intel_Xeon_Silver_4114_1\”, sensor=\”CPU_Package\”}”,
+          “legendFormat”: “Socket 1”,
+          “refId”: “A”
+        }
+      ]
     }
   ]
 }

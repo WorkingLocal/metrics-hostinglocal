@@ -1,0 +1,191 @@
+/* =============================================
+   Hosting Local — Grafana Custom Theme
+   Primary: #1A2E5A (navy) | Accent: #F5B800 (yellow)
+   Geïnjecteerd via Dockerfile → grafana.dark.css
+   ============================================= */
+
+/* 1. CSS VARIABELEN — override Grafana dark theme vars */
+:root {
+  --color-background-canvas:    #0d1629 !important;
+  --color-background-primary:   #152038 !important;
+  --color-background-secondary: #1a2e5a !important;
+  --color-primary-main:         #F5B800 !important;
+  --color-primary-shade:        rgba(245,184,0,0.12) !important;
+  --color-primary-text:         #F5B800 !important;
+  --color-primary-border:       rgba(245,184,0,0.45) !important;
+  --color-primary-contrastText: #1A2E5A !important;
+  --color-link-external:        #F5B800 !important;
+}
+
+/* 2. PAGINA ACHTERGROND */
+body,
+body > div,
+[class*="page-content"],
+[class*="scrollbar-view"],
+[class*="main-view"],
+main {
+  background-color: #0d1629 !important;
+}
+
+/* 3. TOP NAV BAR — Grafana 11 aria selectors */
+[aria-label="Navigation bar"],
+nav[aria-label="Navigation bar"],
+[data-testid="data-testid Breadcrumb bar"],
+header {
+  background-color: #1A2E5A !important;
+  border-bottom: 2px solid #F5B800 !important;
+}
+
+/* 4. LINKER SIDEBAR */
+[aria-label="Main menu"],
+nav[aria-label="Main menu"],
+[data-testid="sidemenu-open"],
+[class*="sidemenu"],
+[class*="megaMenu"],
+[class*="MegaMenu"],
+aside {
+  background-color: #111e3a !important;
+  border-right: 1px solid rgba(245,184,0,0.15) !important;
+}
+
+/* 5. LOGO — verberg Grafana SVG, toon HL logo */
+[aria-label="Home"] svg,
+[aria-label="Go home"] svg,
+[data-testid="data-testid Nav Home"] svg,
+a[href="/"] svg,
+[class*="wordmark"],
+[class*="Wordmark"],
+[class*="logo"] svg {
+  display: none !important;
+}
+
+a[aria-label="Home"],
+a[aria-label="Go home"],
+[data-testid="data-testid Nav Home"],
+a[href="/"]:has(svg) {
+  display: flex !important;
+  width: 148px !important;
+  height: 40px !important;
+  background-image: url('/public/img/hl-logo.png') !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: left center !important;
+}
+
+/* 6. SIDEBAR ACTIVE STATE */
+[aria-current="page"],
+[class*="menuItem"][aria-selected="true"],
+[class*="active"][class*="menu"] {
+  color: #F5B800 !important;
+  border-left: 3px solid #F5B800 !important;
+}
+
+/* 7. PRIMARY BUTTONS */
+button[data-testid*="primary"],
+[class*="button-primary"],
+[type="submit"],
+button[class*="Primary"],
+[class*="ButtonFill"] {
+  background-color: #F5B800 !important;
+  color: #1A2E5A !important;
+  border-color: #c99700 !important;
+  font-weight: 600 !important;
+}
+
+/* 8. PANEEL ACHTERGROND */
+[class*="panel-container"],
+[class*="panelContainer"],
+[class*="grafana-panel"],
+[class*="PanelContainer"] {
+  background-color: #152038 !important;
+  border: 1px solid rgba(26,46,90,0.8) !important;
+}
+
+/* 9. TABEL HEADERS */
+[role="columnheader"],
+[class*="headerCell"],
+[class*="TableCell"][role="columnheader"] {
+  background-color: #1A2E5A !important;
+  color: #F5B800 !important;
+  border-bottom: 1px solid rgba(245,184,0,0.3) !important;
+}
+
+/* 10. TABEL RIJEN */
+[role="row"]:hover,
+[class*="tableRow"]:hover {
+  background-color: rgba(245,184,0,0.06) !important;
+}
+
+/* 11. LINKS */
+a[class*="textLink"],
+[class*="LinkButton"] {
+  color: #F5B800 !important;
+}
+
+/* 12. FOCUS OUTLINE */
+*:focus-visible {
+  outline: 2px solid rgba(245,184,0,0.6) !important;
+  outline-offset: 2px !important;
+}
+
+/* 13. DROPDOWNS */
+[class*="grafana-portal"] > div,
+[class*="Select__menu"],
+[role="listbox"],
+[role="menu"] {
+  background-color: #152038 !important;
+  border: 1px solid rgba(245,184,0,0.2) !important;
+}
+
+/* 14. SELECTED DROPDOWN ITEM */
+[aria-selected="true"],
+[class*="option"][class*="focused"] {
+  background-color: rgba(245,184,0,0.12) !important;
+  color: #F5B800 !important;
+}
+
+/* 15. SCROLLBARS */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: rgba(26,46,90,0.9); border-radius: 3px; }
+::-webkit-scrollbar-track { background: #0d1629; }
+
+/* 16. DIVIDERS */
+hr, [class*="Divider"] {
+  border-color: rgba(245,184,0,0.12) !important;
+}
+
+/* 17. NOTIFICATIE / ALERT BALK */
+[class*="alert-info"],
+[class*="InfoBox"] {
+  background-color: rgba(26,46,90,0.6) !important;
+  border-left: 4px solid #F5B800 !important;
+}
+
+/* 18. INPUT VELDEN */
+input, textarea, select,
+[class*="Input"],
+[class*="input"] {
+  background-color: #111e3a !important;
+  border-color: rgba(245,184,0,0.2) !important;
+  color: #e0e0e0 !important;
+}
+
+input:focus, textarea:focus,
+[class*="Input"]:focus-within {
+  border-color: rgba(245,184,0,0.5) !important;
+  box-shadow: 0 0 0 2px rgba(245,184,0,0.15) !important;
+}
+
+/* 19. TAGS / LABELS */
+[class*="TagBadge"],
+[class*="tag"],
+span[class*="Label"] {
+  background-color: rgba(245,184,0,0.12) !important;
+  color: #F5B800 !important;
+  border: 1px solid rgba(245,184,0,0.25) !important;
+}
+
+/* 20. SECTIE HEADERS in dashboard text panels (HTML mode) */
+h2 {
+  color: rgba(204,204,220,0.92);
+}

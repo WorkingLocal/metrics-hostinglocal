@@ -70,7 +70,8 @@ services:
       - "9130:9130"
 
   grafana:
-    image: grafana/grafana:11.6.2
+    build: ./grafana
+    image: grafana-hl:11.6.2
     container_name: grafana-metrics
     restart: unless-stopped
     extra_hosts:
@@ -80,6 +81,8 @@ services:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/custom.css:/usr/share/grafana/public/custom.css:ro
+      - ./grafana/assets/hl-logo.png:/usr/share/grafana/public/img/hl-logo.png:ro
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
