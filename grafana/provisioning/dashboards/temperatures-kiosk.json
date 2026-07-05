@@ -1,4 +1,4 @@
-﻿{
+{
   "title": "Serverrack Kiosk â€” Temperaturen",
   "uid": "serverrack-kiosk",
   "description": "FHD kiosk scherm 1 â€” CPU + Rack temperaturen + tijdreeks",
@@ -21,7 +21,7 @@
       "title": "",
       "transparent": true,
       "gridPos": {
-        "h": 1,
+        "h": 2,
         "w": 24,
         "x": 0,
         "y": 0
@@ -49,7 +49,7 @@
         "h": 5,
         "w": 4,
         "x": 0,
-        "y": 1
+        "y": 2
       },
       "options": {
         "reduceOptions": {
@@ -110,7 +110,7 @@
         "h": 5,
         "w": 4,
         "x": 4,
-        "y": 1
+        "y": 2
       },
       "options": {
         "reduceOptions": {
@@ -171,7 +171,7 @@
         "h": 5,
         "w": 4,
         "x": 8,
-        "y": 1
+        "y": 2
       },
       "options": {
         "reduceOptions": {
@@ -232,7 +232,7 @@
         "h": 5,
         "w": 4,
         "x": 12,
-        "y": 1
+        "y": 2
       },
       "options": {
         "reduceOptions": {
@@ -293,7 +293,7 @@
         "h": 5,
         "w": 4,
         "x": 16,
-        "y": 1
+        "y": 2
       },
       "options": {
         "reduceOptions": {
@@ -354,7 +354,7 @@
         "h": 5,
         "w": 4,
         "x": 20,
-        "y": 1
+        "y": 2
       },
       "options": {
         "reduceOptions": {
@@ -415,7 +415,7 @@
         "h": 5,
         "w": 4,
         "x": 0,
-        "y": 6
+        "y": 7
       },
       "options": {
         "reduceOptions": {
@@ -476,7 +476,7 @@
         "h": 5,
         "w": 4,
         "x": 4,
-        "y": 6
+        "y": 7
       },
       "options": {
         "reduceOptions": {
@@ -537,7 +537,7 @@
         "h": 5,
         "w": 4,
         "x": 8,
-        "y": 6
+        "y": 7
       },
       "options": {
         "reduceOptions": {
@@ -598,7 +598,7 @@
         "h": 5,
         "w": 4,
         "x": 12,
-        "y": 6
+        "y": 7
       },
       "options": {
         "reduceOptions": {
@@ -659,7 +659,7 @@
         "h": 5,
         "w": 4,
         "x": 16,
-        "y": 6
+        "y": 7
       },
       "options": {
         "reduceOptions": {
@@ -720,7 +720,7 @@
         "h": 5,
         "w": 4,
         "x": 20,
-        "y": 6
+        "y": 7
       },
       "options": {
         "reduceOptions": {
@@ -778,10 +778,10 @@
       "title": "",
       "transparent": true,
       "gridPos": {
-        "h": 1,
+        "h": 2,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 12
       },
       "options": {
         "content": "## Rack Temperaturen",
@@ -806,7 +806,7 @@
         "h": 7,
         "w": 5,
         "x": 0,
-        "y": 12
+        "y": 14
       },
       "options": {
         "reduceOptions": {
@@ -871,7 +871,7 @@
         "h": 7,
         "w": 5,
         "x": 5,
-        "y": 12
+        "y": 14
       },
       "options": {
         "reduceOptions": {
@@ -932,7 +932,7 @@
         "h": 7,
         "w": 5,
         "x": 10,
-        "y": 12
+        "y": 14
       },
       "options": {
         "reduceOptions": {
@@ -993,7 +993,7 @@
         "h": 7,
         "w": 5,
         "x": 15,
-        "y": 12
+        "y": 14
       },
       "options": {
         "reduceOptions": {
@@ -1051,10 +1051,10 @@
       "title": "",
       "transparent": true,
       "gridPos": {
-        "h": 1,
+        "h": 2,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 21
       },
       "options": {
         "content": "## CPU & Rack Tijdreeks (2u)",
@@ -1078,7 +1078,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 23
       },
       "options": {
         "tooltip": {
@@ -1168,7 +1168,7 @@
         "h": 7,
         "w": 4,
         "x": 20,
-        "y": 12
+        "y": 14
       },
       "options": {
         "reduceOptions": {
@@ -1233,7 +1233,7 @@
         "h": 7,
         "w": 4,
         "x": 20,
-        "y": 12
+        "y": 14
       },
       "options": {
         "reduceOptions": {
