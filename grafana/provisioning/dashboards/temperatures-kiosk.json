@@ -5,7 +5,7 @@
   "timezone": "browser",
   "refresh": "30s",
   "schemaVersion": 38,
-  "version": 9,
+  "version": 10,
   "time": {
     "from": "now-2h",
     "to": "now"
@@ -1151,11 +1151,6 @@
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.temperatuur\", job=\"smarthomeserver\"}",
           "legendFormat": "Buiten",
           "refId": "F"
-        },
-        {
-          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.temperatuur\", job=\"smarthomeserver\"}",
-          "legendFormat": "Buiten",
-          "refId": "F"
         }
       ]
     },
@@ -1164,71 +1159,6 @@
       "type": "stat",
       "title": "Buiten",
       "description": "Buitentemperatuur — weerstation",
-      "gridPos": {
-        "h": 7,
-        "w": 4,
-        "x": 20,
-        "y": 14
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "colorMode": "background",
-        "graphMode": "area",
-        "textMode": "value_and_name",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 52,
-          "titleSize": 18
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "celsius",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 10
-              },
-              {
-                "color": "yellow",
-                "value": 22
-              },
-              {
-                "color": "orange",
-                "value": 30
-              },
-              {
-                "color": "red",
-                "value": 35
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.temperatuur\", job=\"smarthomeserver\"}",
-          "legendFormat": "Buiten",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "id": 51,
-      "type": "stat",
-      "title": "Buiten",
-      "description": "Buitentemperatuur via weerstation",
       "gridPos": {
         "h": 7,
         "w": 4,

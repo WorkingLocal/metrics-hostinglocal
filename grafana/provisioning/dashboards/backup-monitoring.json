@@ -12,7 +12,7 @@
   "title": "Backup Monitoring",
   "uid": "backup-monitoring-hl",
   "schemaVersion": 38,
-  "version": 3,
+  "version": 4,
   "refresh": "5m",
   "time": {
     "from": "now-24h",
@@ -852,7 +852,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 - (windows_logical_disk_free_bytes{instance=\"WINDOWSSERVER\",volume=\"D:\"} / windows_logical_disk_total_bytes{instance=\"WINDOWSSERVER\",volume=\"D:\"} * 100)",
+          "expr": "100 - (windows_logical_disk_free_bytes{instance=\"WINDOWSSERVER2025\",volume=\"D:\"} / windows_logical_disk_size_bytes{instance=\"WINDOWSSERVER2025\",volume=\"D:\"} * 100)",
           "legendFormat": "PBS D:"
         }
       ]
