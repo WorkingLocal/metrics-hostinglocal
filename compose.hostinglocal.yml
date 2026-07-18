@@ -134,16 +134,17 @@ services:
     network_mode: host
     restart: unless-stopped
 
-  # Ontvangt Alertmanager webhooks en voert graceful SSH shutdown uit bij hoge temperatuur
+  # Ontvangt Alertmanager webhooks (cooldown/shutdown) en dispatcht naar de power-control
+  # API (FANSERVER primair, NUT-SERVER backup) — die kent de graceful VM/LXC-evacuatie per host
   thermal-shutdown:
     build: ./thermal-shutdown
     container_name: thermal-shutdown-metrics
     restart: unless-stopped
     volumes:
       - ./thermal-shutdown/hosts.yml:/app/hosts.yml:ro
-      - /root/.ssh/thermal_shutdown:/app/keys/id_ed25519:ro
     environment:
-      SSH_KEY_PATH: /app/keys/id_ed25519
+      POWER_CONTROL_PRIMARY: http://100.103.226.56:8765
+      POWER_CONTROL_BACKUP: http://100.97.195.23:8765
     networks:
       - metrics_internal
 

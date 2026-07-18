@@ -4,7 +4,7 @@ import os
 import time
 from datetime import datetime
 
-import paramiko
+import requests
 import yaml
 from flask import Flask, jsonify, request
 
@@ -12,60 +12,46 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
-SSH_KEY_PATH = os.getenv("SSH_KEY_PATH", "/app/keys/id_ed25519")
 HOSTS_FILE = os.getenv("HOSTS_FILE", "/app/hosts.yml")
+POWER_CONTROL_PRIMARY = os.getenv("POWER_CONTROL_PRIMARY", "http://100.103.226.56:8765")
+POWER_CONTROL_BACKUP = os.getenv("POWER_CONTROL_BACKUP", "http://100.97.195.23:8765")
 
 with open(HOSTS_FILE) as f:
     HOSTS_CONFIG = yaml.safe_load(f)
+INSTANCE_MAP: dict = HOSTS_CONFIG.get("instance_map", {})
 
-# Tracks recent shutdowns to prevent duplicate triggers: {instance: timestamp}
-_shutdown_log: dict[str, float] = {}
-COOLDOWN_SECONDS = 3600  # 1 uur cooldown per host
-
-
-def _already_shutdown(instance: str) -> bool:
-    last = _shutdown_log.get(instance)
-    if last and (time.time() - last) < COOLDOWN_SECONDS:
-        return True
-    return False
+# Tracks recent actions to prevent duplicate triggers: {"shutdown:<host>": timestamp}
+_action_log: dict[str, float] = {}
+SHUTDOWN_COOLDOWN_SECONDS = 3600   # destructief, lange dedup-window
+COOLDOWN_COOLDOWN_SECONDS = 600    # niet-destructief, mag vaker herhalen als temp blijft schommelen
+RESET_COOLDOWN_SECONDS = 30        # enkel dubbele gelijktijdige "resolved"-webhooks dempen
 
 
-def shutdown_host(instance: str) -> tuple[bool, str]:
-    if _already_shutdown(instance):
-        msg = f"Shutdown reeds uitgevoerd voor {instance} binnen cooldown window"
+def _recently_triggered(key: str, window: int) -> bool:
+    last = _action_log.get(key)
+    return bool(last and (time.time() - last) < window)
+
+
+def call_power_control(endpoint: str, dedup_key: str, dedup_window: int) -> tuple[bool, str]:
+    """POST naar power-control (FANSERVER primair, NUT-SERVER backup) i.p.v. zelf SSH te doen —
+    power-control kent de VM/LXC-graceful-evacuatie per host, hier hoeft dat niet gedupliceerd."""
+    if _recently_triggered(dedup_key, dedup_window):
+        msg = f"Actie reeds uitgevoerd voor {dedup_key} binnen cooldown window"
         logger.warning(msg)
         return False, msg
 
-    host_cfg = HOSTS_CONFIG.get("hosts", {}).get(instance)
-    if not host_cfg:
-        return False, f"Geen SSH configuratie voor instance '{instance}'"
+    for base_url in (POWER_CONTROL_PRIMARY, POWER_CONTROL_BACKUP):
+        try:
+            resp = requests.post(f"{base_url}{endpoint}", timeout=15)
+            if resp.ok:
+                _action_log[dedup_key] = time.time()
+                logger.info(f"{endpoint} -> {base_url} succeeded: {resp.text[:300]}")
+                return True, resp.text[:300]
+            logger.warning(f"{endpoint} -> {base_url} returned {resp.status_code}: {resp.text[:300]}")
+        except Exception as exc:
+            logger.warning(f"{endpoint} -> {base_url} unreachable: {exc}")
 
-    ip = host_cfg["tailscale_ip"]
-    user = host_cfg["ssh_user"]
-    port = host_cfg.get("ssh_port", 22)
-    cmd = host_cfg.get("shutdown_cmd", 'shutdown -h +1 "Thermal shutdown via Prometheus alert"')
-    logger.info(f"Graceful shutdown starten: {instance} ({user}@{ip}:{port})")
-
-    try:
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(ip, port=port, username=user, key_filename=SSH_KEY_PATH, timeout=10)
-        _, stdout, stderr = ssh.exec_command(cmd)
-        exit_code = stdout.channel.recv_exit_status()
-        ssh.close()
-
-        if exit_code == 0:
-            _shutdown_log[instance] = time.time()
-            logger.info(f"Shutdown commando verzonden naar {instance}")
-            return True, "shutdown commando verzonden"
-        else:
-            err = stderr.read().decode().strip()
-            logger.error(f"Shutdown mislukt op {instance}: {err}")
-            return False, err
-
-    except Exception as exc:
-        logger.error(f"SSH verbinding mislukt voor {instance}: {exc}")
-        return False, str(exc)
+    return False, f"Both power-control instances unreachable/failed for {endpoint}"
 
 
 @app.route("/webhook", methods=["POST"])
@@ -77,15 +63,55 @@ def webhook():
     for alert in data.get("alerts", []):
         status = alert.get("status")
         labels = alert.get("labels", {})
-        alertname = labels.get("alertname", "")
         instance = labels.get("instance", "")
         action = labels.get("action", "")
 
-        if status == "firing" and action == "shutdown" and instance:
-            ok, msg = shutdown_host(instance)
-            results.append({"instance": instance, "success": ok, "message": msg})
-        elif status == "resolved":
-            logger.info(f"Alert resolved: {alertname} op {instance}")
+        if status != "firing" or action != "shutdown" or not instance:
+            if status == "resolved":
+                logger.info(f"Alert resolved: {labels.get('alertname', '')} op {instance}")
+            continue
+
+        pc_host = INSTANCE_MAP.get(instance)
+        if not pc_host:
+            logger.warning(f"Geen power-control mapping voor instance '{instance}'")
+            results.append({"instance": instance, "success": False, "message": "no power-control mapping"})
+            continue
+
+        # force=true: een kritieke temperatuur-alert overrules power-control's always_on-bescherming
+        # (die enkel per-ongeluk-shutdown via het dashboard voorkomt, geen echte thermische noodstop)
+        ok, msg = call_power_control(f"/api/shutdown/{pc_host}?force=true", f"shutdown:{pc_host}", SHUTDOWN_COOLDOWN_SECONDS)
+        results.append({"instance": instance, "power_control_host": pc_host, "success": ok, "message": msg})
+
+    return jsonify({"results": results})
+
+
+@app.route("/cooldown", methods=["POST"])
+def cooldown():
+    data = request.json
+    logger.info(f"Cooldown webhook ontvangen: {json.dumps(data)}")
+
+    results = []
+    for alert in data.get("alerts", []):
+        status = alert.get("status")
+        labels = alert.get("labels", {})
+        instance = labels.get("instance", "")
+        action = labels.get("action", "")
+
+        if action != "cooldown" or not instance or status not in ("firing", "resolved"):
+            continue
+
+        pc_host = INSTANCE_MAP.get(instance)
+        if not pc_host:
+            logger.warning(f"Geen power-control mapping voor instance '{instance}'")
+            results.append({"instance": instance, "success": False, "message": "no power-control mapping"})
+            continue
+
+        if status == "firing":
+            ok, msg = call_power_control(f"/api/cooldown/{pc_host}", f"cooldown:{pc_host}", COOLDOWN_COOLDOWN_SECONDS)
+        else:
+            ok, msg = call_power_control(f"/api/cooldown-reset/{pc_host}", f"cooldown-reset:{pc_host}", RESET_COOLDOWN_SECONDS)
+
+        results.append({"instance": instance, "power_control_host": pc_host, "status": status, "success": ok, "message": msg})
 
     return jsonify({"results": results})
 

@@ -14,6 +14,16 @@ route:
       repeat_interval: 2h
       continue: true
 
+    # Thermal cooldown: webhook (throttle-actie) + ntfy in dezelfde receiver —
+    # geen aparte severity:warning route nodig, dit matcht vóór het anders naar
+    # ntfy-warning was gevallen via de root default
+    - match:
+        action: cooldown
+      receiver: thermal-cooldown-webhook
+      group_wait: 10s
+      group_interval: 5m
+      repeat_interval: 30m
+
     # Critical → ntfy
     - match:
         severity: critical
@@ -37,6 +47,13 @@ receivers:
     webhook_configs:
       - url: 'http://thermal-shutdown:9095/webhook'
         send_resolved: false
+
+  - name: thermal-cooldown-webhook
+    webhook_configs:
+      - url: 'http://thermal-shutdown:9095/cooldown'
+        send_resolved: true   # nodig voor cooldown-reset bij herstel
+      - url: 'http://alertmanager-ntfy:9095/hook'
+        send_resolved: true
 
 inhibit_rules:
   - source_match:

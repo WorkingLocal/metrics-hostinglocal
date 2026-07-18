@@ -16,9 +16,10 @@ groups:
         for: 30s
         labels:
           severity: warning
+          action: cooldown
         annotations:
-          summary: "Hoge temperatuur op {{ $labels.instance }}"
-          description: "Temperatuur is {{ $value | humanize }}°C op {{ $labels.instance }} (drempel: 80°C)"
+          summary: "Hoge temperatuur op {{ $labels.instance }} — cooldown gestart"
+          description: "Temperatuur is {{ $value | humanize }}°C op {{ $labels.instance }} (drempel: 80°C) — CPU wordt getemperd (powersave/no-turbo) via power-control. Instances zonder power-control mapping (bv. FANSERVER) worden genegeerd."
 
       - alert: HighTemperatureCritical
         expr: >
