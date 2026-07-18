@@ -1,0 +1,324 @@
+{
+  "title": "Ultrawide Kiosk — Status",
+  "uid": "ultrawide-kiosk",
+  "description": "DELL-XPS ultrawide scherm 2 — CPU temperaturen, CPU load, schijfgebruik in de breedte",
+  "timezone": "browser",
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "version": 1,
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "tags": ["kiosk", "ultrawide"],
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "options": {
+        "content": "## CPU Temperaturen",
+        "mode": "markdown",
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false }
+      },
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "id": 10, "type": "stat", "title": "PVE-MS01-I9",
+      "gridPos": { "h": 5, "w": 3, "x": 0, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "celsius", "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 75 }, { "color": "red", "value": 85 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"PVE-MS01-I9\", chip=~\".*coretemp.*\", sensor=\"temp1\"})", "legendFormat": "PVE-MS01-I9", "refId": "A" }]
+    },
+    {
+      "id": 11, "type": "stat", "title": "PVE-MS01-I5",
+      "gridPos": { "h": 5, "w": 3, "x": 3, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "celsius", "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 75 }, { "color": "red", "value": 85 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"PVE-MS01-I5\", chip=~\".*coretemp.*\", sensor=\"temp1\"})", "legendFormat": "PVE-MS01-I5", "refId": "A" }]
+    },
+    {
+      "id": 12, "type": "stat", "title": "NETWORKSERVER",
+      "gridPos": { "h": 5, "w": 3, "x": 6, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "celsius", "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 75 }, { "color": "red", "value": 85 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"NETWORKSERVER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})", "legendFormat": "NETWORKSERVER", "refId": "A" }]
+    },
+    {
+      "id": 13, "type": "stat", "title": "MEDIASERVER",
+      "gridPos": { "h": 5, "w": 3, "x": 9, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "celsius", "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 75 }, { "color": "red", "value": 85 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"MEDIASERVER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})", "legendFormat": "MEDIASERVER", "refId": "A" }]
+    },
+    {
+      "id": 14, "type": "stat", "title": "METRICSSERVER",
+      "gridPos": { "h": 5, "w": 3, "x": 12, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "celsius", "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 75 }, { "color": "red", "value": 85 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"METRICSSERVER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})", "legendFormat": "METRICSSERVER", "refId": "A" }]
+    },
+    {
+      "id": 15, "type": "stat", "title": "WINDOWSSERVER2025",
+      "gridPos": { "h": 5, "w": 3, "x": 15, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "celsius", "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 75 }, { "color": "red", "value": 85 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "max(windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", sensor=\"GPU_Core\"})", "legendFormat": "WINSVR2025 GPU", "refId": "A" }]
+    },
+    {
+      "id": 16, "type": "stat", "title": "PROXMOXMANAGER",
+      "gridPos": { "h": 5, "w": 3, "x": 18, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "celsius", "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 75 }, { "color": "red", "value": 85 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"PROXMOXMANAGER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})", "legendFormat": "PROXMOXMANAGER", "refId": "A" }]
+    },
+    {
+      "id": 17, "type": "stat", "title": "TRAVELSERVER",
+      "gridPos": { "h": 5, "w": 3, "x": 21, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "celsius", "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 75 }, { "color": "red", "value": 85 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "max by (instance) (node_hwmon_temp_celsius{instance=\"TRAVELSERVER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})", "legendFormat": "TRAVELSERVER", "refId": "A" }]
+    },
+
+    {
+      "id": 2,
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 6 },
+      "options": {
+        "content": "## CPU Load",
+        "mode": "markdown",
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false }
+      },
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "id": 20, "type": "stat", "title": "PVE-MS01-I9",
+      "gridPos": { "h": 5, "w": 3, "x": 0, "y": 7 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 80 }, { "color": "red", "value": 90 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\", instance=\"PVE-MS01-I9\"}[5m])) * 100)", "legendFormat": "PVE-MS01-I9", "refId": "A" }]
+    },
+    {
+      "id": 21, "type": "stat", "title": "PVE-MS01-I5",
+      "gridPos": { "h": 5, "w": 3, "x": 3, "y": 7 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 80 }, { "color": "red", "value": 90 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\", instance=\"PVE-MS01-I5\"}[5m])) * 100)", "legendFormat": "PVE-MS01-I5", "refId": "A" }]
+    },
+    {
+      "id": 22, "type": "stat", "title": "NETWORKSERVER",
+      "gridPos": { "h": 5, "w": 3, "x": 6, "y": 7 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 80 }, { "color": "red", "value": 90 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\", instance=\"NETWORKSERVER\"}[5m])) * 100)", "legendFormat": "NETWORKSERVER", "refId": "A" }]
+    },
+    {
+      "id": 23, "type": "stat", "title": "MEDIASERVER",
+      "gridPos": { "h": 5, "w": 3, "x": 9, "y": 7 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 80 }, { "color": "red", "value": 90 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\", instance=\"MEDIASERVER\"}[5m])) * 100)", "legendFormat": "MEDIASERVER", "refId": "A" }]
+    },
+    {
+      "id": 24, "type": "stat", "title": "METRICSSERVER",
+      "gridPos": { "h": 5, "w": 3, "x": 12, "y": 7 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 80 }, { "color": "red", "value": 90 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\", instance=\"METRICSSERVER\"}[5m])) * 100)", "legendFormat": "METRICSSERVER", "refId": "A" }]
+    },
+    {
+      "id": 25, "type": "stat", "title": "WINDOWSSERVER2025",
+      "gridPos": { "h": 5, "w": 3, "x": 15, "y": 7 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 80 }, { "color": "red", "value": 90 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (avg by (instance) (rate(windows_cpu_time_total{mode=\"idle\", instance=\"WINDOWSSERVER2025\"}[2m])) * 100)", "legendFormat": "WINSVR2025", "refId": "A" }]
+    },
+    {
+      "id": 26, "type": "stat", "title": "PROXMOXMANAGER",
+      "gridPos": { "h": 5, "w": 3, "x": 18, "y": 7 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 80 }, { "color": "red", "value": 90 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\", instance=\"PROXMOXMANAGER\"}[5m])) * 100)", "legendFormat": "PROXMOXMANAGER", "refId": "A" }]
+    },
+    {
+      "id": 27, "type": "stat", "title": "TRAVELSERVER",
+      "gridPos": { "h": 5, "w": 3, "x": 21, "y": 7 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 80 }, { "color": "red", "value": 90 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\", instance=\"TRAVELSERVER\"}[5m])) * 100)", "legendFormat": "TRAVELSERVER", "refId": "A" }]
+    },
+
+    {
+      "id": 3,
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 12 },
+      "options": {
+        "content": "## Schijfgebruik",
+        "mode": "markdown",
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false }
+      },
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "id": 30, "type": "stat", "title": "PVE-MS01-I9",
+      "gridPos": { "h": 5, "w": 3, "x": 0, "y": 13 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "orange", "value": 85 }, { "color": "red", "value": 95 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (node_filesystem_avail_bytes{instance=\"PVE-MS01-I9\", mountpoint=\"/\", fstype!=\"tmpfs\"} / node_filesystem_size_bytes{instance=\"PVE-MS01-I9\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100)", "legendFormat": "PVE-MS01-I9", "refId": "A" }]
+    },
+    {
+      "id": 31, "type": "stat", "title": "PVE-MS01-I5",
+      "gridPos": { "h": 5, "w": 3, "x": 3, "y": 13 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "orange", "value": 85 }, { "color": "red", "value": 95 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (node_filesystem_avail_bytes{instance=\"PVE-MS01-I5\", mountpoint=\"/\", fstype!=\"tmpfs\"} / node_filesystem_size_bytes{instance=\"PVE-MS01-I5\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100)", "legendFormat": "PVE-MS01-I5", "refId": "A" }]
+    },
+    {
+      "id": 32, "type": "stat", "title": "NETWORKSERVER",
+      "gridPos": { "h": 5, "w": 3, "x": 6, "y": 13 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "orange", "value": 85 }, { "color": "red", "value": 95 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (node_filesystem_avail_bytes{instance=\"NETWORKSERVER\", mountpoint=\"/\", fstype!=\"tmpfs\"} / node_filesystem_size_bytes{instance=\"NETWORKSERVER\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100)", "legendFormat": "NETWORKSERVER", "refId": "A" }]
+    },
+    {
+      "id": 33, "type": "stat", "title": "MEDIASERVER",
+      "gridPos": { "h": 5, "w": 3, "x": 9, "y": 13 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "orange", "value": 85 }, { "color": "red", "value": 95 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (node_filesystem_avail_bytes{instance=\"MEDIASERVER\", mountpoint=\"/\", fstype!=\"tmpfs\"} / node_filesystem_size_bytes{instance=\"MEDIASERVER\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100)", "legendFormat": "MEDIASERVER", "refId": "A" }]
+    },
+    {
+      "id": 34, "type": "stat", "title": "METRICSSERVER",
+      "gridPos": { "h": 5, "w": 3, "x": 12, "y": 13 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "orange", "value": 85 }, { "color": "red", "value": 95 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (node_filesystem_avail_bytes{instance=\"METRICSSERVER\", mountpoint=\"/\", fstype!=\"tmpfs\"} / node_filesystem_size_bytes{instance=\"METRICSSERVER\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100)", "legendFormat": "METRICSSERVER", "refId": "A" }]
+    },
+    {
+      "id": 35, "type": "stat", "title": "WINDOWSSERVER2025",
+      "gridPos": { "h": 5, "w": 3, "x": 15, "y": 13 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "orange", "value": 85 }, { "color": "red", "value": 95 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (windows_logical_disk_free_bytes{instance=\"WINDOWSSERVER2025\", volume=\"C:\"} / windows_logical_disk_size_bytes{instance=\"WINDOWSSERVER2025\", volume=\"C:\"} * 100)", "legendFormat": "WINSVR2025 C:", "refId": "A" }]
+    },
+    {
+      "id": 36, "type": "stat", "title": "PROXMOXMANAGER",
+      "gridPos": { "h": 5, "w": 3, "x": 18, "y": 13 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "orange", "value": 85 }, { "color": "red", "value": 95 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (node_filesystem_avail_bytes{instance=\"PROXMOXMANAGER\", mountpoint=\"/\", fstype!=\"tmpfs\"} / node_filesystem_size_bytes{instance=\"PROXMOXMANAGER\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100)", "legendFormat": "PROXMOXMANAGER", "refId": "A" }]
+    },
+    {
+      "id": 37, "type": "stat", "title": "TRAVELSERVER",
+      "gridPos": { "h": 5, "w": 3, "x": 21, "y": 13 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value_and_name", "justifyMode": "center", "text": { "valueSize": 36, "titleSize": 14 } },
+      "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0, "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "orange", "value": 85 }, { "color": "red", "value": 95 }
+      ] } }, "overrides": [] },
+      "targets": [{ "expr": "100 - (node_filesystem_avail_bytes{instance=\"TRAVELSERVER\", mountpoint=\"/\", fstype!=\"tmpfs\"} / node_filesystem_size_bytes{instance=\"TRAVELSERVER\", mountpoint=\"/\", fstype!=\"tmpfs\"} * 100)", "legendFormat": "TRAVELSERVER", "refId": "A" }]
+    },
+
+    {
+      "id": 4,
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
+      "options": {
+        "content": "## Kast- en CPU-temperaturen — Trend (2u)",
+        "mode": "markdown",
+        "code": { "language": "plaintext", "showLineNumbers": false, "showMiniMap": false }
+      },
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "id": 60,
+      "type": "timeseries",
+      "title": "",
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 19 },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "red", "value": 80 }
+          ] }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "max by (instance) (node_hwmon_temp_celsius{instance=~\"PVE-MS01-I9|PVE-MS01-I5|NETWORKSERVER|MEDIASERVER|METRICSSERVER|PROXMOXMANAGER|TRAVELSERVER\", chip=~\".*coretemp.*\", sensor=\"temp1\"})",
+          "legendFormat": "{{instance}} CPU",
+          "refId": "A"
+        },
+        {
+          "expr": "max(windows_hardware_temperature_celsius{instance=\"WINDOWSSERVER2025\", sensor=\"GPU_Core\"})",
+          "legendFormat": "WINSVR2025 GPU",
+          "refId": "B"
+        },
+        {
+          "expr": "homeassistant_sensor_temperature_celsius{entity=~\"sensor.tp357_(e33d|c5a9|9f54|5eb7)_temperature\", job=\"smarthomeserver\"}",
+          "legendFormat": "{{friendly_name}}",
+          "refId": "C"
+        }
+      ]
+    }
+  ]
+}
