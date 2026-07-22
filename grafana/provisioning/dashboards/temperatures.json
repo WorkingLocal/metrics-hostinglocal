@@ -1279,7 +1279,7 @@
       },
       "targets": [
         {
-          "expr": "max(homeassistant_sensor_temperature_celsius{entity=~\"sensor\\.fileserver_drive._temperatuur|sensor\\.fileserver_m_2_drive._temperatuur\", job=\"smarthomeserver\"})",
+          "expr": "max(homeassistant_sensor_temperature_celsius{entity=~\"sensor\\.fileserver_drive_\\d+_temperatuur|sensor\\.fileserver_m_2_drive_\\d+_temperatuur\", job=\"smarthomeserver\"})",
           "legendFormat": "FILESERVER Disks",
           "refId": "A"
         }
