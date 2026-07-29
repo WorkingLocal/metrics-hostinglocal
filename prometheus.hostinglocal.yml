@@ -93,6 +93,31 @@ scrape_configs:
         labels:
           instance: 'VM-AUTOBA'
 
+  # --- Meetriq-platform VMs (PVE-MS01-i9, node_exporter systemd) ---
+  # Toegevoegd 2026-07-29. Zie infra-hostinglocal/docs/vm-meetriq.md
+
+  # DATA-laag: PostgreSQL/TimescaleDB, MinIO (Lake), Kestra (Flow Engine),
+  # brand-proxy en Kroki (Meetriq Diagrams)
+  - job_name: 'vm-meetriq-data'
+    static_configs:
+      - targets: ['100.116.175.99:9100']
+        labels:
+          instance: 'VM-MEETRIQ-DATA'
+
+  # BI-laag: Superset (Insights), Metabase, Semantics
+  - job_name: 'vm-meetriq-metrics'
+    static_configs:
+      - targets: ['100.73.210.57:9100']
+        labels:
+          instance: 'VM-MEETRIQ-METRICS'
+
+  # Business-laag: Odoo 19 CE, n8n
+  - job_name: 'vm-meetriq-business'
+    static_configs:
+      - targets: ['100.122.144.19:9100']
+        labels:
+          instance: 'VM-MEETRIQ-BUSINESS'
+
 
   # VM-AI-Engine
   # Vereist: node_exporter op 100.80.180.55:9100
