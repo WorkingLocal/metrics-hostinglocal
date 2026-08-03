@@ -66,6 +66,12 @@ services:
       UP_INFLUXDB_DISABLE: "true"
       UP_UNIFI_DEFAULT_SAVE_SITES: "true"
       UP_UNIFI_DEFAULT_SAVE_DPI: "false"
+      # LET OP: SAVE_IDS/SAVE_EVENTS/SAVE_ALARMS + de Loki-output NIET aanzetten.
+      # Getest 2026-07-31 op Network 10.5.67: unpoller meldt
+      #   "IDS/IPS endpoint removed (Network 10.x+): no replacement available"
+      # en GetAlarms() geeft 400 op /api/s/default/list/alarm. De volledige
+      # event-collectie faalt dan ("error initializing inputs") en spamt elke 2m
+      # een ERROR. Voor threat-historie is UDM remote syslog -> promtail de weg.
     ports:
       - "9130:9130"
 
