@@ -67,7 +67,7 @@ services:
       UP_UNIFI_DEFAULT_SAVE_SITES: "true"
       UP_UNIFI_DEFAULT_SAVE_DPI: "false"
       # LET OP: SAVE_IDS/SAVE_EVENTS/SAVE_ALARMS + de Loki-output NIET aanzetten.
-      # Getest 2026-07-31 op Network 10.5.67: unpoller meldt
+      # Getest 2026-08-03 op Network 10.5.67: unpoller meldt
       #   "IDS/IPS endpoint removed (Network 10.x+): no replacement available"
       # en GetAlarms() geeft 400 op /api/s/default/list/alarm. De volledige
       # event-collectie faalt dan ("error initializing inputs") en spamt elke 2m
