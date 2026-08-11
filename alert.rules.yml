@@ -9,11 +9,13 @@ groups:
 
       - alert: HighTemperatureWarning
         expr: >
-          node_hwmon_temp_celsius{
+          avg_over_time(
+            node_hwmon_temp_celsius{
             chip=~"platform_coretemp_0|thermal_thermal_zone0",
             sensor=~"temp0|temp1"
-          } > 80
-        for: 30s
+          }[10m]
+          ) > 80
+        for: 5m
         labels:
           severity: warning
           action: cooldown
@@ -23,11 +25,13 @@ groups:
 
       - alert: HighTemperatureCritical
         expr: >
-          node_hwmon_temp_celsius{
+          avg_over_time(
+            node_hwmon_temp_celsius{
             chip=~"platform_coretemp_0|thermal_thermal_zone0",
             sensor=~"temp0|temp1"
-          } > 90
-        for: 30s
+          }[10m]
+          ) > 90
+        for: 5m
         labels:
           severity: critical
           action: shutdown
@@ -336,3 +340,61 @@ groups:
         annotations:
           summary: "Schijf kritiek vol op KIOSK-TOUCH (C:)"
           description: "C: is {{ $value | humanize }}% vol (drempel: 90%)"
+
+  # ── Rackkoeling ────────────────────────────────────────────────────────────
+  # Toegevoegd 2026-08-04 na een storing die 12 dagen onopgemerkt bleef: de NZXT
+  # fan-controller viel op 23/07 09:50 van de USB-bus, waardoor alle kastventilatoren
+  # stilvielen. Er stond geen enkel alarm op. De bestaande HighTemperature-alerts
+  # sloegen niet aan omdat de CPU-temperatuur door thermal throttling telkens binnen
+  # 30s onder de drempel dook (bleef eeuwig 'pending').
+  #
+  # GEEN action-label op deze regels: die zouden via alertmanager.yml naar de
+  # thermal-shutdown-webhook routeren. Dit zijn bewust meldingen, geen ingrepen.
+  #
+  # Drempels onderbouwd met 30 dagen historiek (kast -> NVMe i9, R2=0.74):
+  #   NVMe = 1.28 x kasttemp + 36.8
+  #   kast <=32 C -> 0.1% van de metingen boven NVMe-spec (83.8 C)
+  #   kast  35 C  -> 3%      kast 36 C -> 22%      kast 37 C -> 100%
+  - name: rack_cooling_alerts
+    rules:
+
+      # Dé regel die de storing van 23/07 op dag 1 had gevangen.
+      # De daemon crasht op liquidctl vóór hij zijn textfile schrijft, dus een
+      # verouderde mtime betekent: fan control draait niet meer.
+      - alert: FanControlStale
+        expr: time() - node_textfile_mtime_seconds{file=~".*fan_control.prom"} > 3600
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Fan control op FANSERVER schrijft geen data meer"
+          description: "fan_control.prom is {{ $value | humanizeDuration }} oud. De kastventilatoren draaien vermoedelijk niet. Check `journalctl -u fan-control` en `liquidctl status` — bij 'no device matches' is de NZXT-controller van de USB-bus gevallen (voeding/kabel nakijken)."
+
+      - alert: RackAmbientTemperatureWarning
+        expr: homeassistant_sensor_temperature_celsius{friendly_name="Rack Ambient"} > 34
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Rack loopt warm ({{ $value | humanize }}°C)"
+          description: "Kasttemperatuur boven 34°C. Vanaf 35°C gaat de NVMe van PVE-MS01-I9 over zijn spec van 83.8°C. Controleer of de kastventilatoren draaien."
+
+      - alert: RackAmbientTemperatureCritical
+        expr: homeassistant_sensor_temperature_celsius{friendly_name="Rack Ambient"} > 35.5
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Rack te warm ({{ $value | humanize }}°C) — koeling schiet tekort"
+          description: "Boven 35.5°C is de koeling aantoonbaar ontoereikend: bij 36°C zit de NVMe van PVE-MS01-I9 22% van de tijd boven spec, bij 37°C permanent. Kast openzetten en ventilatie herstellen."
+
+      # Vlaklijn op ~84.9°C = de schijf throttelt continu. Dat is geen piek maar
+      # een verzadigde toestand; die stond 12 dagen aan zonder dat iemand het zag.
+      - alert: NvmeThermalCeiling
+        expr: max by (instance) (node_hwmon_temp_celsius{instance="PVE-MS01-I9", chip=~"nvme.*"}) >= 84
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "NVMe in {{ $labels.instance }} throttelt ({{ $value | humanize }}°C)"
+          description: "De NVMe zit tegen zijn thermische plafond en levert verminderde prestaties. Dit duidt op onvoldoende kastkoeling."
