@@ -398,3 +398,41 @@ groups:
         annotations:
           summary: "NVMe in {{ $labels.instance }} throttelt ({{ $value | humanize }}°C)"
           description: "De NVMe zit tegen zijn thermische plafond en levert verminderde prestaties. Dit duidt op onvoldoende kastkoeling."
+
+  # ── Zigbee2MQTT / smart home ───────────────────────────────────────────────
+  # Toegevoegd 2026-08-13 na een storing die 34 uur duurde. De Z2M-addon werd
+  # automatisch bijgewerkt naar 2.13.0-1, waarna de CC2652P-chip in de SLZB-06P7
+  # niet meer antwoordde op SYS ping ("Failed to connect to the adapter"). De
+  # addon-watchdog probeerde 5x te herstarten, gaf op, en liet de addon in state
+  # 'error' staan. Er stond geen enkel alarm op deze laag, dus de volledige woning
+  # zat zonder Zigbee-verlichting tot het toevallig opviel.
+  #
+  # De bridge-connectiesensor is bewust gekozen boven de addon-status: hij zakt
+  # zowel wanneer de addon plat ligt als wanneer die draait maar de adapter dood
+  # is. Bij de storing van 11/08 ging hij naar 0 en bleef daar tot het handmatige
+  # herstel. (binary_sensor.zigbee2mqtt_running bestaat wel in HA, maar wordt niet
+  # naar Prometheus geexporteerd — die is dus geen optie.)
+  #
+  # GEEN action-label: dit zijn meldingen, geen ingrepen.
+  - name: smarthome_alerts
+    rules:
+      - alert: Zigbee2MQTTBridgeDown
+        expr: homeassistant_binary_sensor_state{entity="binary_sensor.zigbee2mqtt_bridge_connection_state"} == 0
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Zigbee2MQTT-bridge offline — alle Zigbee-verlichting ligt plat"
+          description: "De Z2M-bridge is >10 min niet verbonden op SMARTHOMESERVER. Verlichting, dimmers, bewegings- en raamsensoren reageren niet. Diagnose: 'ha apps info 45df7312_zigbee2mqtt' en de laatste map onder /config/zigbee2mqtt/log/. Bij een 'SRSP - SYS - ping'-timeout hangt de ZNP-chip: reset met curl 'http://192.168.111.76/api2?action=4&cmd=1' en herstart daarna de addon."
+
+      # De metric komt uit HA zelf. Ligt HA Core plat, dan verdwijnt de reeks in
+      # plaats van 0 te worden, en zou de regel hierboven stil blijven. Vandaar
+      # deze absent()-regel als vangnet voor de blinde vlek.
+      - alert: Zigbee2MQTTMetricAbsent
+        expr: absent(homeassistant_binary_sensor_state{entity="binary_sensor.zigbee2mqtt_bridge_connection_state"})
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Z2M-bridgestatus wordt niet meer gerapporteerd door HAOS"
+          description: "De metric ontbreekt al >15 min. Ofwel ligt HA Core plat, ofwel is de entiteit hernoemd of verwijderd. In beide gevallen is Zigbee2MQTTBridgeDown blind — eerst dit oplossen."
