@@ -118,6 +118,14 @@ scrape_configs:
         labels:
           instance: 'VM-MEETRIQ-BUSINESS'
 
+  # Schuurman (BMS): bms-portal, autoba-agent, Gitea, Keycloak, Kroki, n8n, Coolify
+  # Toegevoegd 2026-10-04. Zie briefing-vm-meetriq-schuurman.
+  - job_name: 'vm-meetriq-schuurman'
+    static_configs:
+      - targets: ['100.79.11.79:9100']
+        labels:
+          instance: 'VM-MEETRIQ-SCHUURMAN'
+
 
   # VM-AI-Engine
   # Vereist: node_exporter op 100.80.180.55:9100
