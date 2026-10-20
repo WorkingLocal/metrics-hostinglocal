@@ -436,3 +436,108 @@ groups:
         annotations:
           summary: "Z2M-bridgestatus wordt niet meer gerapporteerd door HAOS"
           description: "De metric ontbreekt al >15 min. Ofwel ligt HA Core plat, ofwel is de entiteit hernoemd of verwijderd. In beide gevallen is Zigbee2MQTTBridgeDown blind — eerst dit oplossen."
+
+      # ── Fase 8: batterijbewaking ──────────────────────────────────────────
+      # De entity-regex hieronder is een bewuste WHITELIST van vaste toestellen.
+      # Telefoons, tablets en trackers (*_battery_level) staan er niet in: die
+      # horen laag te staan en zouden de melding waardeloos maken. De UPS heeft
+      # zijn eigen NUT-alarmen. De plantensensoren evenmin: hun batterijkanaal
+      # staat permanent op 0, dat is geen meting maar een ontbrekende waarde
+      # (zie HAPlantsensorStilgevallen verderop voor hoe die wél bewaakt worden).
+      - alert: HABatterijLaag
+        expr: |
+          homeassistant_sensor_battery_percent{
+            job="smarthomeserver",
+            entity=~"sensor\\.(raamcontact_.*|hue_dimmer_.*|hue_beweging_.*|sonoff_beweging_.*|symfonisk_.*|tp357_.*|0x[0-9a-f]+)_battery"
+          } < 15
+        for: 6h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Batterij bijna leeg: {{ $labels.entity }} ({{ $value | printf \"%.0f\" }}%)"
+          description: "{{ $labels.entity }} staat al >6u onder 15%. Vervang de batterij vóór het toestel stilvalt. Let op: deze drempel werkt enkel voor toestellen die geleidelijk aftellen — voor de raamcontacten is HASensorStilgevallen de bewaking."
+
+  # ── Fase 8, tweede luik: sensoren die stilvallen zonder te waarschuwen ──────
+  #
+  # Waarom dit naast HABatterijLaag moet bestaan: de raamcontacten rapporteren
+  # 100 % tot hun laatste bericht en zwijgen daarna. Een percentage-drempel vuurt
+  # daar nooit. Vastgesteld op 06/09/2026: alle acht stonden op 100 % en waren
+  # tussen 12/2025 en 04/2026 stilgevallen — de langste (Eethoek Links) 278 dagen
+  # onopgemerkt. Dezelfde blinde vlek bij de plantensensoren: 15 van de 17 zijn
+  # tussen 09/2025 en 12/2025 gestorven zonder één melding.
+  #
+  # Detectie: HA exporteert een entiteit die 'unavailable' is niet naar
+  # /api/prometheus — de reeks verdwijnt dan gewoon. Geverifieerd 06/09/2026:
+  # count(...raamcontact...) gaf 7 op dat moment en 1 met 'offset 1d'. We
+  # vergelijken dus "welke sensoren rapporteerden 2 dagen geleden" met "welke
+  # rapporteren nu".
+  #
+  # Aparte groep met interval 15m omdat count_over_time over 14d duur is; op de
+  # standaard evaluatie-interval zou dit elke 15 s een kwart miljoen samples
+  # inlezen. Bij een detectievenster van dagen is 15 m ruim snel genoeg.
+  #
+  # Het venster [14d] offset 2d betekent: vuurt voor sensoren die tussen 2 en 16
+  # dagen geleden stilvielen. Daarna dooft het alarm vanzelf uit, zodat een
+  # bewust weggehaald toestel niet eeuwig blijft piepen. Twee weken herhaalde
+  # meldingen is ruim genoeg om het op te merken.
+  - name: smarthome_sensor_stale
+    interval: 15m
+    rules:
+      - record: ha:batterijsensor_gezien_14d:count
+        expr: |
+          count by (entity) (
+            count_over_time(
+              homeassistant_sensor_battery_percent{
+                job="smarthomeserver",
+                entity=~"sensor\\.(raamcontact_.*|hue_dimmer_.*|hue_beweging_.*|sonoff_beweging_.*|symfonisk_.*|tp357_.*|0x[0-9a-f]+)_battery"
+              }[14d] offset 2d
+            )
+          )
+
+      - record: ha:plantsensor_gezien_14d:count
+        expr: |
+          count by (entity) (
+            count_over_time(
+              homeassistant_sensor_moisture_percent{job="smarthomeserver"}[14d] offset 2d
+            )
+          )
+
+      # De 'and on ()'-guard is essentieel: ligt HA Core zelf plat, dan
+      # verdwijnen ALLE reeksen tegelijk en zou deze regel 24 losse alarmen
+      # afvuren. Precies de meldingsstorm die op 18/08/2026 het echte Z2M-alarm
+      # begroef. Zolang er nog minstens 5 batterijreeksen binnenkomen weten we
+      # dat HA leeft en dat een ontbrekende sensor een échte dode sensor is.
+      - alert: HASensorStilgevallen
+        expr: |
+          (
+            ha:batterijsensor_gezien_14d:count
+            unless on (entity)
+            count by (entity) (
+              homeassistant_sensor_battery_percent{
+                job="smarthomeserver",
+                entity=~"sensor\\.(raamcontact_.*|hue_dimmer_.*|hue_beweging_.*|sonoff_beweging_.*|symfonisk_.*|tp357_.*|0x[0-9a-f]+)_battery"
+              }
+            )
+          )
+          and on () (count(homeassistant_sensor_battery_percent{job="smarthomeserver"}) > 5)
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Sensor stilgevallen: {{ $labels.entity }} rapporteert niet meer"
+          description: "{{ $labels.entity }} rapporteerde tot ~2 dagen geleden en is nu unavailable in HA. Bij de raamcontacten is dit bijna altijd een lege batterij (ze melden 100% tot het laatste bericht). Check eerst de batterij, daarna de Z2M-availability: mosquitto_sub -h 192.168.111.75 -u mqtt -P <pw> -v -t 'zigbee2mqtt/#' | grep availability"
+
+      - alert: HAPlantsensorStilgevallen
+        expr: |
+          (
+            ha:plantsensor_gezien_14d:count
+            unless on (entity)
+            count by (entity) (homeassistant_sensor_moisture_percent{job="smarthomeserver"})
+          )
+          and on () (count(homeassistant_sensor_battery_percent{job="smarthomeserver"}) > 5)
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Plantensensor stilgevallen: {{ $labels.entity }}"
+          description: "{{ $labels.entity }} meet geen bodemvocht meer. Het batterijkanaal van deze BLE-sensoren staat permanent op 0 en is dus geen waarschuwingssignaal — stilte is het enige signaal dat er is. Vervang de knoopcel (CR2032) of controleer de BLE-ontvangst via TheengsGateway."
