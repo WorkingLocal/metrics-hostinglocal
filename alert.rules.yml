@@ -421,6 +421,7 @@ groups:
         for: 10m
         labels:
           severity: critical
+          ntfy_topic: hl-home
         annotations:
           summary: "Zigbee2MQTT-bridge offline — alle Zigbee-verlichting ligt plat"
           description: "De Z2M-bridge is >10 min niet verbonden op SMARTHOMESERVER. Verlichting, dimmers, bewegings- en raamsensoren reageren niet. Diagnose: 'ha apps info 45df7312_zigbee2mqtt' en de laatste map onder /config/zigbee2mqtt/log/. Bij een 'SRSP - SYS - ping'-timeout hangt de ZNP-chip: reset met curl 'http://192.168.111.76/api2?action=4&cmd=1' en herstart daarna de addon."
@@ -433,6 +434,7 @@ groups:
         for: 15m
         labels:
           severity: warning
+          ntfy_topic: hl-home
         annotations:
           summary: "Z2M-bridgestatus wordt niet meer gerapporteerd door HAOS"
           description: "De metric ontbreekt al >15 min. Ofwel ligt HA Core plat, ofwel is de entiteit hernoemd of verwijderd. In beide gevallen is Zigbee2MQTTBridgeDown blind — eerst dit oplossen."
@@ -453,6 +455,7 @@ groups:
         for: 6h
         labels:
           severity: warning
+          ntfy_topic: hl-home
         annotations:
           summary: "Batterij bijna leeg: {{ $labels.entity }} ({{ $value | printf \"%.0f\" }}%)"
           description: "{{ $labels.entity }} staat al >6u onder 15%. Vervang de batterij vóór het toestel stilvalt. Let op: deze drempel werkt enkel voor toestellen die geleidelijk aftellen — voor de raamcontacten is HASensorStilgevallen de bewaking."
@@ -523,6 +526,7 @@ groups:
         for: 1h
         labels:
           severity: warning
+          ntfy_topic: hl-home
         annotations:
           summary: "Sensor stilgevallen: {{ $labels.entity }} rapporteert niet meer"
           description: "{{ $labels.entity }} rapporteerde tot ~2 dagen geleden en is nu unavailable in HA. Bij de raamcontacten is dit bijna altijd een lege batterij (ze melden 100% tot het laatste bericht). Check eerst de batterij, daarna de Z2M-availability: mosquitto_sub -h 192.168.111.75 -u mqtt -P <pw> -v -t 'zigbee2mqtt/#' | grep availability"
@@ -538,6 +542,53 @@ groups:
         for: 1h
         labels:
           severity: warning
+          ntfy_topic: hl-home
         annotations:
           summary: "Plantensensor stilgevallen: {{ $labels.entity }}"
           description: "{{ $labels.entity }} meet geen bodemvocht meer. Het batterijkanaal van deze BLE-sensoren staat permanent op 0 en is dus geen waarschuwingssignaal — stilte is het enige signaal dat er is. Vervang de knoopcel (CR2032) of controleer de BLE-ontvangst via TheengsGateway."
+
+  # ── Tailscale node-keys (180 dagen geldig) ─────────────────────────────────
+  # Aanleiding: op 18/10/2026 verliep vm-apps. De cloudflared-tunnel wijst naar
+  # Tailscale-IP's, dus vault.hostinglocal.be en metrics.hostinglocal.be gaven 502
+  # zonder dat iets waarschuwde. Metrics komen uit scripts/tailscale-keys-exporter.py.
+  - name: tailscale_alerts
+    rules:
+      - alert: TailscaleKeyExpiresSoon
+        expr: tailscale_node_key_days_left < 21 and tailscale_node_key_days_left >= 7
+        for: 1h
+        labels:
+          severity: warning
+          ntfy_topic: hl-home
+        annotations:
+          summary: "Tailscale-sleutel van {{ $labels.node }} verloopt over {{ $value | printf \"%.0f\" }} dagen"
+          description: "Zet 'Disable key expiry' aan op login.tailscale.com/admin/machines (kan vóór verval, zonder opnieuw inloggen). Verlopen node = onbereikbaar, ook voor tunnels die naar zijn Tailscale-IP wijzen."
+
+      - alert: TailscaleKeyExpiresVerySoon
+        expr: tailscale_node_key_days_left < 7 and tailscale_node_key_days_left >= 0
+        for: 10m
+        labels:
+          severity: critical
+          ntfy_topic: hl-home
+        annotations:
+          summary: "Tailscale-sleutel van {{ $labels.node }} verloopt over {{ $value | printf \"%.1f\" }} dagen"
+          description: "Nog geen verval uitgezet. Doe het nu: login.tailscale.com/admin/machines -> Disable key expiry. Daarna is de node niet meer via Tailscale bereikbaar tot 'tailscale up --force-reauth'."
+
+      - alert: TailscaleKeyExpired
+        expr: tailscale_node_key_expired == 1
+        for: 10m
+        labels:
+          severity: critical
+          ntfy_topic: hl-home
+        annotations:
+          summary: "Tailscale-sleutel van {{ $labels.node }} is VERLOPEN"
+          description: "Node is van het tailnet. Herstel: 'sudo tailscale up --force-reauth' op de node (LAN/console), login-link aanklikken, daarna Disable key expiry."
+
+      - alert: TailscaleKeysExporterStale
+        expr: absent(tailscale_keys_last_success_timestamp_seconds) or (time() - tailscale_keys_last_success_timestamp_seconds > 7200)
+        for: 30m
+        labels:
+          severity: warning
+          ntfy_topic: hl-home
+        annotations:
+          summary: "Tailscale-sleutelbewaking levert geen data meer"
+          description: "scripts/tailscale-keys-exporter.py op METRICSSERVER schrijft niets meer (cron */30). Zonder dit merk je een verlopende key niet."

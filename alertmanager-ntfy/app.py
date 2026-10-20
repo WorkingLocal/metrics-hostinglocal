@@ -25,6 +25,8 @@ TOPIC_CRITICAL = os.environ.get("NTFY_TOPIC_CRITICAL", "hl-critical")
 TOPIC_WARNING  = os.environ.get("NTFY_TOPIC_WARNING",  "hl-warning")
 TOPIC_RESOLVED = os.environ.get("NTFY_TOPIC_RESOLVED", "hl-resolved")
 TOPIC_BACKUP   = os.environ.get("NTFY_TOPIC_BACKUP",   "hl-backup")
+TOPIC_HOME     = os.environ.get("NTFY_TOPIC_HOME",     "hl-home")
+HOME_INSTANCES = set(os.environ.get("HOME_INSTANCES", "SMARTHOMESERVER").split(","))
 
 PRIORITY_MAP = {
     "critical": 5,   # urgent
@@ -82,6 +84,14 @@ def hook():
             priority = PRIORITY_MAP.get(severity, 3)
             tags     = TAG_MAP.get(severity, ["bell"])
             topic    = TOPIC_CRITICAL if severity == "critical" else TOPIC_WARNING
+            # huis/infra-alerts (label ntfy_topic of host in HOME_INSTANCES) krijgen een eigen topic;
+            # kritieke gaan daarnaast ook naar hl-critical zodat er niets stilvalt
+            home = labels.get("ntfy_topic") or (TOPIC_HOME if instance in HOME_INSTANCES else "")
+            if home:
+                if severity == "critical":
+                    _send(title, "\n".join(p for p in [instance, annots.get("summary", ""), annots.get("description", "")] if p) or name,
+                          priority, tags, topic=TOPIC_CRITICAL)
+                topic = home
 
         summary = annots.get("summary", "")
         desc    = annots.get("description", "")
@@ -154,7 +164,7 @@ def ntfy_messages():
     """
     import datetime
     since         = request.args.get("since", "12h")
-    default_topics = f"{TOPIC_CRITICAL},{TOPIC_WARNING},{TOPIC_RESOLVED},{TOPIC_BACKUP},hl-uptime,wl-uptime"
+    default_topics = f"{TOPIC_CRITICAL},{TOPIC_WARNING},{TOPIC_RESOLVED},{TOPIC_BACKUP},{TOPIC_HOME},hl-uptime,wl-uptime"
     topics_param  = request.args.get("topics", default_topics)
     topics        = [t.strip() for t in topics_param.split(",") if t.strip()]
 

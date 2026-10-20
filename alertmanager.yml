@@ -30,7 +30,7 @@ route:
       receiver: ntfy-critical
       group_wait: 30s
       group_interval: 5m
-      repeat_interval: 1h
+      repeat_interval: 4h
 
 receivers:
   - name: ntfy-warning
@@ -61,3 +61,16 @@ inhibit_rules:
     target_match:
       severity: warning
     equal: ['instance']
+
+  # Host down -> meld de VM's op die host niet apart (20/10/2026: 51x InstanceDown begroef de Z2M-melding).
+  # Enkel VM's waarvan de host zeker is; onzekere VM's blijven bewust zelf melden.
+  - source_matchers: ['alertname="InstanceDown"', 'instance="NETWORKSERVER"']
+    target_matchers: ['alertname="InstanceDown"', 'instance=~"VM-ADGUARD|VM-NPM|VM-NETBOX|VM-AUTH"']
+  - source_matchers: ['alertname="InstanceDown"', 'instance="MEDIASERVER"']
+    target_matchers: ['alertname="InstanceDown"', 'instance=~"VM-PLEX|VM-IMMICH|VM-MUSIC|VM-DOCS"']
+  - source_matchers: ['alertname="InstanceDown"', 'instance="WINDOWSSERVER2025"']
+    target_matchers: ['alertname="InstanceDown"', 'instance=~"VM-AI-ENGINE|VM-APPS|VM-AUTOBA|VM-OPENCLAW|VM-WORKINGLOCAL"']
+  - source_matchers: ['alertname="InstanceDown"', 'instance="PVE-MS01-I9"']
+    target_matchers: ['alertname="InstanceDown"', 'instance=~"VM-AI-NODE-I9|VM-MEETRIQ-DATA|VM-MEETRIQ-METRICS|VM-MEETRIQ-BUSINESS"']
+  - source_matchers: ['alertname="InstanceDown"', 'instance="PVE-MS01-I5"']
+    target_matchers: ['alertname="InstanceDown"', 'instance=~"VM-AI-NODE-I5"']
